@@ -1,7 +1,4 @@
-let express = require('express'); //librairie de Javascript
-let app = express();
 let jwt = require('jsonwebtoken')
-
 let bcrypt = require('bcrypt')
 let { sequelize, User } = require('../models') // on invoque sequelizer et model User pour qu'ils aient besoin de ./models
 
@@ -48,7 +45,7 @@ exports.login = (req, res, next) => {
 // FIN - LOGIN des users
 
 // get un seul user pour le profil
-exports.profile = (async(req,res)=>{
+exports.profile = async(req,res)=>{
     let email = req.body.email;
     try{
         let userProfile = await User.findOne({ 
@@ -59,11 +56,11 @@ exports.profile = (async(req,res)=>{
         console.log(err)
         return res.status(500).json({message: err.message})
     }
-})
+}
 //FIN - get un seul user pour le profil
 
 // get tous les users (a voir si utile pour l'appli)
- exports.getallusers = (async(req,res)=>{
+ exports.getallusers = async(req,res)=>{
     try{
         let users = await User.findAll()
         return res.json(users)
@@ -71,5 +68,20 @@ exports.profile = (async(req,res)=>{
         console.log(err)
         return res.status(500).json({message: err.message})
     }
-})
+}
 //FIN - get tous les users (a voir si utile pour l'appli)
+
+//Delete user via uuid
+exports.delete = (async(req, res) =>{
+    let uuid = req.body.uuid;
+    try{
+        await User.destroy({
+            where: {uuid:uuid}
+        })
+        return res.json({message: 'requete DELETE envoyée pour '+ uuid});
+    }catch(err){
+        console.log(err)
+        return res.status(500).json({message: err.message})
+    }
+})
+//FIN - Delete user via uuid
