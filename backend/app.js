@@ -2,6 +2,7 @@ let express = require('express'); //librairie de Javascript
 let app = express();
 let bodyParser = require('body-parser') // import de body-parser après l'avoir installé dans package.json on s'en sert ensuite dans app.post
 // bodyparser sert rendre le body de la requete exploitable par l'app
+
 let userRoutes = require('./routes/user')
 
 
@@ -17,6 +18,8 @@ app.use((req, res, next) => {
 
 app.use(express.json()) //middleware json pour body express
 app.use(bodyParser.json()); //
+
+
 app.use ('/api/auth', userRoutes);
 
 

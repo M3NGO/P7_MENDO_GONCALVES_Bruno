@@ -64,7 +64,7 @@ server.on('listening', () => { // serveur ON, si tout se passe bien on a un cons
 let { sequelize } = require('./models')     //lance synchro sequelize            
 server.listen(port, async () =>{
     await sequelize.authenticate();
-    console.log ('Mysql Synchronisée')
+    console.log ('Connexion Mysql authentifiée!!!')
 }); // serveur écoute le port définit au serveur + synchronise asynchrone MYSQL
 
 

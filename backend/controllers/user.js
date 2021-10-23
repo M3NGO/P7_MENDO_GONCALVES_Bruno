@@ -19,18 +19,6 @@ exports.signup = (async (req,res) => {
  })
 //FIN - signup des new users
 
-// get tous les users (a voir si utile pour l'appli)
- exports.getall = (async(req,res)=>{
-    try{
-        let users = await User.findAll()
-        return res.json(users)
-    }catch(err){
-        console.log(err)
-        return res.status(500).json({message: err.message})
-    }
-})
-//FIN - get tous les users (a voir si utile pour l'appli)
-
 // LOGIN des users
 exports.login = (req, res, next) => {
     User.findOne({email: req.body.email})
@@ -58,3 +46,30 @@ exports.login = (req, res, next) => {
 
 };
 // FIN - LOGIN des users
+
+// get un seul user pour le profil
+exports.profile = (async(req,res)=>{
+    let email = req.body.email;
+    try{
+        let userProfile = await User.findOne({ 
+            where: { email : email},
+        })
+        return res.json(userProfile)
+    }catch(err){
+        console.log(err)
+        return res.status(500).json({message: err.message})
+    }
+})
+//FIN - get un seul user pour le profil
+
+// get tous les users (a voir si utile pour l'appli)
+ exports.getallusers = (async(req,res)=>{
+    try{
+        let users = await User.findAll()
+        return res.json(users)
+    }catch(err){
+        console.log(err)
+        return res.status(500).json({message: err.message})
+    }
+})
+//FIN - get tous les users (a voir si utile pour l'appli)

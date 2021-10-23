@@ -7,7 +7,9 @@ router.post('/signup', userCtrl.signup);
 
 router.post('/login', userCtrl.login);
 
-router.get('/usersall', userCtrl.getall);
+router.get('/profile/:id', userCtrl.profile) // pour livrer les infos du profil user
+
+router.get('/allusers', userCtrl.getallusers); // pour trouver tous les users
 
 
 

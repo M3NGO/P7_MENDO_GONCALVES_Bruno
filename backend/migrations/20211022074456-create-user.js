@@ -35,6 +35,7 @@ module.exports = {
       },
       role: {
         type: DataTypes.INTEGER,
+        defaultValue: 1,
         allowNull: false
       },
       createdAt: {

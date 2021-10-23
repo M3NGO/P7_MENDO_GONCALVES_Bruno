@@ -9,7 +9,9 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate(models) {
+    static associate({Post, Comment}) {
+      this.hasMany(Post, {foreignKey: 'user_id'}) // on est dans le modele User donc on dit a sequelize qu'on va associer notre user_id
+      this.hasMany(Comment, {foreignKey: 'user_id'})
       // define association here
     }
     //pour cacher des infos de base de donnée renvoyées via JSON au front : toJSON()
@@ -21,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
     uuid: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4
-    },
+    }, // UUID pour la création d'url perso sans divulguer le ranking de l'user dans la BDD
     firstname: {
       type: DataTypes.STRING,
       allowNull: false
@@ -45,10 +47,12 @@ module.exports = (sequelize, DataTypes) => {
     },
     role: {
       type: DataTypes.INTEGER,
+      defaultValue: 1,
       allowNull: false
     },
   }, {
     sequelize,
+    underscored: true, // pour dire a sequelize que les noms des colonnes MYSQL sont écrites avec unserscore
     tableName: 'user', //modifié après création
     modelName: 'User', // nom du modele utilisé dans app.js
   });
