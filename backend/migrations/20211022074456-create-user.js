@@ -38,11 +38,11 @@ module.exports = {
         defaultValue: 1,
         allowNull: false
       },
-      createdAt: {
+      created_at: {//ce champs doit etre renomé à la main pour mettre les underscore car underscore : true des models a été mis manuellement
         allowNull: false,
         type: DataTypes.DATE
       },
-      updatedAt: {
+      updated_at: {//ce champs doit etre renomé à la main pour mettre les underscore car underscore : true des models a été mis manuellement
         allowNull: false,
         type: DataTypes.DATE
       }

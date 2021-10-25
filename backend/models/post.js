@@ -27,7 +27,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     upload_url: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
       allowEmpty: true
     },
   }, {

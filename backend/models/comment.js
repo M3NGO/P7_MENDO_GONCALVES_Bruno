@@ -16,10 +16,25 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   Comment.init({
-    user_id: DataTypes.INTEGER,
-    post_id: DataTypes.INTEGER,
-    content: DataTypes.TEXT,
-    upload_url: DataTypes.STRING
+    user_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      allowEmpty: false
+    },
+    post_id:{
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      allowEmpty: false
+    },
+    content:{
+      type: DataTypes.TEXT,
+      allowNull: false,
+  },
+    upload_url: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      allowEmpty: true
+    },
   }, {
     sequelize,
     underscored: true,

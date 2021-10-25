@@ -15,16 +15,19 @@ module.exports = {
         type: DataTypes.INTEGER
       },
       content: {
-        type: DataTypes.TEXT
+        type: DataTypes.TEXT,
+        allowNull: false,
       },
       upload_url: {
-        type: DataTypes.STRING
+        type: DataTypes.STRING,
+        allowNull: true,
+        allowEmpty: true
       },
-      createdAt: {
+      created_at: {//ce champs doit etre renomé à la main pour mettre les underscore car underscore : true des models a été mis manuellement
         allowNull: false,
         type: DataTypes.DATE
       },
-      updatedAt: {
+      updated_at: { //ce champs doit etre renomé à la main pour mettre les underscore car underscore : true des models a été mis manuellement
         allowNull: false,
         type: DataTypes.DATE
       }

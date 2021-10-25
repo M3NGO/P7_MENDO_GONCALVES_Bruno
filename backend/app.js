@@ -4,6 +4,7 @@ let bodyParser = require('body-parser') // import de body-parser après l'avoir 
 // bodyparser sert rendre le body de la requete exploitable par l'app
 
 let userRoutes = require('./routes/user')
+let postRoutes = require('./routes/post')
 
 
 //ce Middleware permet a rendre accessible notre middleware à l'application, met des headers aux réponses
@@ -23,7 +24,7 @@ app.use(bodyParser.json()); //
 app.use ('/api/auth', userRoutes);
 app.use ('/user', userRoutes);
 
-// app.use ('/', postRoutes);
+app.use ('/', postRoutes);
 // app.use ('/comment', commentRoutes);
 
 

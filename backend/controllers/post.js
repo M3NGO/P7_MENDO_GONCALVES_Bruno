@@ -1,44 +1,45 @@
-let { sequelize, Post } = require('../models')
+let { sequelize, User, Post } = require('../models')
 
-exports.getPost = (async (req,res) => {
+// exports.getPost = (async (req,res) => {
  
-    try { 
+//     try { 
         
-        return res.json() // renvoit la réponse
-    }catch(err) {
-        console.log(err)
-        return res.status(500).json(err)
-    }
-})
+//         return res.json() // renvoit la réponse
+//     }catch(err) {
+//         console.log(err)
+//         return res.status(500).json(err)
+//     }
+// })
 
 exports.createPost = (async (req,res) => {
- 
-     try { 
-         
-         return res.json() // renvoit la réponse
+    let {user_id, content } = req.body
+     try {
+        let user = await User.findOne({where: {uuid: user_id}})
+        let post = await Post.create({content: content, user_id: user.id})
+         return res.json(post) // renvoit la réponse
      }catch(err) {
          console.log(err)
          return res.status(500).json(err)
      }
  })
 
- exports.modifPost = (async (req,res) => {
+//  exports.modifPost = (async (req,res) => {
  
-    try { 
+//     try { 
         
-        return res.json() // renvoit la réponse
-    }catch(err) {
-        console.log(err)
-        return res.status(500).json(err)
-    }
-})
-exports.deletePost = (async (req,res) => {
+//         return res.json() // renvoit la réponse
+//     }catch(err) {
+//         console.log(err)
+//         return res.status(500).json(err)
+//     }
+// })
+// exports.deletePost = (async (req,res) => {
  
-    try { 
+//     try { 
         
-        return res.json() // renvoit la réponse
-    }catch(err) {
-        console.log(err)
-        return res.status(500).json(err)
-    }
-})
+//         return res.json() // renvoit la réponse
+//     }catch(err) {
+//         console.log(err)
+//         return res.status(500).json(err)
+//     }
+// })
