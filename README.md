@@ -28,3 +28,22 @@ into backend folder install:
 
 - launch backend:
     cd backend
+
+During dev :
+
+    managing seeders: 
+        add all seeders into db : sequelize-cli db:seed:all
+        remove all seeders from dvb : sequelize-cli db:seed:undo:all
+
+    managing db:
+        relaunch migrations db : sequelize-cli db:migrate:undo:all
+        remove all tables from db : sequelize-cli db:migrate:undo:all
+    to create associations in db through sequelize go to server.js, comment lines 64 to 68 and uncomment from line 57 to 61
+
+    then go to terminal and type: node app, hit enter
+    
+    once done and associations done in phpmyadmin, then comment again lines 57 to 61 and uncomment 64 to 68
+
+        check migrations status : sequelize-cli db:migrate:status
+
+    
