@@ -9,9 +9,11 @@ router.post('/login', userCtrl.login);
 
 router.get('/profile/:uuid', userCtrl.profile) // pour livrer les infos du profil user
 
+router.put('/profile/:uuid', userCtrl.update) // pour modifier les infos du profil user
+
 router.get('/allusers', userCtrl.getallusers); // pour trouver tous les users
 
-router.delete('/profile/delete/:uuid', userCtrl.delete)
+router.delete('/profile/:uuid', userCtrl.delete) // route pour delete user
 
 
 

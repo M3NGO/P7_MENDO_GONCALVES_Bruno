@@ -21,6 +21,7 @@ app.use(bodyParser.json()); //
 
 
 app.use ('/api/auth', userRoutes);
+app.use ('/api', userRoutes);
 
 // app.use ('/', postRoutes);
 // app.use ('/comment', commentRoutes);

@@ -46,10 +46,10 @@ exports.login = (req, res, next) => {
 
 // get un seul user pour le profil
 exports.profile = async(req,res)=>{
-    let email = req.body.email;
+    let uuid = req.params.uuid;
     try{
         let userProfile = await User.findOne({ 
-            where: { email : email},
+            where: { uuid:uuid},
         })
         return res.json(userProfile)
     }catch(err){
@@ -71,17 +71,34 @@ exports.profile = async(req,res)=>{
 }
 //FIN - get tous les users (a voir si utile pour l'appli)
 
+exports.update = async (req, res, next) => {
+    let uuid = req.body.uuid;
+    let hash =  await bcrypt.hash(req.body.password, 14 )
+    let userUpdated = await User.findOne({ uuid : uuid}) //find et delete ancienne image
+    if(!userUpdated){
+        return res.status(401).json({error: 'Utilisateur non trouvé!'})
+    }
+    userUpdated = await userUpdated.update({
+        firstname: req.body.firstname,
+        lastname: req.body.lastname,
+        password: hash,
+    })
+    .then(() => res.status(200).json({message: 'Profil modifié!!!'}))
+    .catch(error => res.status(400).json({error}));
+};
+
 //Delete user via uuid
 exports.delete = (async(req, res) =>{
-    let uuid = req.body.uuid;
-    try{
-        await User.destroy({
-            where: {uuid:uuid}
+    let uuid = req.params.uuid;
+    User.findOne({ where: {uuid:uuid} })
+        .then(userdelete =>{
+            if(!userdelete){
+                return res.status(401).json({error: 'Utilisateur non trouvé!'})
+            }
+            //penser a rajouter ici unlink les images des users profile
+            User.destroy({ where: {uuid:uuid} })
+            .then(()=> res.status(200).json({message :'Utilisateur a été éffacé!'}))
         })
-        return res.json({message: 'requete DELETE envoyée pour '+ uuid});
-    }catch(err){
-        console.log(err)
-        return res.status(500).json({message: err.message})
-    }
-})
+        .catch(err=> res.status(500).json({message: err.message}))
+});
 //FIN - Delete user via uuid
