@@ -1,15 +1,14 @@
 let { sequelize, User, Post } = require('../models')
 
-// exports.getPost = (async (req,res) => {
- 
-//     try { 
-        
-//         return res.json() // renvoit la réponse
-//     }catch(err) {
-//         console.log(err)
-//         return res.status(500).json(err)
-//     }
-// })
+exports.getallPosts = async (req,res) => {
+    try{
+        let posts = await Post.findAll()
+        return res.json(posts)
+    }catch(err){
+        console.log(err)
+        return res.status(500).json({message: err.message})
+    }
+}
 
 exports.createPost = (async (req,res) => {
     let {user_id, content } = req.body

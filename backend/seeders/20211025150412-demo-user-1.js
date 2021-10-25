@@ -1,7 +1,6 @@
 'use strict';
 let bcrypt = require('bcrypt')
 
-
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     let hash =  await bcrypt.hash('1234', 14 )
