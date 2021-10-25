@@ -2,10 +2,9 @@ let jwt = require('jsonwebtoken')
 let bcrypt = require('bcrypt')
 let { sequelize, User } = require('../models') // on invoque sequelizer et model User pour qu'ils aient besoin de ./models
 
-//signup des new users
+//signup/Creation des new users
 exports.signup = (async (req,res) => {
     let hash =  await bcrypt.hash(req.body.password, 14 )
- 
      try { 
          let user = await User.create({ firstname: req.body.firstname, lastname:req.body.lastname, email:req.body.email, password:hash, role:req.body.role}) //{ firstname, lastname, email, password, role} objet json envoyé dans body request
          return res.json(user) // renvoit la réponse
@@ -14,11 +13,11 @@ exports.signup = (async (req,res) => {
          return res.status(500).json(err)
      }
  })
-//FIN - signup des new users
+//FIN - signup/Creation des new users
 
 // LOGIN des users
 exports.login = (req, res, next) => {
-    User.findOne({email: req.body.email})
+    User.findOne({where:{email: req.body.email}})
     .then(user => {
         if(!user){
             return res.status(401).json({error :'Utilisateur non trouvé!'});
@@ -40,17 +39,17 @@ exports.login = (req, res, next) => {
             .catch(error => res.status(500).json({ error }));
     })
     .catch(error => res.status(500).json({ error }));
-
 };
 // FIN - LOGIN des users
 
 // get un seul user pour le profil
 exports.profile = async(req,res)=>{
-    let uuid = req.params.uuid;
+    let uuid = req.body.uuid;
+    let email = req.body.email;
     try{
         let userProfile = await User.findOne({ 
-            where: { uuid:uuid},
-        })
+            where: { uuid, email}, // on oblige le front a envoyer uuid + email du user dans la requete
+        })//sans uui + email dans la requete => requete rejetée
         return res.json(userProfile)
     }catch(err){
         console.log(err)
@@ -73,24 +72,22 @@ exports.profile = async(req,res)=>{
 
 exports.update = async (req, res, next) => {
     let uuid = req.body.uuid;
+    let email = req.body.email;
     let hash =  await bcrypt.hash(req.body.password, 14 )
-    let userUpdated = await User.findOne({ uuid : uuid}) //find et delete ancienne image
-    if(!userUpdated){
-        return res.status(401).json({error: 'Utilisateur non trouvé!'})
-    }
-    userUpdated = await userUpdated.update({
-        firstname: req.body.firstname,
-        lastname: req.body.lastname,
-        password: hash,
-    })
-    .then(() => res.status(200).json({message: 'Profil modifié!!!'}))
-    .catch(error => res.status(400).json({error}));
+    let userUpdated = await User.findOne({where:{ uuid : uuid, email : email}}) //find et delete ancienne image
+        if(!userUpdated){
+            return res.status(401).json({error: 'Utilisateur non trouvé!'})
+        }
+        //a revoir
+       await User.update({ firstname: req.body.firstname, lastname:req.body.lastname, password:hash, imageurl: req.body.imageurl}, {where:{ uuid : uuid}})
+            .then(() => res.status(200).json({message: 'Profil modifié!!!'}))
+            .catch(error => res.status(400).json({error}));
 };
 
 //Delete user via uuid
 exports.delete = (async(req, res) =>{
     let uuid = req.params.uuid;
-    User.findOne({ where: {uuid:uuid} })
+    User.findOne({ where: {uuid} })
         .then(userdelete =>{
             if(!userdelete){
                 return res.status(401).json({error: 'Utilisateur non trouvé!'})
