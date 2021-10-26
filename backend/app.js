@@ -5,6 +5,8 @@ let bodyParser = require('body-parser') // import de body-parser après l'avoir 
 
 let userRoutes = require('./routes/user')
 let postRoutes = require('./routes/post')
+let commentRoutes = require('./routes/comment')
+let likesDislikesRoutes = require('./routes/likes_dislikes')
 
 
 //ce Middleware permet a rendre accessible notre middleware à l'application, met des headers aux réponses
@@ -21,10 +23,12 @@ app.use(express.json()) //middleware json pour body express
 app.use(bodyParser.json()); //
 
 
-app.use ('/api/auth', userRoutes);
 app.use ('/user', userRoutes);
 
 app.use ('/', postRoutes);
+
+app.use ('/:id',commentRoutes );
+app.use ('/', likesDislikesRoutes);
 // app.use ('/comment', commentRoutes);
 
 

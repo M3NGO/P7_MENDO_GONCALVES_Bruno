@@ -9,9 +9,11 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate({Post, Comment}) {
-      this.hasMany(Post, {foreignKey: 'user_id'}) // on est dans le modele User donc on dit a sequelize qu'on va associer notre user_id
-      this.hasMany(Comment, {foreignKey: 'user_id'})
+    static associate({Post, Comment, Post_likes_dislikes, Comment_likes_dislikes}) {
+      this.hasMany(Post, {foreignKey: 'user_id', onDelete: 'cascade', hooks: true}) // on est dans le modele User donc on dit a sequelize qu'on va associer notre user_id
+      this.hasMany(Comment, {foreignKey: 'user_id', onDelete: 'cascade', hooks: true})
+      this.hasMany(Post_likes_dislikes, {foreignKey: 'user_id', onDelete: 'cascade', hooks: true})
+      this.hasMany(Comment_likes_dislikes, {foreignKey: 'user_id', onDelete: 'cascade', hooks: true})
       // define association here
     }
     //pour cacher des infos de base de donnée renvoyées via JSON au front : toJSON()
@@ -26,20 +28,37 @@ module.exports = (sequelize, DataTypes) => {
     }, // UUID pour la création d'url perso sans divulguer le ranking de l'user dans la BDD
     firstname: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      validate:{
+        notNull: { msg: "L'utilisateur doit avoir un prénom"},
+        notEmpty: { msg: "L'utilisateur doit renseigner son prénom"}
+      }
     },
     lastname: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      validate:{
+        notNull: { msg: "L'utilisateur doit avoir un nom"},
+        notEmpty: { msg: "L'utilisateur doit renseigner son nom"}
+      }
     },
     email: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true //unique pour forcer la BDD a n'avoir qu'une fois un email
+      unique: true, //unique pour forcer la BDD a n'avoir qu'une fois un email
+      validate:{
+        notNull: { msg: "L'utilisateur doit avoir une adresse mail"},
+        notEmpty: { msg: "L'utilisateur doit renseigner son adresse mail'"},
+        isEmail: { msg: "L'utilisateur doit utiiliser un email valide"}
+      }
     },
     password: {
       type: DataTypes.STRING.BINARY, // binary pour stocker les hash password
-      allowNull: false
+      allowNull: false,
+      validate:{
+        notNull: { msg: "L'utilisateur doit avoir un mot de passe"},
+        notEmpty: { msg: "L'utilisateur doit renseigner son mot de passe"}
+      }
     },
     imageurl: {
       type: DataTypes.STRING,

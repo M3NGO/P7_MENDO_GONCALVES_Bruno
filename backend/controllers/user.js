@@ -6,7 +6,12 @@ let { sequelize, User } = require('../models') // on invoque sequelizer et model
 exports.signup = async (req,res) => {
     let hash =  await bcrypt.hash(req.body.password, 14 )
      try { 
-         let user = await User.create({ firstname: req.body.firstname, lastname:req.body.lastname, email:req.body.email, password:hash, role:req.body.role}) //{ firstname, lastname, email, password, role} objet json envoyé dans body request
+         let user = await User.create({ 
+             firstname: req.body.firstname.split(' ').join('_'), //split join pour eviter les espaces dans les url
+             lastname:req.body.lastname.split(' ').join('_'), //penser a gérer cela dans le front pour remplacer les underscore par des espaces a nouveau
+             email:req.body.email, 
+             password:hash, 
+             role:req.body.role}) //{ firstname, lastname, email, password, role} objet json envoyé dans body request
          return res.json(user) // renvoit la réponse
      }catch(err) {
          console.log(err)
@@ -28,9 +33,9 @@ exports.login = (req, res, next) => {
                     return res.status(401).json({error :'Mot de passe incorrect! '});
                 }
                 res.status(200).json({
-                    userId: user._id,
+                    uuid: user.uuid,
                     token: jwt.sign(
-                        { userId: user._id},
+                        {uuid: user.uuid},
                         'Opazlf11"é&&0_"??.zrfiofzhgo@PMld,fr', //clé d'encodage du token a mettre aléatoirement faut qu'elle soit très longue
                         {expiresIn: '12h'}
                     ), // installer npm install --save  jsonwebtoken pour créer les TOKEN puis les vérifier
@@ -44,12 +49,16 @@ exports.login = (req, res, next) => {
 
 // get un seul user pour le profil
 exports.profile = async(req,res)=>{
-    let uuid = req.body.uuid;
+    let firstname = req.params.firstname;
+    let lastname = req.params.lastname;
     let email = req.body.email;
     try{
         let userProfile = await User.findOne({ 
-            where: { uuid, email}, // on oblige le front a envoyer uuid + email du user dans la requete
+            where: { firstname,lastname, email}, // on oblige le front a envoyer uuid + email du user dans la requete
         })//sans uui + email dans la requete => requete rejetée
+            if(!userProfile){
+                return res.status(401).json({error: 'Utilisateur non trouvé!'})
+            }
         return res.json(userProfile)
     }catch(err){
         console.log(err)
@@ -86,7 +95,7 @@ exports.update = async (req, res, next) => {
 
 //Delete user via uuid
 exports.delete = async(req, res) =>{
-    let uuid = req.params.uuid;
+    let uuid = req.body.uuid;
     User.findOne({ where: {uuid} })
         .then(userdelete =>{
             if(!userdelete){

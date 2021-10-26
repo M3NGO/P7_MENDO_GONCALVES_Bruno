@@ -31,6 +31,11 @@ into backend folder install:
 
 During dev :
 
+    create models :
+    example table comments likes in our project :
+    sequelize model:generate --name Comment_likes_dislikes --attributes comment_id:integer,user_id:integer,likes:integer,dislikes:integer
+    amend migrations sheet and models as per examples.
+
     managing seeders: 
         add all seeders into db : sequelize-cli db:seed:all
         remove all seeders from dvb : sequelize-cli db:seed:undo:all

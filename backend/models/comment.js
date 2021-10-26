@@ -11,8 +11,11 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate({User, Post}) {
       // define association here
-      this.belongsTo(User, {foreignKey: 'user_id'})
-      this.belongsTo(Post, {foreignKey: 'post_id'})
+      this.belongsTo(User, {foreignKey: 'user_id', onDelete: 'cascade', hooks: true})
+      this.belongsTo(Post, {foreignKey: 'post_id',as:'comment', onDelete: 'cascade', hooks: true})
+    }
+    toJSON() { 
+      return { ...this.get(), id: undefined, user_id:undefined, post_id:undefined } //on cache l'id dans la table MYSQL et l'id du user dans la réponse JSON
     }
   };
   Comment.init({
