@@ -3,7 +3,7 @@ let bcrypt = require('bcrypt')
 let { sequelize, User } = require('../models') // on invoque sequelizer et model User pour qu'ils aient besoin de ./models
 
 //signup/Creation des new users
-exports.signup = (async (req,res) => {
+exports.signup = async (req,res) => {
     let hash =  await bcrypt.hash(req.body.password, 14 )
      try { 
          let user = await User.create({ firstname: req.body.firstname, lastname:req.body.lastname, email:req.body.email, password:hash, role:req.body.role}) //{ firstname, lastname, email, password, role} objet json envoyé dans body request
@@ -12,7 +12,7 @@ exports.signup = (async (req,res) => {
          console.log(err)
          return res.status(500).json(err)
      }
- })
+ };
 //FIN - signup/Creation des new users
 
 // LOGIN des users
@@ -79,13 +79,13 @@ exports.update = async (req, res, next) => {
             return res.status(401).json({error: 'Utilisateur non trouvé!'})
         }
         //a revoir
-       await User.update({ firstname: req.body.firstname, lastname:req.body.lastname, password:hash, imageurl: req.body.imageurl}, {where:{ uuid : uuid}})
+       await User.update({ firstname: req.body.firstname, lastname:req.body.lastname, password:hash, upload_url: req.body.upload_url}, {where:{ uuid : uuid}})
             .then(() => res.status(200).json({message: 'Profil modifié!!!'}))
             .catch(error => res.status(400).json({error}));
 };
 
 //Delete user via uuid
-exports.delete = (async(req, res) =>{
+exports.delete = async(req, res) =>{
     let uuid = req.params.uuid;
     User.findOne({ where: {uuid} })
         .then(userdelete =>{
@@ -97,5 +97,5 @@ exports.delete = (async(req, res) =>{
             .then(()=> res.status(200).json({message :'Utilisateur a été éffacé!'}))
         })
         .catch(err=> res.status(500).json({message: err.message}))
-});
+};
 //FIN - Delete user via uuid
