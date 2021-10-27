@@ -1,6 +1,7 @@
 let jwt = require('jsonwebtoken')
 let bcrypt = require('bcrypt')
 let { sequelize, User } = require('../models') // on invoque sequelizer et model User pour qu'ils aient besoin de ./models
+let fs = require('fs'); //Systeme Filesystem de node.JS
 
 //signup/Creation des new users
 exports.signup = async (req,res) => {
@@ -10,7 +11,7 @@ exports.signup = async (req,res) => {
              firstname: req.body.firstname.split(' ').join('_'), //split join pour eviter les espaces dans les url
              lastname:req.body.lastname.split(' ').join('_'), //penser a gérer cela dans le front pour remplacer les underscore par des espaces a nouveau
              email:req.body.email, 
-             password:hash, 
+             password:hash,
              role:req.body.role}) //{ firstname, lastname, email, password, role} objet json envoyé dans body request
          return res.json(user) // renvoit la réponse
      }catch(err) {
@@ -79,19 +80,41 @@ exports.profile = async(req,res)=>{
 }
 //FIN - get tous les users (a voir si utile pour l'appli)
 
+//Update d'un user
 exports.update = async (req, res, next) => {
-    let uuid = req.body.uuid;
-    let email = req.body.email;
-    let hash =  await bcrypt.hash(req.body.password, 14 )
-    let userUpdated = await User.findOne({where:{ uuid : uuid, email : email}}) //find et delete ancienne image
+    let uuid = req.params.uuid;
+    // let email = req.body.email;
+    // let hash =  await bcrypt.hash(req.body.password, 14 )
+    await User.findOne({where:{ uuid : uuid}}) //find et delete ancienne image
+    .then( async userUpdated => {
+        let filename = userUpdated.imageurl;
+        // console.log(req.file) // pour voir la requete fichier
         if(!userUpdated){
             return res.status(401).json({error: 'Utilisateur non trouvé!'})
-        }
+    }
         //a revoir
-       await User.update({ firstname: req.body.firstname, lastname:req.body.lastname, password:hash, upload_url: req.body.upload_url}, {where:{ uuid : uuid}})
-            .then(() => res.status(200).json({message: 'Profil modifié!!!'}))
-            .catch(error => res.status(400).json({error}));
-};
+            if (fs.existsSync(filename)&&req.file == null) { //si imageurl est présent pour le uuid dans mysql ET pas de fichier dans la requete, alors on efface le fichier et on met la valeur imageurl a null dans mysql
+                fs.unlinkSync(filename)
+                await User.update({ firstname: req.body.firstname, lastname:req.body.lastname, imageurl:null}, {where:{ uuid : uuid}})
+                return res.status(200).json({message:'Utilisateur mis à jour'})
+              //file exists
+            } if(fs.existsSync(filename)) { //si imageurl est rempli dans mysql alors on efface le fichier et on renseigne le nouveau link vers le fichier uploadé dans imageurl de mysql (via req.file.path)
+                fs.unlinkSync(filename)
+                await User.update({ firstname: req.body.firstname, lastname:req.body.lastname, imageurl:req.file.path}, {where:{ uuid : uuid}})
+                return res.status(200).json({message:'Utilisateur mis à jour'})
+            }
+            if(req.file == null) { //si le fichier de requete est null ou undefined alors on renseigne null dans imageurl mysql
+                await User.update({ firstname: req.body.firstname, lastname:req.body.lastname, imageurl:null}, {where:{ uuid : uuid}})
+                return res.status(200).json({message:'Utilisateur mis à jour'})
+            }
+            else{ //si le fichier de requete est présent et que imageurl est vide dans mysql alors on extrait le path du fichier requete et on l'enregistre dans mysql
+                await User.update({ firstname: req.body.firstname, lastname:req.body.lastname, imageurl:req.file.path}, {where:{ uuid : uuid}})
+                return res.status(200).json({message:'Utilisateur mis à jour'})
+            }
+        })
+        .catch(error => res.status(400).json({error}));
+    };
+//FIN - Update d'un user
 
 //Delete user via uuid
 exports.delete = async(req, res) =>{
@@ -101,7 +124,9 @@ exports.delete = async(req, res) =>{
             if(!userdelete){
                 return res.status(401).json({error: 'Utilisateur non trouvé!'})
             }
-            //penser a rajouter ici unlink les images des users profile
+            let filename = userdelete.imageurl; //delete l'image avatar du user
+            fs.unlinkSync(filename)//delete l'image avatar du user
+            
             User.destroy({ where: {uuid:uuid} })
             .then(()=> res.status(200).json({message :'Utilisateur a été éffacé!'}))
         })
