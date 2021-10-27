@@ -2,6 +2,7 @@ let express = require('express'); //librairie de Javascript
 let app = express();
 let bodyParser = require('body-parser') // import de body-parser après l'avoir installé dans package.json on s'en sert ensuite dans app.post
 // bodyparser sert rendre le body de la requete exploitable par l'app
+let path = require('path');
 
 let userRoutes = require('./routes/user')
 let postRoutes = require('./routes/post')
@@ -30,6 +31,9 @@ app.use ('/', postRoutes);
 app.use ('/:id',commentRoutes );
 app.use ('/', likesDislikesRoutes);
 // app.use ('/comment', commentRoutes);
+app.use('/uploads/images', express.static(path.join(__dirname,'avatar')));
+app.use('/uploads/images', express.static(path.join(__dirname,'images')));
+app.use('/uploads/videos', express.static(path.join(__dirname,'videos')));
 
 
 
