@@ -22,15 +22,17 @@ app.use((req, res, next) => {
 app.use(express.json()) //middleware json pour body express
 app.use(bodyParser.json()); //
 
-app.use ('/', loginRoutes);
-app.use ('/profil', userRoutes);
-app.use ('/allusers', allUsersRoutes);
+//les routes
+app.use ('/api/v1/auth', loginRoutes);
+app.use ('/api/v1/profil', userRoutes);
+app.use ('/api/v1/allusers', allUsersRoutes);
 
-app.use ('/', postRoutes);
+app.use ('/api/v1/', postRoutes);
+app.use ('/api/v1/', commentRoutes);
 
-app.use ('/',commentRoutes );
-app.use ('/', likesDislikesRoutes);
-// app.use ('/comment', commentRoutes);
+app.use ('/api/v1/', likesDislikesRoutes);
+//FIN - les routes
+
 app.use('./uploads/avatars', express.static(path.join(__dirname,'avatars')));
 app.use('./uploads/images', express.static(path.join(__dirname,'images')));
 app.use('./uploads/videos', express.static(path.join(__dirname,'videos')));

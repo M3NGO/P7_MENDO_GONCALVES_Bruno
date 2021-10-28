@@ -38,20 +38,20 @@ exports.update = async (req, res, next) => {
     //block gestion des upload avatar :
             if (fs.existsSync(filename)&&req.file == null) { //si imageurl est présent pour le uuid dans mysql ET pas de fichier dans la requete, alors on efface le fichier et on met la valeur imageurl a null dans mysql
                 fs.unlinkSync(filename)
-                await User.update({ firstname: req.body.firstname, lastname:req.body.lastname, imageurl:null}, {where:{ uuid : uuid}})
+                await User.update({ firstname: req.body.firstname.split(' ').join('_'), lastname:req.body.lastname.split(' ').join('_'), imageurl:null}, {where:{ uuid : uuid}})
                 return res.status(200).json({message:'Utilisateur mis à jour'})
               //file exists
             } if(fs.existsSync(filename)&&req.file !== null) { //si imageurl est rempli dans mysql alors on efface le fichier et on renseigne le nouveau link vers le fichier uploadé dans imageurl de mysql (via req.file.path)
                 fs.unlinkSync(filename)
-                await User.update({ firstname: req.body.firstname, lastname:req.body.lastname, imageurl:req.file.path}, {where:{ uuid : uuid}})
+                await User.update({ firstname: req.body.firstname.split(' ').join('_'), lastname:req.body.lastname.split(' ').join('_'), imageurl:req.file.path}, {where:{ uuid : uuid}})
                 return res.status(200).json({message:'Utilisateur mis à jour'})
             }
             if(req.file == null) { //si le fichier de requete est null ou undefined alors on renseigne null dans imageurl mysql
-                await User.update({ firstname: req.body.firstname, lastname:req.body.lastname, imageurl:null}, {where:{ uuid : uuid}})
+                await User.update({ firstname: req.body.firstname.split(' ').join('_'), lastname:req.body.lastname.split(' ').join('_'), imageurl:null}, {where:{ uuid : uuid}})
                 return res.status(200).json({message:'Utilisateur mis à jour'})
             }
             else{ //si le fichier de requete est présent et que imageurl est vide dans mysql alors on extrait le path du fichier requete et on l'enregistre dans mysql
-                await User.update({ firstname: req.body.firstname, lastname:req.body.lastname, imageurl:req.file.path}, {where:{ uuid : uuid}})
+                await User.update({ firstname: req.body.firstname.split(' ').join('_'), lastname:req.body.lastname.split(' ').join('_'), imageurl:req.file.path}, {where:{ uuid : uuid}})
                 return res.status(200).json({message:'Utilisateur mis à jour'})
             }
         })

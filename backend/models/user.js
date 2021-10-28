@@ -28,19 +28,13 @@ module.exports = (sequelize, DataTypes) => {
     }, // UUID pour la création d'url perso sans divulguer le ranking de l'user dans la BDD
     firstname: {
       type: DataTypes.STRING,
-      allowNull: false,
-      validate:{
-        notNull: { msg: "L'utilisateur doit avoir un prénom"},
-        notEmpty: { msg: "L'utilisateur doit renseigner son prénom"}
-      }
+      allowNull: true,
+      defaultValue: 'Sacha',
     },
     lastname: {
       type: DataTypes.STRING,
-      allowNull: false,
-      validate:{
-        notNull: { msg: "L'utilisateur doit avoir un nom"},
-        notEmpty: { msg: "L'utilisateur doit renseigner son nom"}
-      }
+      allowNull: true,
+      defaultValue: 'Groupomania',
     },
     email: {
       type: DataTypes.STRING,

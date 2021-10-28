@@ -14,11 +14,13 @@ module.exports = {
       },
       firstname: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true,
+        defaultValue: 'Sacha',
       },
       lastname: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true,
+        defaultValue: 'Groupomania',
       },
       email: {
         type: DataTypes.STRING,

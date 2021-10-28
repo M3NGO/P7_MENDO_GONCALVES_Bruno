@@ -31,7 +31,7 @@ let storage = multer.diskStorage({
     filename : (req, file, callback) => {
         let name = file.originalname.split(' ').join('_') // dans le cas de fichiers només avec espace alors les espaces seront remplacés par des '_'
         let extension = MIME_TYPE[file.mimetype];
-        callback(null, name + Date.now() + '.' + extension); //enregistre le fichier avec le nom + time stamp . extension
+        callback(null, 'post' + '_' + name + Date.now() + '.' + extension); //enregistre le fichier avec le nom + time stamp . extension
     },
 });
 

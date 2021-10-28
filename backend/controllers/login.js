@@ -8,11 +8,9 @@ exports.signup = async (req,res) => {
     let hash =  await bcrypt.hash(req.body.password, 14 )
      try { 
          let user = await User.create({ 
-             firstname: req.body.firstname.split(' ').join('_'), //split join pour eviter les espaces dans les url
-             lastname:req.body.lastname.split(' ').join('_'), //penser a gérer cela dans le front pour remplacer les underscore par des espaces a nouveau
-             email:req.body.email, 
-             password:hash,
-             role:req.body.role}) //{ firstname, lastname, email, password, role} objet json envoyé dans body request
+            email:req.body.email, 
+            password:hash,
+            }) //{email, password} objet json envoyé dans body request
          return res.json(user) // renvoit la réponse
      }catch(err) {
          console.log(err)
