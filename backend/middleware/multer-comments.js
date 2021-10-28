@@ -11,13 +11,21 @@ let MIME_TYPE = { // mimetype donne la définition des formats acceptés pour le
     'video/mp4': 'mp4',
     'video/avi': 'avi',
 }
+let imageFilter = (req, file, callback) => {
+    let fileSize = parseInt(req.headers['content-length']);
+    if (file.mimetype.startsWith("image") && fileSize <= 1048576 ||file.mimetype.startsWith("video") && fileSize <= 20971520 ) { // taille maxi fichier environ 20Mb pour le video et 1Mb pour les photos
+      callback(null, 'images'); //images static from app.js
+    } else {
+      callback("Veuillez uploader uniquement des images au format : jpg, png, gif inférieures à 1Mb ou des videos au format avi ou mpeg inférieures à 20Mb", false);
+    }
+}
 
 let storage = multer.diskStorage({
     destination: (req, file, callback) => {
         if(file.mimetype.startsWith("image")){
-            callback(null, './uploads/images')
-        }else{
-            callback(null, './uploads/videos')
+            callback(null, '../uploads/images/comments')
+        }if(file.mimetype.startsWith("video")){
+            callback(null, '../uploads/videos/comments')
         }
     },
     filename : (req, file, callback) => {
@@ -25,14 +33,6 @@ let storage = multer.diskStorage({
         let extension = MIME_TYPE[file.mimetype];
         callback(null, name + Date.now() + '.' + extension); //enregistre le fichier avec le nom + time stamp . extension
     },
-    imageFilter :(req, file, callback) => {
-        let fileSize = parseInt(req.headers['content-length']);
-        if (file.mimetype.startsWith("image") && fileSize <= 1048576 ||file.mimetype.startsWith("video") && fileSize <= 20971520 ) { // taille maxi fichier environ 20Mb pour le video et 1Mb pour les photos
-          callback(null, 'images'); //images static from app.js
-        } else {
-          callback("Veuillez uploader uniquement des images au format : jpg, png, gif inférieures à 1Mb ou des videos au format avi ou mpeg inférieures à 20Mb", false);
-        }
-    }
 });
 
-module.exports = multer({storage}).single('upload');
+module.exports = multer({storage, fileFilter:imageFilter}).single('upload');

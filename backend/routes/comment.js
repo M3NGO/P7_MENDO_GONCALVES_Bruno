@@ -1,11 +1,14 @@
 let express = require('express');
 let router = express.Router();
+let auth = require('../middleware/auth')
+let multer = require('../middleware/multer-comments');
 
 let commentCtrl = require('../controllers/comment');
 
-router.post('/comment', commentCtrl.createComment);
-router.put('/comment', commentCtrl.updateComment);
-router.delete('/comment', commentCtrl.deleteComment);
+router.post('/comment', auth, multer, commentCtrl.createComment);
+router.get('/comment/:id', auth, multer, commentCtrl.getComment);
+router.put('/comment/:id', auth, multer, commentCtrl.updateComment);
+router.delete('/comment/:id', auth, multer, commentCtrl.deleteComment);
 // router.get est dans l'association avec les posts
 
 

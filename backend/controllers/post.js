@@ -1,4 +1,5 @@
-let { sequelize, User, Post, Post_likes_dislikes } = require('../models')
+let { User, Post, Post_likes_dislikes } = require('../models')
+let fs = require('fs'); //Systeme Filesystem de node.JS
 
 exports.getallPosts = async (req,res) => {
     try{
@@ -27,9 +28,9 @@ exports.getPost = async (req, res) => {
 }
 
 exports.createPost = async (req,res) => {
-    let {user_id, content } = req.body
+    let {uuid, content } = req.body
      try {
-        let user = await User.findOne({where: {uuid: user_id}})
+        let user = await User.findOne({where: {uuid: uuid}})
         let post = await Post.create({content: content, user_id: user.id})
          return res.json(post) // renvoit la réponse
      }catch(err) {
@@ -39,17 +40,37 @@ exports.createPost = async (req,res) => {
  }
 
  exports.updatePost = async (req, res, next) => {
-    let user_id = req.body.user_id;
     let post_id = req.params.id;
-    let postUpdated = await Post.findOne({where:{ user_id: user_id, id: post_id}})
+    await Post.findOne({where:{ id: post_id}})
+    .then( async postUpdated =>{
+
         if(!postUpdated){
             return res.status(401).json({error: "Vous n'êtes pas autorisé à faire cette modification!!"})
         }
-        //a revoir
-       await Post.update({ content: req.body.content, upload_url: req.body.upload_url}, {where:{ user_id: user_id, id:post_id}})
-            .then(() => res.status(200).json({message: 'Votre post est modifié!!!'}))
-            .catch(error => res.status(400).json({error}));
+        let filename = postUpdated.upload_url;
+        if (fs.existsSync(filename)&&req.file == null) { //si imageurl est présent pour le uuid dans mysql ET pas de fichier dans la requete, alors on efface le fichier et on met la valeur imageurl a null dans mysql
+            fs.unlinkSync(filename)
+            await Post.update({ content: req.body.content, upload_url:null}, {where:{ id: post_id}})
+            return res.status(200).json({message:'Post mis à jour'})
+          //file exists
+        } if(fs.existsSync(filename)&&req.file !== null) { //si imageurl est rempli dans mysql alors on efface le fichier et on renseigne le nouveau link vers le fichier uploadé dans imageurl de mysql (via req.file.path)
+            fs.unlinkSync(filename)
+            await Post.update({ content: req.body.content, upload_url:req.file.path}, {where: {id: post_id}})
+            return res.status(200).json({message:'Post mis à jour'})
+        }
+        if(req.file == null) { //si le fichier de requete est null ou undefined alors on renseigne null dans imageurl mysql
+            await Post.update({ content: req.body.content, upload_url:null}, {where:{id: post_id}})
+            return res.status(200).json({message:'Post mis à jour'})
+        }
+        else{ //si le fichier de requete est présent et que imageurl est vide dans mysql alors on extrait le path du fichier requete et on l'enregistre dans mysql
+            await Post.update({ content: req.body.content, upload_url:req.file.path}, {where:{id: post_id}})
+            return res.status(200).json({message:'Post mis à jour'})
+        }
+    })
+    .catch(error => res.status(400).json({error}));
 };
+
+
 exports.deletePost = async(req, res) =>{
     let user_id = req.body.user_id;
     let post_id = req.params.id;
@@ -58,7 +79,9 @@ exports.deletePost = async(req, res) =>{
             if(!postDelete){
                 return res.status(401).json({error: "Vous n'êtes pas autorisé à faire cette suppression!!"})
             }
-            //penser a rajouter ici unlink les images des Posts
+            let filename = postDelete.upload_url; //delete l'image avatar du user
+            fs.unlinkSync(filename)//delete l'image avatar du user
+        
             Post.destroy({where:{ user_id: user_id, id: post_id}})
             .then(()=> res.status(200).json({message :"Votre message a bien été éffacé!"}))
         })

@@ -1,4 +1,4 @@
-let { sequelize, Post_likes_dislikes, Comment_likes_dislikes } = require('../models')
+let { Post_likes_dislikes, Comment_likes_dislikes } = require('../models')
 
 exports.postLikesDislikes = async (req, res)=>{
     let postLikes = req.body.likes
@@ -38,11 +38,10 @@ exports.postLikesDislikes = async (req, res)=>{
     }
 }
 
-
 exports.commentLikesDislikes = async (req, res)=>{
     let commentLikes = req.body.likes
     let user_id = req.body.user_id
-    let comment_id = req.body.comment_id
+    let comment_id = req.params.id
   
     if(commentLikes === 1){
         await Comment_likes_dislikes.destroy({where:{ user_id: user_id, comment_id: comment_id}})

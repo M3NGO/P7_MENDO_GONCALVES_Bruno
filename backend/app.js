@@ -4,11 +4,12 @@ let bodyParser = require('body-parser') // import de body-parser après l'avoir 
 // bodyparser sert rendre le body de la requete exploitable par l'app
 let path = require('path');
 
+let loginRoutes = require('./routes/login')
 let userRoutes = require('./routes/user')
+let allUsersRoutes = require('./routes/allusers')
 let postRoutes = require('./routes/post')
 let commentRoutes = require('./routes/comment')
 let likesDislikesRoutes = require('./routes/likes_dislikes')
-
 
 //ce Middleware permet a rendre accessible notre middleware à l'application, met des headers aux réponses
 app.use((req, res, next) => {
@@ -18,26 +19,21 @@ app.use((req, res, next) => {
     next(); // ne pas oublier de le mettre pour renvoyer vers le middleware suivant
   });
 
-
-
 app.use(express.json()) //middleware json pour body express
 app.use(bodyParser.json()); //
 
-
-app.use ('/user', userRoutes);
+app.use ('/', loginRoutes);
+app.use ('/profil', userRoutes);
+app.use ('/allusers', allUsersRoutes);
 
 app.use ('/', postRoutes);
 
-app.use ('/:id',commentRoutes );
+app.use ('/',commentRoutes );
 app.use ('/', likesDislikesRoutes);
 // app.use ('/comment', commentRoutes);
-app.use('/uploads/images', express.static(path.join(__dirname,'avatar')));
-app.use('/uploads/images', express.static(path.join(__dirname,'images')));
-app.use('/uploads/videos', express.static(path.join(__dirname,'videos')));
-
-
-
-
+app.use('./uploads/avatars', express.static(path.join(__dirname,'avatars')));
+app.use('./uploads/images', express.static(path.join(__dirname,'images')));
+app.use('./uploads/videos', express.static(path.join(__dirname,'videos')));
 
 
 module.exports = app;
