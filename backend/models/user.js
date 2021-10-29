@@ -29,12 +29,12 @@ module.exports = (sequelize, DataTypes) => {
     firstname: {
       type: DataTypes.STRING,
       allowNull: true,
-      defaultValue: 'Sacha',
+      // defaultValue: 'Sacha',
     },
     lastname: {
       type: DataTypes.STRING,
       allowNull: true,
-      defaultValue: 'Groupomania',
+      // defaultValue: 'Groupomania',
     },
     email: {
       type: DataTypes.STRING,
