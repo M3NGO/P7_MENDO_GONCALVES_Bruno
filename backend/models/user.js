@@ -10,10 +10,10 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate({Post, Comment, Post_likes_dislikes, Comment_likes_dislikes}) {
-      this.hasMany(Post, {foreignKey: 'user_id', onDelete: 'cascade', hooks: true}) // on est dans le modele User donc on dit a sequelize qu'on va associer notre user_id
-      this.hasMany(Comment, {foreignKey: 'user_id', onDelete: 'cascade', hooks: true})
-      this.hasMany(Post_likes_dislikes, {foreignKey: 'user_id', onDelete: 'cascade', hooks: true})
-      this.hasMany(Comment_likes_dislikes, {foreignKey: 'user_id', onDelete: 'cascade', hooks: true})
+      this.hasMany(Post, {foreignKey: 'user_id', as:'post', onDelete: 'cascade', hooks: true}) // on est dans le modele User donc on dit a sequelize qu'on va associer notre user_id
+      this.hasMany(Comment, {foreignKey: 'user_id', as:'comment', onDelete: 'cascade', hooks: true})
+      this.hasMany(Post_likes_dislikes, {foreignKey: 'user_id', as:'postlikes', onDelete: 'cascade', hooks: true})
+      this.hasMany(Comment_likes_dislikes, {foreignKey: 'user_id', as:'commentlikes', onDelete: 'cascade', hooks: true})
       // define association here
     }
     //pour cacher des infos de base de donnée renvoyées via JSON au front : toJSON()

@@ -11,6 +11,7 @@ exports.profile = async(req,res)=>{
     try{
         let userProfile = await User.findOne({ 
             where: {uuid}, // on oblige le front a envoyer uuid + email du user dans la requete
+            include:['post', 'comment', 'postlikes','commentlikes'], //on récupère tous les post, comment, likes du user via les alias mis dans models
         })//sans uui + email dans la requete => requete rejetée
             if(!userProfile){
                 return res.status(401).json({error: 'Utilisateur non trouvé!'})
