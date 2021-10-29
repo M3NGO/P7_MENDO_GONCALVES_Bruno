@@ -34,24 +34,23 @@ exports.update = async (req, res, next) => {
             return res.status(401).json({error: 'Utilisateur non trouvé!'})
     }
     let filename = userUpdated.imageurl;
-    let hash =  await bcrypt.hash(req.body.password, 14 )
     //block gestion des upload avatar :
-            if (fs.existsSync(filename)&&req.file == null) { //si imageurl est présent pour le uuid dans mysql ET pas de fichier dans la requete, alors on efface le fichier et on met la valeur imageurl a null dans mysql
+            if (fs.existsSync(filename)&&req.file == null&&req.body.password!==null) { //si imageurl est présent pour le uuid dans mysql ET pas de fichier dans la requete, alors on efface le fichier et on met la valeur imageurl a null dans mysql
                 fs.unlinkSync(filename)
-                await User.update({ firstname: req.body.firstname, lastname:req.body.lastname, email:req.body.email, password:hash,imageurl:null}, {where:{ uuid : uuid}})
+                await User.update({ firstname: req.body.firstname, lastname:req.body.lastname, email:req.body.email,imageurl:null}, {where:{ uuid : uuid}})
                 return res.status(200).json({message:'Utilisateur mis à jour'})
               //file exists
-            } if(fs.existsSync(filename)&&req.file !== null) { //si imageurl est rempli dans mysql alors on efface le fichier et on renseigne le nouveau link vers le fichier uploadé dans imageurl de mysql (via req.file.path)
+            } if(fs.existsSync(filename)&&req.file !== null&&req.body.password!==null) { //si imageurl est rempli dans mysql alors on efface le fichier et on renseigne le nouveau link vers le fichier uploadé dans imageurl de mysql (via req.file.path)
                 fs.unlinkSync(filename)
-                await User.update({ firstname: req.body.firstname, lastname:req.body.lastname,email:req.body.email, password:hash, imageurl:req.file.path}, {where:{ uuid : uuid}})
+                await User.update({ firstname: req.body.firstname, lastname:req.body.lastname,email:req.body.email, imageurl:req.file.path}, {where:{ uuid : uuid}})
                 return res.status(200).json({message:'Utilisateur mis à jour'})
             }
-            if(req.file == null) { //si le fichier de requete est null ou undefined alors on renseigne null dans imageurl mysql
-                await User.update({ firstname: req.body.firstname, lastname:req.body.lastname,email:req.body.email,password:hash, imageurl:null}, {where:{ uuid : uuid}})
+            if(req.file == null&&req.body.password!==null) { //si le fichier de requete est null ou undefined alors on renseigne null dans imageurl mysql
+                await User.update({ firstname: req.body.firstname, lastname:req.body.lastname,email:req.body.email, imageurl:null}, {where:{ uuid : uuid}})
                 return res.status(200).json({message:'Utilisateur mis à jour'})
             }
             else{ //si le fichier de requete est présent et que imageurl est vide dans mysql alors on extrait le path du fichier requete et on l'enregistre dans mysql
-                await User.update({ firstname: req.body.firstname, lastname:req.body.lastname,email:req.body.email,password:hash, imageurl:req.file.path}, {where:{ uuid : uuid}})
+                await User.update({ firstname: req.body.firstname, lastname:req.body.lastname,email:req.body.email, imageurl:req.file.path}, {where:{ uuid : uuid}})
                 return res.status(200).json({message:'Utilisateur mis à jour'})
             }
         })
@@ -76,3 +75,24 @@ exports.delete = async(req, res) =>{
         .catch(err=> res.status(500).json({message: err.message}))
 };
 //FIN - Delete user via uuid
+
+exports.updatePassword = async (req, res)=>{
+    let uuid = req.params.uuid;
+    User.findOne({ where: {uuid} })
+        .then(async userUpdate =>{
+            if(!userUpdate){
+                return res.status(401).json({error: 'Utilisateur non trouvé!'})
+            }
+            //verif si password null
+            let passwordUpdate = req.body.password;
+            if(!passwordUpdate) { // si passwordUpdate est null alors on fait rien
+                return res.status(401).json({error: 'le mot de passe ne peut être vide'})
+            //FIN - verif si password null
+            }else{
+                let hash =  await bcrypt.hash(passwordUpdate, 14 )
+                await User.update({ password:hash},{ where: {uuid} })
+                return res.status(200).json({message:'Mot de passe mis à jour'})
+            }
+        })//then
+        .catch(err=> res.status(500).json({message: err.message}))
+}
