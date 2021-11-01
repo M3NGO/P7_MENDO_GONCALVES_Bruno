@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate({User, Post}) {
-      this.belongsTo(User, {foreignKey: 'user_id', onDelete: 'cascade', hooks: true})
+      this.belongsTo(User, {foreignKey: 'uuid', onDelete: 'cascade', hooks: true})
       this.belongsTo(Post, {foreignKey: 'post_id', onDelete: 'cascade', hooks: true})
 
       // define association here
@@ -22,11 +22,12 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       allowEmpty: false
     },
-    user_id: {
-      type: DataTypes.INTEGER,
+    uuid: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
       allowNull: false,
       allowEmpty: false
-    },
+    }, 
     likes: {
       type: DataTypes.INTEGER,
       defaultValue: 0

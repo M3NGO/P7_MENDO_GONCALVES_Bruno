@@ -10,10 +10,10 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate({Post, Comment, Post_likes_dislikes, Comment_likes_dislikes}) {
-      this.hasMany(Post, {foreignKey: 'user_id', as:'post', onDelete: 'cascade', hooks: true}) // on est dans le modele User donc on dit a sequelize qu'on va associer notre user_id
-      this.hasMany(Comment, {foreignKey: 'user_id', as:'comment', onDelete: 'cascade', hooks: true})
-      this.hasMany(Post_likes_dislikes, {foreignKey: 'user_id', as:'postlikes', onDelete: 'cascade', hooks: true})
-      this.hasMany(Comment_likes_dislikes, {foreignKey: 'user_id', as:'commentlikes', onDelete: 'cascade', hooks: true})
+      this.hasMany(Post, {foreignKey: 'uuid', as:'post', onDelete: 'cascade', hooks: true}) // on est dans le modele User donc on dit a sequelize qu'on va associer notre uuid
+      this.hasMany(Comment, {foreignKey: 'uuid', as:'comment', onDelete: 'cascade', hooks: true})
+      this.hasMany(Post_likes_dislikes, {foreignKey: 'uuid', as:'postlikes', onDelete: 'cascade', hooks: true})
+      this.hasMany(Comment_likes_dislikes, {foreignKey: 'uuid', as:'commentlikes', onDelete: 'cascade', hooks: true})
       // define association here
     }
     //pour cacher des infos de base de donnée renvoyées via JSON au front : toJSON()
@@ -24,7 +24,10 @@ module.exports = (sequelize, DataTypes) => {
   User.init({
     uuid: {
       type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4
+      defaultValue: DataTypes.UUIDV4,
+      primaryKey: true,
+      allowNull: false,
+      allowEmpty: false
     }, // UUID pour la création d'url perso sans divulguer le ranking de l'user dans la BDD
     firstname: {
       type: DataTypes.STRING,
@@ -54,7 +57,7 @@ module.exports = (sequelize, DataTypes) => {
         notEmpty: { msg: "L'utilisateur doit renseigner son mot de passe"}
       }
     },
-    imageurl: {
+    upload_url: {
       type: DataTypes.STRING,
       allowNull: true
     },

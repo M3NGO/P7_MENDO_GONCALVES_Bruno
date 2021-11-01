@@ -10,17 +10,20 @@ module.exports = {
       },
       uuid: {
         type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true,
+        allowNull: false,
+        allowEmpty: false
       },
       firstname: {
         type: DataTypes.STRING,
         allowNull: true,
-        defaultValue: 'Sacha',
+        // defaultValue: 'Sacha',
       },
       lastname: {
         type: DataTypes.STRING,
         allowNull: true,
-        defaultValue: 'Groupomania',
+        // defaultValue: 'Groupomania',
       },
       email: {
         type: DataTypes.STRING,
@@ -31,7 +34,7 @@ module.exports = {
         type: DataTypes.STRING.BINARY,
         allowNull: false
       },
-      imageurl: {
+      upload_url: {
         type: DataTypes.STRING,
         allowNull: true
       },

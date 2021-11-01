@@ -6,22 +6,23 @@ let { User } = require('../models') // on invoque sequelizer et model User pour 
 //signup/Creation des new users
 exports.signup = async (req,res) => {
     // verif si password null dans la req
-    let passwordsignup = req.body.password;
-    if(!passwordsignup) { // si passwordUpdate est null alors on fait rien
-        return res.status(401).json({error: 'le mot de passe ne peut être vide'})
+    let passwordSignup = req.body.password;
+    let emailSignup = req.body.email;
+    if(!passwordSignup || !emailSignup) { // si passwordUpdate est null alors on fait rien
+        return res.status(401).json({error: "le mot de passe et l'email doivent être renseignés."})
     //FIN -  verif si password null dans la req
     }else{
-    let hash =  await bcrypt.hash(passwordsignup, 14 )
-     try { 
-         let user = await User.create({ 
-            email:req.body.email, 
-            password:hash,
-            }) //{email, password} objet json envoyé dans body request
-         return res.json(user) // renvoit la réponse
-     }catch(err) {
-         console.log(err)
-         return res.status(500).json(err)
-     }//fin catch
+        let hash =  await bcrypt.hash(passwordSignup, 14 )
+        try { 
+            let user = await User.create({ 
+                email:req.body.email, 
+                password:hash,
+                }) //{email, password} objet json envoyé dans body request
+            return res.json(user) // renvoit la réponse
+        }catch(err) {
+            console.log(err)
+            return res.status(500).json(err)
+        }//fin catch
     }//fin else
  };//fin fonction signup
 //FIN - signup/Creation des new users

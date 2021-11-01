@@ -13,8 +13,9 @@ module.exports = {
         allowNull: false,
         allowEmpty: false
       },
-      user_id: {
-        type: DataTypes.INTEGER,
+      uuid: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
         allowNull: false,
         allowEmpty: false
       },

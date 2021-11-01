@@ -5,7 +5,7 @@ let { User } = require('../models') // on invoque sequelizer et model User pour 
 
 exports.getallusers = async(req,res)=>{
     try{
-        let users = await User.findAll()
+        let users = await User.findAll({include:['comment','post']})
         return res.json(users)
     }catch(err){
         console.log(err)

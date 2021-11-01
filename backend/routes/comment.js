@@ -5,10 +5,10 @@ let multer = require('../middleware/multer-comments');
 
 let commentCtrl = require('../controllers/comment');
 
-router.post('/comment', auth, multer, commentCtrl.createComment);
-router.get('/comment/:id', auth, multer, commentCtrl.getComment);
-router.put('/comment/:id', auth, multer, commentCtrl.updateComment);
-router.delete('/comment/:id', auth, multer, commentCtrl.deleteComment);
+router.post('/comment',  multer, commentCtrl.createComment);//ajouter auth, avant multer
+router.get('/comment/:id', multer, commentCtrl.getComment);
+router.put('/comment/:id',  multer, commentCtrl.updateComment);
+router.delete('/comment/:id', multer, commentCtrl.deleteComment);
 // router.get est dans l'association avec les posts
 
 
