@@ -22,6 +22,10 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   User.init({
+    active:{
+      type: DataTypes.BOOLEAN,
+      defaultValue: true
+    },
     uuid: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,

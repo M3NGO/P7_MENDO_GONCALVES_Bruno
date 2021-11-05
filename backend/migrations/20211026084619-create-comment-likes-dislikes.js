@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   up: async (queryInterface, DataTypes) => {
-    await queryInterface.createTable('Comment_likes_dislikes', {
+    await queryInterface.createTable('comment_likes_dislikes', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -38,6 +38,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, DataTypes) => {
-    await queryInterface.dropTable('Comment_likes_dislikes');
+    await queryInterface.dropTable('comment_likes_dislikes');
   }
 };

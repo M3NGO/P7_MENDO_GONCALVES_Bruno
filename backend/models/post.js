@@ -44,4 +44,4 @@ module.exports = (sequelize, DataTypes) => {
   });
   return Post;
 };
-// commande pour créer ce model sequelize model:generate --name Post --attributes uuid:integer,content:string,upload_url:string 
+// commande pour créer ce model sequelize model:generate --name Post --attributes uuid:integer,content:string,upload_url:string

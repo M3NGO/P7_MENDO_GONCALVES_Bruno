@@ -59,7 +59,7 @@ server.on('listening', () => { // serveur ON, si tout se passe bien on a un cons
 //     await sequelize.sync({force: true});
 //     console.log ('Mysql Synchronisée sur')
 // }); // serveur écoute le port définit au serveur + synchronise asynchrone MYSQL
-// //FIN - Version sequelize.sync pour créer table dans BDD
+// // // //FIN - Version sequelize.sync pour créer table dans BDD
 
 let { sequelize } = require('./models')     //lance synchro sequelize            
 server.listen(port, async () =>{

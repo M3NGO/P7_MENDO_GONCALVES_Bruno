@@ -2,6 +2,7 @@ let jwt = require('jsonwebtoken')
 let bcrypt = require('bcrypt')
 let { Comment, Post, User } = require('../models') // on invoque sequelizer et model User pour qu'ils aient besoin de ./models
 let fs = require('fs'); //Systeme Filesystem de node.JS
+const { json } = require('body-parser');
 
 // get un seul user pour le profil
 exports.profile = async(req,res)=>{
@@ -40,20 +41,20 @@ exports.update = async (req, res, next) => {
 
             if (fs.existsSync(filename)&&!req.file) { //si upload_url est présent pour le uuid dans mysql ET pas de fichier dans la requete, alors on efface le fichier et on met la valeur upload_url a null dans mysql
                 fs.unlinkSync(filename)
-                await User.update({ firstname: req.body.firstname, lastname:req.body.lastname, email:req.body.email,upload_url:null}, {where:{ uuid : uuid}})
+                await User.update({ firstname: req.body.firstname, lastname:req.body.lastname,upload_url:null}, {where:{ uuid : uuid}})
                 return res.status(200).json({message:'Utilisateur mis à jour'})
               //file exists
             } if(fs.existsSync(filename)) { //si upload_url est rempli dans mysql alors on efface le fichier et on renseigne le nouveau link vers le fichier uploadé dans upload_url de mysql (via req.file.path)
                 fs.unlinkSync(filename)
-                await User.update({ firstname: req.body.firstname, lastname:req.body.lastname,email:req.body.email, upload_url:req.file.path}, {where:{ uuid : uuid}})
+                await User.update({ firstname: req.body.firstname, lastname:req.body.lastname, upload_url:req.file.path}, {where:{ uuid : uuid}})
                 return res.status(200).json({message:'Utilisateur mis à jour'})
             }
-            if(!req.file) { //si le fichier de requete est null ou undefined alors on renseigne null dans upload_url mysql
-                await User.update({ firstname: req.body.firstname, lastname:req.body.lastname,email:req.body.email, upload_url:null}, {where:{ uuid : uuid}})
+            if(fs.existsSync(!filename)&&!req.file) { //si le fichier de requete est null ou undefined alors on renseigne null dans upload_url mysql
+                await User.update({ firstname: req.body.firstname, lastname:req.body.lastname, upload_url:null}, {where:{ uuid : uuid}})
                 return res.status(200).json({message:'Utilisateur mis à jour'})
             }
             else{ //si le fichier de requete est présent et que upload_url est vide dans mysql alors on extrait le path du fichier requete et on l'enregistre dans mysql
-                await User.update({ firstname: req.body.firstname, lastname:req.body.lastname,email:req.body.email, upload_url:req.file.path}, {where:{ uuid : uuid}})
+                await User.update({ firstname: req.body.firstname, lastname:req.body.lastname, upload_url:req.file.path}, {where:{ uuid : uuid}})
                 return res.status(200).json({message:'Utilisateur mis à jour'})
             }
         }
@@ -85,12 +86,18 @@ exports.updatePassword = async (req, res)=>{
 }
 
 exports.delete = async (req, res)=>{
-let uuid = req.params.uuid
 try{
-    await Comment.findAll({ where: {uuid} })
+    let uuid = req.params.uuid
+
+    Comment.findAll({ where: {uuid} })
     .then(async commentdelete =>{
+        if(!commentdelete){
+            return res.status(401).json({error: 'Post non trouvé!'})
+        }else{
+
+        
         await commentdelete.forEach(async element =>{
-            await Post.findOne({ where: {uuid} })
+            await Comment.findOne({ where: {uuid} })
                 if(!element){
                     return res.status(401).json({error: 'Commentaire non trouvé'})
                 }if(element){
@@ -99,26 +106,25 @@ try{
                         await Comment.destroy({ where: {uuid,}})
                         return res.status(200).json({message: 'Le commentaire a été éffacé'})
                     }if(fs.existsSync(filename)){
-                        fs.unlink(filename, (err)=>{
-                                        if (err) throw err; console.log('Fichier du commentaire a été effacé du back')})
-                        return res.status(200).json({message: 'Le commentaire a été éffacé'})
-                        // .catch(err=> res.status(500).json({message: err.message}))  
-                    
+                        fs.unlink(filename, async (err)=>{
+                                        if (err) console.log(err); console.log('Fichier du commentaire a été effacé du back')})
                     }
-                    
-                    return res.status(200).json({message: 'Le commentaire a été éffacé'})
-                    // .catch(err=> res.status(500).json({message: err.message}))
                 }
-                return res.status(200).json({message: 'Le commentaire a été éffacé'})
-                // .catch(err=> res.status(500).json({message: err.message}))
             })
-            await Comment.destroy({ where: {uuid,}})
-            // .catch(err=> res.status(500).json({message: err.message}))
+            }//Fin ELSE l95
         }) //FIN THEN Comment 
+        
+
+    
 
 
-    await Post.findAll({ where: {uuid} })
+    Post.findAll({ where: {uuid} })
     .then(async userdelete =>{
+        if(!userdelete){
+            return res.status(401).json({error: 'Post non trouvé!'})
+        }else{
+
+        
         await userdelete.forEach(async element =>{
             await Post.findOne({ where: {uuid} })
                 if(!element){
@@ -129,25 +135,20 @@ try{
                         await Post.destroy({ where: {uuid,} })
                         return res.status(200).json({message: 'Le post a été éffacé'})
                     }if(fs.existsSync(filename)){
-                        fs.unlink(filename, (err)=>{
-                                        if (err) throw err; console.log('Fichier Post effacé du back')})
-                        return res.status(200).json({message: 'Le post a été éffacé'})
-                        // .catch(err=> res.status(500).json({message: err.message}))  
-                    
+                        fs.unlink(filename, async (err)=>{
+                                        if (err) console.log(err); console.log('Fichier Post effacé du back')})
                     }
-                    
-                    return res.status(200).json({message: 'Le post a été éffacé'})
-                    // .catch(err=> res.status(500).json({message: err.message}))
                 }
-                return res.status(200).json({message: 'Le post a été éffacé'})
-                // .catch(err=> res.status(500).json({message: err.message}))
             })
-            await Post.destroy({ where: {uuid,} })
-            // .catch(err=> res.status(500).json({message: err.message}))
+            }//Fin ELSE l134
         }) //FIN THEN POST
+        
+       
 
 
-        await User.findOne({ where: {uuid} })
+    
+
+        User.findOne({ where: {uuid} })
         .then(async userdelete =>{
             await User.findOne({ where: {uuid} })
                 if(!userdelete){
@@ -155,29 +156,50 @@ try{
                 }if(userdelete){
                     let filename = userdelete.upload_url; //delete l'image avatar du user
                     if(fs.existsSync(!filename)){
-                        await User.destroy({ where: {uuid:uuid} })
+                        // await User.destroy({ where: {uuid:uuid} })
                         return res.status(200).json({message: "L'utilisateur a été éffacé"})
                     }if(fs.existsSync(filename)){
-                        fs.unlink(filename, (err)=>{
-                            if (err) throw err; console.log("l'avatar a été éffacé du back")})
-                            await User.destroy({ where: {uuid:uuid} })
-                        return res.status(200).json({message: "L'utilisateur a été éffacé"})
-                        // .catch(err=> res.status(500).json({message: err.message})) 
+                        fs.unlink(filename, async (err)=>{
+                            if (err) console.log(err); console.log("l'avatar a été éffacé du back")})
+                            // await User.destroy({ where: {uuid:uuid} })
                        } // fin if fsexists
                 }//fin if userdelete
         })// FIN then User
-        .catch(err=> res.status(500).json({message: err.message}))
+        // await Comment.destroy({ where: {uuid,}})
+        // // await Post.destroy({ where: {uuid,} })
+        // await User.destroy({ where: {uuid,}})
+
+        // Post.findAll()
+        // .then(async emptycomment => {
+        //     // let post_id = emptycomment.id
+        //     emptycomment.forEach( async comment => {
+        //         JSON.stringify(comment)
+        //     })
+        //     // console.log(JSON.stringify(emptycomment))
+            
+           
+        // })
+        console.log(await User.findAll({ where: {uuid} }))
+
+
+        return res.status(200).json({message: "L'utilisateur et tout son contenu a été éffacé de Groupomania"})
+
+}catch(err){
+    console.log(err)
+    return res.status(500).json({message: err.message})
+}
+
 
         // await Post.destroy({ where: {uuid,} })
         // await Comment.destroy({ where: {uuid,}})
         // await User.destroy({ where: {uuid:uuid} })
-        .then(()=> res.status(200).json({message :'Le profil utilisateur ainsi que tout son contenu a été éffacé!'}))
-       } //fin try post
+    //     .then(()=> res.status(200).json({message :'Le profil utilisateur ainsi que tout son contenu a été éffacé!'}))
+    //    } //fin try post
 
-    catch(err) {
-    console.log(err)
-    return res.status(500).json(err)
-    }   
+    // catch(err) {
+    // console.log(err)
+    // return res.status(500).json(err)
+    // }   
         // return res.status(500).json({message: err.message})
 };
 
