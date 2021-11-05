@@ -1,7 +1,7 @@
 let jwt = require('jsonwebtoken')
 let bcrypt = require('bcrypt')
 let { User } = require('../models') // on invoque sequelizer et model User pour qu'ils aient besoin de ./models
-
+let fs = require('fs'); //Systeme Filesystem de node.JS
 
 //signup/Creation des new users
 exports.signup = async (req,res) => {
@@ -18,6 +18,14 @@ exports.signup = async (req,res) => {
                 email:req.body.email, 
                 password:hash,
                 }) //{email, password} objet json envoyé dans body request
+                fs.mkdirSync('../uploads/'+req.body.email)
+                fs.mkdirSync('../uploads/'+req.body.email +'/avatar')
+                fs.mkdirSync('../uploads/'+req.body.email +'/images')
+                fs.mkdirSync('../uploads/'+req.body.email + '/images/posts')
+                fs.mkdirSync('../uploads/'+req.body.email + '/images/comments')
+                fs.mkdirSync('../uploads/'+req.body.email +'/videos')
+                fs.mkdirSync('../uploads/'+req.body.email + '/videos/posts')
+                fs.mkdirSync('../uploads/'+req.body.email + '/videos/comments')
             return res.json(user) // renvoit la réponse
         }catch(err) {
             console.log(err)
