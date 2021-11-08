@@ -8,6 +8,10 @@ module.exports = {
         primaryKey: true,
         type: DataTypes.INTEGER
       },
+      active:{
+        type: DataTypes.BOOLEAN,
+        defaultValue: true
+      },
       post_id: {
         type: DataTypes.INTEGER,
         allowNull: false,

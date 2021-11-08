@@ -40,9 +40,9 @@ let storage = multer.diskStorage({
                 return callback("utilisateur non trouvé, fichier non enregistré")
             }else{
                 if(file.mimetype.startsWith("image")){
-                    callback(null, '../uploads/'+ user.email+ '/images/comments')
+                    callback(null, '../uploads/'+ user.uuid+ '/images/comments')
                 }if(file.mimetype.startsWith("video")){
-                    callback(null, '../uploads/'+ user.email+ '/videos/comments')
+                    callback(null, '../uploads/'+ user.uuid+ '/videos/comments')
                 }
                 console.log(user.email)
             }//fin else

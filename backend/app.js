@@ -10,6 +10,7 @@ let allUsersRoutes = require('./routes/allusers')
 let postRoutes = require('./routes/post')
 let commentRoutes = require('./routes/comment')
 let likesDislikesRoutes = require('./routes/likes_dislikes')
+let moderationRoutes = require('./routes/moderation')
 
 //ce Middleware permet a rendre accessible notre middleware à l'application, met des headers aux réponses
 app.use((req, res, next) => {
@@ -31,11 +32,14 @@ app.use ('/api/v1/', postRoutes);
 app.use ('/api/v1/', commentRoutes);
 
 app.use ('/api/v1/', likesDislikesRoutes);
+
+app.use ('/api/v1/moderation', moderationRoutes);
+app.use ('/api/v1/moderation/allusers', allUsersRoutes, )
 //FIN - les routes
 
-app.use('./uploads/avatars', express.static(path.join(__dirname,'avatars')));
-app.use('./uploads/images', express.static(path.join(__dirname,'images')));
-app.use('./uploads/videos', express.static(path.join(__dirname,'videos')));
+// app.use('./uploads/avatars', express.static(path.join(__dirname,'avatars')));
+// app.use('./uploads/images', express.static(path.join(__dirname,'images')));
+// app.use('./uploads/videos', express.static(path.join(__dirname,'videos')));
 
 
 module.exports = app;

@@ -19,6 +19,10 @@ module.exports = (sequelize, DataTypes) => {
     // }
   };
   Comment.init({
+    active:{
+      type: DataTypes.BOOLEAN,
+      defaultValue: true
+    },
     uuid: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,

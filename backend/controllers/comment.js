@@ -4,15 +4,15 @@ let fs = require('fs'); //Systeme Filesystem de node.JS
 exports.createComment = async (req,res) => {
     let {uuid, content, post_id} = req.body
      try {
-         let user = await User.findOne({where: { uuid : uuid}})
+         let user = await User.findOne({where: { uuid : uuid, active: true}})
          if(!user){
              return res.status(401).json({error: 'Utilisateur non trouvé'})
          }
          if(req.file == null){
-            let comment = await Comment.create({content: content, uuid: uuid, post_id: post_id, upload_url:null})
+            let comment = await Comment.create({content: content, uuid: uuid, post_id: post_id, upload_url:null, active: true})
             return res.json(comment) // renvoit la réponse
          }else{
-            let comment = await Comment.create({content: content, uuid: uuid, post_id: post_id, upload_url:req.file.path})
+            let comment = await Comment.create({content: content, uuid: uuid, post_id: post_id, upload_url:req.file.path, active: true})
             return res.json(comment) // renvoit la réponse
          }
      }catch(err) {
@@ -80,23 +80,6 @@ await Comment.findOne({where:{ id: comment_id}})
 })
 .catch(error => res.status(400).json({error}));
 };
-// exports.deleteComment = async(req, res) =>{
-//     let uuid = req.body.uuid;
-//     let comment_id = req.body.comment_id
-//     Comment.findOne({where:{ uuid: uuid, id: comment_id}})
-//         .then(commentDelete =>{
-//             if(!commentDelete){
-//                 return res.status(401).json({error: "Vous n'êtes pas autorisé à faire cette suppression!!"})
-//             }
-//             let filename = commentDelete.upload_url; //delete l'image du commentaire user
-//             if(filename !== null){
-//                 fs.unlinkSync(filename)//delete l'image du commentaire user
-//             }
-//             Comment.destroy({where:{ uuid: uuid, id: comment_id}})
-//             .then(()=> res.status(200).json({message :"Votre commentaire a bien été éffacé!"}))
-//         })
-//         .catch(err=> res.status(500).json({message: err.message}))
-// };
 
 exports.deleteComment = async(req, res) =>{
     let uuid = req.body.uuid;

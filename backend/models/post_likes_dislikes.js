@@ -17,6 +17,10 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   Post_likes_dislikes.init({
+    active:{
+      type: DataTypes.BOOLEAN,
+      defaultValue: true
+    },
     post_id: {
       type: DataTypes.INTEGER,
       allowNull: false,

@@ -8,6 +8,10 @@ module.exports = {
         primaryKey: true,
         type: DataTypes.INTEGER
       },
+      active:{
+        type: DataTypes.BOOLEAN,
+        defaultValue: true
+      },
       comment_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -16,6 +20,11 @@ module.exports = {
       uuid: {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
+        allowNull: false,
+        allowEmpty: false
+      },
+      post_id:{
+        type: DataTypes.INTEGER,
         allowNull: false,
         allowEmpty: false
       },

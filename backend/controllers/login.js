@@ -18,14 +18,14 @@ exports.signup = async (req,res) => {
                 email:req.body.email, 
                 password:hash,
                 }) //{email, password} objet json envoyé dans body request
-                fs.mkdirSync('../uploads/'+req.body.email)
-                fs.mkdirSync('../uploads/'+req.body.email +'/avatar')
-                fs.mkdirSync('../uploads/'+req.body.email +'/images')
-                fs.mkdirSync('../uploads/'+req.body.email + '/images/posts')
-                fs.mkdirSync('../uploads/'+req.body.email + '/images/comments')
-                fs.mkdirSync('../uploads/'+req.body.email +'/videos')
-                fs.mkdirSync('../uploads/'+req.body.email + '/videos/posts')
-                fs.mkdirSync('../uploads/'+req.body.email + '/videos/comments')
+                fs.mkdirSync('../uploads/'+user.uuid)
+                fs.mkdirSync('../uploads/'+user.uuid +'/avatar')
+                fs.mkdirSync('../uploads/'+user.uuid +'/images')
+                fs.mkdirSync('../uploads/'+user.uuid + '/images/posts')
+                fs.mkdirSync('../uploads/'+user.uuid + '/images/comments')
+                fs.mkdirSync('../uploads/'+user.uuid +'/videos')
+                fs.mkdirSync('../uploads/'+user.uuid + '/videos/posts')
+                fs.mkdirSync('../uploads/'+user.uuid + '/videos/comments')
             return res.json(user) // renvoit la réponse
         }catch(err) {
             console.log(err)
@@ -41,6 +41,8 @@ exports.login = (req, res, next) => {
     .then(user => {
         if(!user){
             return res.status(401).json({error :'Utilisateur non trouvé!'});
+        }if(user.active === false){
+            return res.status(401).json({error :'Votre compte est inactif, vous ne pouvez pas vous connecter à Groupomania!!!'});
         }
         bcrypt.compare(req.body.password, user.password)
             .then(valid => {

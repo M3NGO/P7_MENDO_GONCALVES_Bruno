@@ -9,11 +9,12 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate({User, Comment, Post_likes_dislikes}) {
+    static associate({User, Comment, Post_likes_dislikes, Comment_likes_dislikes}) {
       // define association here
       this.belongsTo(User, {foreignKey: 'uuid', as:'user', onDelete: 'cascade', hooks: true}) // puisqu'on est dans modele post, alors on y associe le model User et on lui dit que post appartient a User sur la foreing key uuid
       this.hasMany(Comment, {foreignKey: 'post_id', as:'comment', onDelete: 'cascade', hooks: true}) // as:'comment' pour donner l'alias comment qu'on va mettre dnas controller Post pour livrer tous les posts et leurs commentaires respectifs sur le mur
       this.hasMany(Post_likes_dislikes, {foreignKey: 'post_id', onDelete: 'cascade', hooks: true})
+      this.hasMany(Comment_likes_dislikes, {foreignKey: 'post_id', onDelete: 'cascade', hooks: true})
 
     }
     // toJSON() { 
@@ -21,6 +22,10 @@ module.exports = (sequelize, DataTypes) => {
     // }
   };
   Post.init({
+    active:{
+      type: DataTypes.BOOLEAN,
+      defaultValue: true
+    },
     uuid: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,

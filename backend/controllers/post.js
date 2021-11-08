@@ -1,9 +1,9 @@
-let { User, Post, Post_likes_dislikes } = require('../models')
+let { User, Post, Comment, Post_likes_dislikes, Comment_likes_dislikes } = require('../models')
 let fs = require('fs'); //Systeme Filesystem de node.JS
 
 exports.getallPosts = async (req,res) => {
     try{
-        let posts = await Post.findAll({include:['comment']}) //let posts = await Post.findAll({include:[{model:User, as:'user'}]}) + ajouter alias  as 'user' dans model user section associations, si on veut retourner l'objet Post et User qui a créé le post en une seule requete
+        let posts = await Post.findAll({where: {active: true}}, {include:['comment']}) //let posts = await Post.findAll({include:[{model:User, as:'user'}]}) + ajouter alias  as 'user' dans model user section associations, si on veut retourner l'objet Post et User qui a créé le post en une seule requete
         return res.json(posts)
     }catch(err){
         console.log(err)
@@ -15,7 +15,7 @@ exports.getPost = async (req, res) => {
     let postid = req.params.id;
     try{
         let postview = await Post.findOne({ 
-            where: { id: postid}, include:['comment'] //include comment pour avoir le post + les commentaires
+            where: { id: postid, active: true}, include:['comment'] //include comment pour avoir le post + les commentaires
         })//sans uui + email dans la requete => requete rejetée
             if(!postview){
                 return res.status(401).json({error: 'Post non trouvé!'})
@@ -30,7 +30,7 @@ exports.getPost = async (req, res) => {
 exports.createPost = async (req,res) => {
     let {uuid, content } = req.body
     try{
-        let user = await User.findOne({where: {uuid: uuid}})
+        let user = await User.findOne({where: {uuid: uuid, active: true}})
         if(!user){
             return res.status(401).json({error: 'Utilisateur non trouvé!'})
         }
@@ -96,8 +96,30 @@ exports.createPost = async (req,res) => {
 };
 
 exports.deletePost = async(req, res) =>{
+    try{
     let uuid = req.body.uuid;
     let post_id = req.params.id;
+   
+    await Comment.findOne({ where: { post_id: post_id} })
+    .then(async userdelete =>{
+        if(!userdelete){
+            return res.status(401).json({error: 'Utilisateur non trouvé!'})
+        }if(userdelete){
+            let filename = userdelete.upload_url; //delete l'image avatar du user
+            if(fs.existsSync(!filename)){
+                await Comment_likes_dislikes.destroy({ where: {post_id: post_id}})
+                await Comment.destroy({ where: {post_id: post_id} })
+            }if(fs.existsSync(filename)){
+                fs.unlinkSync(filename, async (err)=>{
+                    if (err) console.log(err); console.log('Fichier du commentaire a été effacé du back')})//delete l'image avatar du user
+                    await Comment_likes_dislikes.destroy({ where: {post_id: post_id}})
+                    await Comment.destroy({ where: {post_id: post_id}})  
+            }
+            await Comment_likes_dislikes.destroy({ where: {post_id: post_id}})
+            await Comment.destroy({ where: {post_id: post_id} })
+        }
+    })
+    
     await Post.findOne({ where: {uuid, id: post_id} })
         .then(async userdelete =>{
             if(!userdelete){
@@ -105,17 +127,23 @@ exports.deletePost = async(req, res) =>{
             }if(userdelete){
                 let filename = userdelete.upload_url; //delete l'image avatar du user
                 if(fs.existsSync(!filename)){
+                    await Post_likes_dislikes.destroy({ where: {post_id: post_id}})
                    await Post.destroy({ where: {uuid, id: post_id} })
-                    return res.status(200).json({message: 'Le post a été éffacé'})
                 }if(fs.existsSync(filename)){
-                    fs.unlinkSync(filename)//delete l'image avatar du user
-                    await Post.destroy({ where: {uuid, id: post_id}})
-                    return res.status(200).json({message: 'Le post a été éffacé'})
+                    fs.unlinkSync(filename, async (err)=>{
+                        if (err) console.log(err); console.log('Fichier du Post a été effacé du back')})//delete l'image avatar du user
+                        await Post_likes_dislikes.destroy({ where: {post_id: post_id}})
+                        await Post.destroy({ where: {uuid, id: post_id}})
                 }
+                await Post_likes_dislikes.destroy({ where: {post_id: post_id}})
                 await Post.destroy({ where: {uuid, id: post_id} })
-                return res.status(200).json({message: 'Le post a été éffacé'})
             }
-
         })
-        .catch(err=> res.status(500).json({message: err.message}))
+
+        return res.status(200).json({message: "Le post et ses commentaires ont été éffacés de Groupomania"})
+    }catch(err){
+        console.log(err)
+        return res.status(500).json({message: err.message})
+    }
+
 };

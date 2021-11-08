@@ -11,6 +11,6 @@ router.put('/:uuid/update',  multerAvatar, userCtrl.update) // pour modifier les
 
 router.put('/:uuid/password', userCtrl.updatePassword)
 
-router.delete('/:uuid',  userCtrl.delete) // route pour delete user
+router.delete('/:uuid',  userCtrl.delete) // route pour delete user (mettre non actif)
 
 module.exports = router;

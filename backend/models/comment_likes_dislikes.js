@@ -9,14 +9,19 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate({User, Comment}) {
+    static associate({User, Comment, Post}) {
       this.belongsTo(User, {foreignKey: 'uuid', onDelete: 'cascade', hooks: true})
       this.belongsTo(Comment, {foreignKey: 'id', onDelete: 'cascade', hooks: true})
+      this.belongsTo(Post, {foreignKey: 'post_id', as:'post', onDelete: 'cascade', hooks: true})
 
       // define association here
     }
   };
   Comment_likes_dislikes.init({
+    active:{
+      type: DataTypes.BOOLEAN,
+      defaultValue: true
+    },
     comment_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -28,6 +33,11 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       allowEmpty: false
     }, 
+    post_id:{
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      allowEmpty: false
+    },
     likes: {
       type: DataTypes.INTEGER,
       defaultValue: 0
