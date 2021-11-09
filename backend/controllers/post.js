@@ -3,7 +3,7 @@ let fs = require('fs'); //Systeme Filesystem de node.JS
 
 exports.getallPosts = async (req,res) => {
     try{
-        let posts = await Post.findAll({where: {active: true}}, {include:['comment']}) //let posts = await Post.findAll({include:[{model:User, as:'user'}]}) + ajouter alias  as 'user' dans model user section associations, si on veut retourner l'objet Post et User qui a créé le post en une seule requete
+        let posts = await Post.findAll({where: {active: true}, include:['comment', 'postlikes', 'commentlikes']}) //let posts = await Post.findAll({include:[{model:User, as:'user'}]}) + ajouter alias  as 'user' dans model user section associations, si on veut retourner l'objet Post et User qui a créé le post en une seule requete
         return res.json(posts)
     }catch(err){
         console.log(err)
@@ -15,7 +15,7 @@ exports.getPost = async (req, res) => {
     let postid = req.params.id;
     try{
         let postview = await Post.findOne({ 
-            where: { id: postid, active: true}, include:['comment'] //include comment pour avoir le post + les commentaires
+            where: { id: postid, active: true}, include:['comment', 'postlikes', 'commentlikes'] //include comment pour avoir le post + les commentaires
         })//sans uui + email dans la requete => requete rejetée
             if(!postview){
                 return res.status(401).json({error: 'Post non trouvé!'})
