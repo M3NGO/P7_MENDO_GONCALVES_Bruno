@@ -1,17 +1,22 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
-</template>
+<Header/>
 
+<Footer/>
+
+</template>
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import Header from '@/components/AppComponents/Header.vue'
+import Footer from '@/components/AppComponents/Footer.vue'
+
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    Header,
+    Footer
   }
 }
+
 </script>
 
 <style lang="scss">
@@ -21,6 +26,23 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
 }
+// html, body 100% rajouté manuellment pour forcer au fullscreen sur toute l'app
+html, body{
+  height: 100%;
+}
+
+#nav {
+  padding: 30px;
+
+  a {
+    font-weight: bold;
+    color: #2c3e50;
+
+    &.router-link-exact-active {
+      color: #42b983;
+    }
+  }
+}
+
 </style>
