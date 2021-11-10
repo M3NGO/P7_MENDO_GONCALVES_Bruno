@@ -92,7 +92,7 @@ exports.delete = async (req, res)=>{
         if(!user){
             return res.status(401).json({error: 'User non trouvé!'})
         }if(user){
-            await User.update({active: false}, {where :{uuid: uuid}})
+            await User.update({active: false, email: uuid + '-'+ user.email}, {where :{uuid: uuid}}) // modifie l'email user et le met en inactif quand il delete son profil
             return res.status(200).json({error: "Nous regrettons de vous voir partir de GROUPOMANIA. Votre profil n'est plus accessible!!"})
         }
     })
