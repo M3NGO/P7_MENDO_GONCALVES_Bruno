@@ -1,20 +1,40 @@
-<!-- Composant Profil Groupomania -->
+<!-- page Profil Groupomania -->
 
 <!-- HTML -->
 <template>
-<div>
-    <div>
-        <h1>Voici le profil du user </h1>
-        <p>Et un peu de texte</p>
+<div class="container">
+    <Profiltopsection/>
+    <div class="mt-4 border">
+        <div class="bg-light">
+            <Profilmessages/>
+        </div>
+        <div class="mt-3">
+            <Profillikesdislikes/>
+        </div>
     </div>
 </div>
+
 </template>
 <!-- HTML -->
 
 <!-- JAVASCRIPT -->
 <script>
+import Profiltopsection from '@/components/ProfilComponents/Profiltopsection.vue'
+import Profilmessages from '@/components/ProfilComponents/Profilmessages.vue'
+import Profillikesdislikes from '@/components/ProfilComponents/Profillikesdislikes.vue'
+
+
+
 export default {
-  name: 'Profil'
+  name: 'Profil',
+  components:{
+      Profiltopsection,
+      Profilmessages,
+      Profillikesdislikes,
+ 
+      
+
+  }
 }
 
 </script>
@@ -22,8 +42,9 @@ export default {
 
 <!-- CSS -->
 <style>
-div {
-    text-align: center;
-}
+/* .card{
+    width:75%
+} */
+
 </style>
 <!-- CSS -->

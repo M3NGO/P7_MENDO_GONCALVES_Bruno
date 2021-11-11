@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <h1>ICI on vera les Post + commentaires</h1>
+  <div class="container">
+    <h1>ICI on vera les Post + commentaires de tout le monde, permettra le suivi des posts et commentaires</h1>
   </div>
 </template>
 

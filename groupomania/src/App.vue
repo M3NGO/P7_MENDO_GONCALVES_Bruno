@@ -1,7 +1,8 @@
 <template>
 <Header/>
-
 <Footer/>
+
+
 
 </template>
 <script>
@@ -24,7 +25,7 @@ export default {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
+  
   color: #2c3e50;
 }
 // html, body 100% rajouté manuellment pour forcer au fullscreen sur toute l'app
@@ -44,5 +45,8 @@ html, body{
     }
   }
 }
+// div{
+//   text-align: center;
+// }
 
 </style>
