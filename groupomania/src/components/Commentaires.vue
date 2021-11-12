@@ -1,29 +1,24 @@
 <template>
-<div class="w-75 ms-5">
-    <div class="border rounded d-flex mt-4 mb-4 ms-4">
+<div class="w-75">
+    <div class="border bg-light rounded d-flex mt-4 mb-4 ms-4">
         <div class=""> 
-        <!-- Avatar du créateur du message -->
+        <!-- Avatar du créateur du commentaire -->
             <img src="@/assets/logo.png" class="img-thumbnail rounded-pill position-relative top-50 start-0 translate-middle" alt="...">
         </div>
 
         <div class="card-body ">
             <div class=" d-flex flex-column ">
                 <div class="align-self-center">
-                    <img src="@/assets/logo.png" class="card-img-top" alt="...">
+                    <img src="@/assets/logo.png" class="card-img-top " alt="...">
                 </div>
                 
                 <div class="card-body align-self-start">
-                    <p class="card-text">Contenu du message ici.</p>
+                    <p class="card-text">Contenu du Comentaire ici.</p>
                 </div>
             </div>
         </div>
-        <div class="align-self-end">
-            <div class=" mb-3">
-                <button type="submit" class="btn btn-outline-secondary rounded-pill">Réagir</button>
-            </div>
-        <div class="me-4  mb-4">
-            <p class="card-text">créé le : 15/01/2100</p>
-        </div>
+        <div class="align-self-end me-4  mb-4">
+            <p class="card-text ">créé le : 15/01/2100</p>
         </div>
     </div>
 </div>
@@ -32,7 +27,7 @@
 
 <script>
 export default {
-  name: 'Message',
+  name: 'Commentaires',
 
 }
 </script>
