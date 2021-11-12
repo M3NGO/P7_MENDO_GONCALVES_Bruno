@@ -1,6 +1,6 @@
 <template>
 <header class="container">
-  <div class="row">
+  <div class="nav">
   <div class="col-4 align-self-center ps-4">
     <router-link to="/wall"><img id="img" class="img-thumbnail rounded-pill row justify-content-start" src="@/assets/icon.png" alt="icon Groupomania"></router-link>
   </div>

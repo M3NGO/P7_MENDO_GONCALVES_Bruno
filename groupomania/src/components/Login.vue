@@ -10,10 +10,11 @@
                     <img class="logo_site" src="../assets/Logo_Groupomania.png" alt="logo Groupomania">
                 </div>
                 <div class="input-group mb-3 d-flex justify-content-center">
-                    <input type="email" class="form-control rounded-pill" name="email" placeholder="email">
+                    <input type="email" class="form-control rounded-pill" name="email" placeholder="email" required>
                 </div>
+                 <!-- ne pas oublier de faire le control server side via js is-valid/is-invalid avec bootstrap -->
                 <div class="input-group mb-3 d-flex justify-content-center">
-                    <input type="password" class="form-control rounded-pill" name="password" placeholder="Mot de passe">
+                    <input type="password" class="form-control rounded-pill" name="password" placeholder="Mot de passe" required>
                 </div>
                 <div class="input-group mb-3 d-flex justify-content-center">
                     <button type="submit" class="btn btn-outline-secondary rounded-pill">ENTRER</button>
