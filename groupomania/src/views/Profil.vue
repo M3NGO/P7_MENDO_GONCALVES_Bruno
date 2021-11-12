@@ -3,14 +3,16 @@
 <!-- HTML -->
 <template>
 <div class="container">
+    <div class="row">
     <Profiltopsection/>
     <div class="mt-4 border">
-        <div class="bg-light">
+        <div class="">
             <Profilmessages/>
         </div>
         <div class="mt-3">
             <Profillikesdislikes/>
         </div>
+    </div>
     </div>
 </div>
 

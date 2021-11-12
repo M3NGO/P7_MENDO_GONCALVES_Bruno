@@ -1,13 +1,13 @@
 <template>
-    <div> <!-- Div Contenu Profil -->
-        <div class="input-group mb-3 d-flex">
+    <div class=""> <!-- Div Contenu Profil -->
+        <div class="input-group mb-3 d-flex ">
             <input class="form-control" type="text" value="email@email.com" aria-label="Email" disabled readonly>
         </div>
         <div class="input-group mb-3 d-flex justify-content-center">
-            <input type="firstname" class="form-control rounded" name="firstname" value="Groupo" disabled readonly>
+            <input type="firstname" class="form-control rounded" name="firstname" value="Prénom" disabled readonly>
         </div>
         <div class="input-group mb-3 d-flex justify-content-center">
-            <input type="lastname" class="form-control rounded" name="lastname" value="Mania" disabled readonly>
+            <input type="lastname" class="form-control rounded" name="lastname" value="Nom" disabled readonly>
         </div>
         <div class="input-group mb-3 d-flex justify-content-center">
             <input type="NombreMessages" class="form-control rounded" name="NombreMessages" value="Mes Messages" disabled readonly>

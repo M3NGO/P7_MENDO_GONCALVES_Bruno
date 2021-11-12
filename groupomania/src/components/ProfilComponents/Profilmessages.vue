@@ -1,5 +1,5 @@
 <template>
-    <div class="mb-3 d-flex justify-content-center">
+    <div class="row p-4 justify-content-center">
         <h1>Mes posts + mes commentaires</h1>
     </div>
 </template>

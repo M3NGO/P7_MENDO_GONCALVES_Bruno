@@ -1,15 +1,16 @@
 <template>
 <div class="border row p-4 justify-content-center"> <!-- Div Contenu Profil -->
-<div class="">
-    <h1>ICI on vera les Post + commentaires de tout le monde, permettra le suivi des posts et commentaires</h1>
-</div>
+
+    <h1>ICI on vera les derniers posts sur Groupomania ici</h1>
+    <p class="text-center">Avec un peu de text c'est mieux</p>
+
 </div>
 
 </template>
 
 <script>
 export default {
-  name: 'Posts',
+  name: 'Lastposts',
  
 }
 </script>

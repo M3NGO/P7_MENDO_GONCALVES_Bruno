@@ -1,5 +1,6 @@
 <template>
-    <form class="input-group d-flex justify-content-center p-4 border rounded-3">
+<div class="border row p-4 justify-content-center mb-4"> <!-- Div Contenu Profil -->
+    <form class="input-group d-flex justify-content-center">
       <div class="input-group mb-3">
         <input type="post" class="form-control" name="post" placeholder="Ecrivez ici votre nouveau post">
       </div>
@@ -8,6 +9,7 @@
         <button type="upload" class="btn btn-outline-secondary rounded-pill ms-3">ENTRER</button>
       </div>
     </form>
+</div>
 </template>
 
 <script>
