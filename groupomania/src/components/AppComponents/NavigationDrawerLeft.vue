@@ -27,10 +27,32 @@
 
           <v-list-item color="error" link :to="{path:'/profil'}"><!-- icone Rouage -->
             <v-list-item-icon>
-              <v-icon>mdi-cog</v-icon>
+              <v-icon>mdi-account-cog</v-icon>
             </v-list-item-icon>
               <v-list-item-title>Mon profil</v-list-item-title>
           </v-list-item><!-- icone Rouage -->
+
+          <!-- menu spécial chargé de communication / modération-->
+          <v-list-item color="primary" link :to="{path:'/utilisateurs'}"><!-- icone tous les utlisateurs -->
+            <v-list-item-icon>
+              <v-icon>mdi-account-multiple</v-icon>
+            </v-list-item-icon>
+              <v-list-item-title>Tous les utilisateurs</v-list-item-title>
+          </v-list-item><!-- icone tous les utlisateurs -->
+
+          <v-list-item color="primary" link :to="{path:'/utilisateurs-desinscrits'}"><!-- icone tous les utlisateurs désinscrits -->
+            <v-list-item-icon>
+              <v-icon>mdi-account-multiple-remove</v-icon>
+            </v-list-item-icon>
+              <v-list-item-title>Utilisateurs désinscrits</v-list-item-title>
+          </v-list-item><!-- icone tous les utlisateurs désinscrits -->
+
+          <v-list-item color="primary" link :to="{path:'/moderation'}"><!-- icone tous les utlisateurs désinscrits -->
+            <v-list-item-icon>
+              <v-icon>mdi-message-bulleted-off</v-icon>
+            </v-list-item-icon>
+              <v-list-item-title>Modération</v-list-item-title>
+          </v-list-item><!-- icone tous les utlisateurs désinscrits -->
 
           <v-list-item link :to="{path:'/'}"><!-- icone Déconnexion -->
             <v-list-item-icon>
@@ -39,8 +61,8 @@
               <v-list-item-title>Déconnexion</v-list-item-title>
           </v-list-item><!-- icone Déconnexion -->
 
-          </v-list><!-- FIN - Liste MENU drawer gauche-->
+      </v-list><!-- FIN - Liste MENU drawer gauche-->
 
-      </v-navigation-drawer>
-    </v-div>
+    </v-navigation-drawer>
+  </v-div>
 </template>

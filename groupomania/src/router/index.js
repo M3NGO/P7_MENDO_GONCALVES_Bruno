@@ -4,6 +4,8 @@ import Profil from '@/views/Profil.vue';
 import Wall from '@/views/Wall.vue'
 import Login from '@/components/Login.vue'
 import MonActivite from '@/views/MonActivite.vue'
+import AllUsers from '@/views/AllUsers.vue'
+import Moderation from '@/views/Moderation.vue'
 
 Vue.use(VueRouter)
 
@@ -33,6 +35,22 @@ const routes = [
     path: '/profil',
     name: 'Profil',
     component: Profil
+  },
+  // section bleue pour les modérateurs
+  {
+    path: '/utilisateurs',
+    name: 'AllUsers',
+    component: AllUsers
+  },
+  {
+    path: '/utilisateurs-desinscrits',
+    name: 'AllUsers',
+    component: AllUsers
+  },
+  {
+    path: '/moderation',
+    name: 'Moderation',
+    component: Moderation
   },
 ]
 

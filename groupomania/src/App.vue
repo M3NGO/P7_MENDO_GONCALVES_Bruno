@@ -2,9 +2,9 @@
   <v-app>
     <Header/>
     <NavigationDrawerLeft/>
-    <v-main>
-      <router-view/>
-    </v-main>
+      <v-main>
+        <router-view/>
+      </v-main>
     <Footer/>
   </v-app>
 </template>

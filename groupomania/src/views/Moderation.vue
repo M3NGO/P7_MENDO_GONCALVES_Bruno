@@ -1,7 +1,7 @@
 <template>
     <v-main>
         <v-container>
-            <v-card-title class="mb-15">Mon activité</v-card-title>
+            <v-card-title class="mb-15">Moderation</v-card-title>
             <Posts/>
         </v-container>
     </v-main>
@@ -11,7 +11,7 @@
 import Posts from '@/components/WallComponents/Posts.vue'
 
 export default {
-  name:'MonActivite',
+  name:'Moderation',
   components:{
       Posts,
   },

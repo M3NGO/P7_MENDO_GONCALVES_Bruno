@@ -2,7 +2,7 @@
   <v-main>
       <Newpostform/>
       <Posts/>
-    </v-main>
+  </v-main>
 </template>
 
 <script>

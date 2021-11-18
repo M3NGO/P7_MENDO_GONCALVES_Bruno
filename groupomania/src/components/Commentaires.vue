@@ -1,41 +1,64 @@
 <template>
-<v-timeline align-top dense class="me-5">
-      <v-timeline-item large
-      >
-        <template v-slot:icon>
-          <v-avatar>
-            <img src="https://i.pravatar.cc/64">
-          </v-avatar>
-        </template>
+  <v-timeline align-top dense class="me-5"><!-- timeline des commentaires -->
+    <v-timeline-item large><!-- créé l'item commentaire et place sur timeline -->
+      <template v-slot:icon><!-- icone sur la timeline a gauche du commentaire ajouter l'avatar de la personne qui commente-->
+        <v-avatar>
+          <img src="https://i.pravatar.cc/64">
+        </v-avatar>
+      </template><!-- FIN - icone sur la timeline a gauche du commentaire ajouter l'avatar de la personne qui commente-->
 
-        <v-card class="d-flex flex-column elevation-2">
-          <v-card-title class="text-h5">
-            email@email.com
-          </v-card-title>
-          <v-card-subtitle>le :15 /01/2021</v-card-subtitle>
-          <v-card-text>ici on vera le commentaire de cet user, c'est un commentaire de fou, vous n'êtes pas pret.</v-card-text>
-          <v-card-actions class="justify-end">
+      <v-card class="d-flex flex-column elevation-2"><!-- créé carte commentaire accolée a la timeline -->
+      <v-img src="@/assets/Logo_Groupomania.png" max-height="200"></v-img><!-- section image back du profil qui englobe l'avatar -->
+        <v-card-title class="text-h5">email@email.com</v-card-title><!-- insert l'email user qui commente en tant que titre commentaire-->
+        <v-card-text>ici on vera le commentaire de cet user, c'est un commentaire de fou, vous n'êtes pas pret.</v-card-text>
+        <v-card-subtitle align="end">Publié le: 15/01/2021</v-card-subtitle><!-- insert date à laquelle le user aura créé le commentaire -->
+        
+        <v-card-actions class="justify-end"><!-- Section boutons de la carte commentaire -->
+        
+          <v-btn plain text max-width="150" @click="chose"><!-- rendre visible que quand le role user est 2 -->
+            <v-icon>mdi-alert-circle</v-icon>Modération<!-- rendre visible que quand le role user est 2 -->
+          </v-btn><!-- rendre visible que quand le role user est 2 -->
             
-            <v-badge overlap bordered offset-x="30" offset-y="15" color="error" content="10">
-              <v-btn plain width="100">
-                <v-icon>mdi-thumb-up</v-icon>J'aime
-              </v-btn>
-            </v-badge>
-    
-            <v-badge overlap bordered offset-x="30" offset-y="15" color="error" content="8">
-              <v-btn plain width="100">
-                <v-icon>mdi-thumb-down</v-icon>J'aime pas
-              </v-btn>
-            </v-badge>
-          </v-card-actions>
-             
-    </v-card>
+          <v-btn plain text width="100" @click="delete_comment"><!-- delete commentaire -->
+            <v-icon>mdi-close</v-icon>Effacer
+          </v-btn><!-- FIN - delete commentaire -->
 
- 
- 
-      </v-timeline-item>
-</v-timeline>
-    
+          <v-btn plain text width="100" @click="updateComment=true"><!-- rendre visible que quand le user est celui qui a créé le commentaire -->
+            <v-icon>mdi-cog</v-icon>Update<!-- rendre visible que quand le user est celui qui a créé le commentaire -->
+          </v-btn><!-- rendre visible que quand le user est celui qui a créé le commentaire -->
+
+
+          <v-badge overlap bordered offset-x="30" offset-y="15" color="error" content="10">
+            <v-btn plain width="100">
+              <v-icon>mdi-thumb-up</v-icon>J'aime
+            </v-btn>
+          </v-badge>
+          
+          <v-badge overlap bordered offset-x="30" offset-y="15" color="error" content="8">
+            <v-btn plain width="100">
+              <v-icon>mdi-thumb-down</v-icon>J'aime pas
+            </v-btn>
+          </v-badge>
+        </v-card-actions><!-- FIN - Section boutons de la carte commentaire -->
+        
+        <v-expand-transition><!-- transition fait apparaitre section update commentaire sous la section boutons card-->
+            <v-card-title v-if="updateComment" class="transition-fast-in-fast-out">
+                <v-row class="d-flex align-center">
+                    <v-col cols="10" class="me-5"><!-- section création Post (message + upload multimedia) -->
+                        <v-text-field label="Votre nouveau commentaire ici" :rules="rules" hide-details="auto"></v-text-field> 
+                        <v-file-input label="Upload Photo/Vidéo"></v-file-input>
+                    </v-col><!-- FIN - section création Post (message + upload multimedia) -->
+                </v-row>
+                <v-btn color="error" height="40" class="me-4" small @click="updateComment = false">
+                    <v-icon>mdi-send</v-icon>
+                    Updater
+                </v-btn>
+            </v-card-title>
+        </v-expand-transition><!-- FIN - transition fait apparaitre section update commentaire sous la section boutons card-->
+
+      </v-card><!-- FIN - carte commentaire accolée a la timeline -->
+    </v-timeline-item><!-- FIN - créé l'item commentaire et place sur timeline -->
+  </v-timeline><!-- FIN - timeline des commentaires -->
 </template>
  
   
@@ -45,6 +68,13 @@
 export default {
   name: 'Commentaires',
 
+  data: () => ({
+  updateComment: false, //pour faire disparaitre section update commentaire au click sur bouton updater
+  // controle le nombre de caractères inscrits dans partie Votre nouveau commentaire
+  rules: [
+    value => (value && value.length >= 10 ) || 'Votre post doit faire au moins 10 caractères',
+    ],  // FIN - controle le nombre de caractères inscrits dans partie Votre nouveau commentaire
+  }),
 }
 </script>
 
@@ -53,5 +83,7 @@ export default {
     height: 10em;
     width: 10em;
 }
+
+
 
 </style>

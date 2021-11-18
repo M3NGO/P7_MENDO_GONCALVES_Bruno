@@ -1,16 +1,11 @@
 <template>
-
-<v-container > <!-- Div Contenu Profil -->
-<v-row  class="d-flex justify-center ms-15">
-    
-
-    <Messages/>
-    <Messages/>
-    <Messages/>
-
-</v-row>
-</v-container>
-
+  <v-container > <!-- Div Contenu Profil -->
+    <v-row  class="d-flex justify-center ms-15">
+        <Messages/>
+        <Messages/>
+        <Messages/>
+    </v-row>
+  </v-container>
 </template>
 
 <script>

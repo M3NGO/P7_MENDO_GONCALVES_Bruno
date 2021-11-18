@@ -1,42 +1,23 @@
 <template>
-<v-container>
+  <v-container>
     <v-card class="d-flex align-center ms-15">
       <v-row class="d-flex align-center">
-<v-col>
-        <v-list-item-avatar class="ms-4">
-        <v-img
-          src="@/assets/logo.png"
-          alt="avatar user"
-        />
-      </v-list-item-avatar>
-      </v-col>
-
-      <v-col cols="10" class="me-5">
-     
-      <v-text-field
-        label="Quoi de neuf aujourd'hui?"
-        :rules="rules"
-        hide-details="auto"
-      ></v-text-field>
- 
-      <v-file-input
-      label="Upload Photo/Vidéo"
-      ></v-file-input>
- 
-      </v-col>
-
-
-</v-row>
-
+        <v-col>
+          <v-list-item-avatar class="ms-4"> <!-- Avatar du user connecté-->
+            <v-img src="https://i.pravatar.cc/64" alt="avatar user"/>
+          </v-list-item-avatar><!-- FIN - Avatar du user connecté-->
+        </v-col>
+        <v-col cols="10" class="me-5"><!-- section création Post (message + upload multimedia) -->
+          <v-text-field label="Quoi de neuf aujourd'hui?" :rules="rules" hide-details="auto"></v-text-field> 
+          <v-file-input label="Upload Photo/Vidéo"></v-file-input>
+        </v-col><!-- FIN - section création Post (message + upload multimedia) -->
+      </v-row>
       <v-btn color="error" height="40" class="me-4" small @click="upload">
         <v-icon>mdi-send</v-icon>
-        Publier
+          Publier
       </v-btn>
-</v-card>
-  
-   
-
-</v-container>
+    </v-card>
+  </v-container>
 </template>
 
 <script>
