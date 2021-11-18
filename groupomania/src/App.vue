@@ -1,52 +1,30 @@
 <template>
-<Header/>
-<Footer/>
-
-
-
+  <v-app>
+    <Header/>
+    <NavigationDrawerLeft/>
+    <v-main>
+      <router-view/>
+    </v-main>
+    <Footer/>
+  </v-app>
 </template>
+
 <script>
 import Header from '@/components/AppComponents/Header.vue'
+import NavigationDrawerLeft from '@/components/AppComponents/NavigationDrawerLeft.vue'
 import Footer from '@/components/AppComponents/Footer.vue'
-
 
 export default {
   name: 'App',
-  components: {
-    Header,
-    Footer
-  }
-}
+   components:{
+     Header,
+     Footer,
+     NavigationDrawerLeft
+  },
 
+
+  data: () => ({
+    //
+  }),
+};
 </script>
-
-<style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  
-  color: #2c3e50;
-}
-// html, body 100% rajouté manuellment pour forcer au fullscreen sur toute l'app
-html, body{
-  height: 100%;
-}
-
-#nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
-}
-// div{
-//   text-align: center;
-// }
-
-</style>

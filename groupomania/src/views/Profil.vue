@@ -1,41 +1,21 @@
 <!-- page Profil Groupomania -->
 
 <!-- HTML -->
-<template>
-<div class="container">
-    <div class="row">
-    <Profiltopsection/>
-    <div class="mt-4 border">
-        <div class="">
-            <Profilmessages/>
-        </div>
-        <div class="mt-3">
-            <Profillikesdislikes/>
-        </div>
-    </div>
-    </div>
-</div>
-
+<template >
+    <v-main>
+        <Profilupdate/>
+    </v-main>
 </template>
 <!-- HTML -->
 
 <!-- JAVASCRIPT -->
 <script>
-import Profiltopsection from '@/components/ProfilComponents/Profiltopsection.vue'
-import Profilmessages from '@/components/ProfilComponents/Profilmessages.vue'
-import Profillikesdislikes from '@/components/ProfilComponents/Profillikesdislikes.vue'
-
-
+import Profilupdate from '@/components/ProfilComponents/Profilupdate.vue'
 
 export default {
   name: 'Profil',
   components:{
-      Profiltopsection,
-      Profilmessages,
-      Profillikesdislikes,
- 
-      
-
+      Profilupdate,
   }
 }
 

@@ -1,29 +1,65 @@
 <template>
-    <div class="border row p-4 justify-content-center"> <!-- Div Contenu Profil -->
+  <v-container> <!-- Div Contenu Profil -->
+    <v-card class=" ms-15">
+      <v-img height="100%"
+        src="@/assets/Logo_Groupomania.png"
+      >
+        <v-row
+          align="end"
+          class="fill-height"
+        >
+          <v-col
+            align-self="start"
+            class="pa-0"
+            cols="12"
+          >
+            <v-avatar
+              class="profile"
+              color="grey"
+              size="164"
+              rounded
+              tile
+            >
+              <v-img src="https://i.pravatar.cc/64"></v-img>
+            </v-avatar>
+          </v-col>
+          <v-col class="py-0">
+            <v-list-item
+              color="grey"
+            >
+              <v-list-item-content>
+                <v-list-item-title class="text-h6">
+                  Prénom Nom
+                </v-list-item-title>
+                <v-list-item-subtitle>Poste</v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+          </v-col>
+        </v-row>
+      </v-img>
 
-        <h1>Vous pouvez mettre à jour vos informations ici </h1>
-            <form class="input-group d-flex justify-content-center p-4">
-        <div class="input-group mb-3">
-            <input class="form-control" type="text" value="email@email.com" aria-label="Email" disabled readonly>
-        </div>
-        <div class="input-group mb-3">
-            <input type="firstname" class="form-control rounded" name="firstname" placeholder="Prénom">
-        </div>
-        <div class="input-group mb-3">
-            <input type="lastname" class="form-control rounded" name="lastname" placeholder="Nom">
-        </div>
-        <div class="input-group mb-3">
-            <input type="password" class="form-control rounded" name="password" placeholder="Mot de passe">
-        </div>
-        <div class="input-group mb-3">
-            <label class="input-group-text" for="inputGroupFile01">Votre avatar</label>
-            <input type="file" class="form-control" id="inputGroupFile01">
-        </div>
-        <div class="input-group d-flex justify-content-center">
-            <button type="submit" class="btn btn-outline-secondary rounded-pill">ENTRER</button>
-        </div>
-            </form>
-    </div><!-- Div Contenu Profil -->
+
+   <v-col class="d-flex flex-column mt-5 mb-5 me-5">         
+
+<v-text-field  dense outlined disabled label="email@email.com" ></v-text-field>
+
+<v-text-field dense outlined label="Poste" ></v-text-field>
+
+<v-text-field dense outlined label="Prénom" ></v-text-field>
+
+<v-text-field dense outlined label="Nom" ></v-text-field>
+
+<v-text-field dense outlined label="Mot de passe" ></v-text-field>
+
+<v-file-input dense outlined label="Update Avatar"></v-file-input>
+
+<v-btn  text color="error">Mettre à jour</v-btn>
+   </v-col>
+
+           
+            
+        </v-card>
+    </v-container><!-- Div Contenu Profil -->
 </template>
 
 <script>
