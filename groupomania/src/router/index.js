@@ -2,7 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Profil from '@/views/Profil.vue';
 import Wall from '@/views/Wall.vue'
-import Login from '@/components/Login.vue'
+import Login from '@/views/Login.vue'
 import MonActivite from '@/views/MonActivite.vue'
 import AllUsers from '@/views/AllUsers.vue'
 import Moderation from '@/views/Moderation.vue'

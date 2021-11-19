@@ -4,7 +4,7 @@
       <v-img height="100%" src="@/assets/Logo_Groupomania.png"><!-- haut de la carte profil update-->
         <v-row align="end" class="fill-height">
           <v-col align-self="start" class="pa-0" cols="12">
-            <v-avatar class="profile" color="grey" size="164" rounded tile>
+            <v-avatar class="profile" color="grey" size="20%" rounded tile>
               <v-img src="https://i.pravatar.cc/64"></v-img>
             </v-avatar>
           </v-col>

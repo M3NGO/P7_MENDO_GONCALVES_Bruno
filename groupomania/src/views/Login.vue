@@ -58,7 +58,7 @@
                     </v-col>
                     <v-checkbox v-model="checkbox" :rules="checkboxRules" @click="checkbox = true" label="Avez-vous vérifié votre email?" required></v-checkbox>
                   </v-container>
-                  <small>*Champs obligatoires</small>
+                  
                 </v-card-text><!-- FIN - zone email + password inscription -->
 
                 <v-card-actions><!-- Boutons inscription -->

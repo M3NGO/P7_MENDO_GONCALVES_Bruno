@@ -1,41 +1,41 @@
 <template>
   <v-timeline align-top dense class="me-5"><!-- timeline des commentaires -->
     <v-timeline-item large><!-- créé l'item commentaire et place sur timeline -->
-      <template v-slot:icon><!-- icone sur la timeline a gauche du commentaire ajouter l'avatar de la personne qui commente-->
-        <v-avatar>
+      <template  v-slot:icon><!-- icone sur la timeline a gauche du commentaire ajouter l'avatar de la personne qui commente-->
+        <v-avatar >
           <img src="https://i.pravatar.cc/64">
         </v-avatar>
       </template><!-- FIN - icone sur la timeline a gauche du commentaire ajouter l'avatar de la personne qui commente-->
 
       <v-card class="d-flex flex-column elevation-2"><!-- créé carte commentaire accolée a la timeline -->
-      <v-img src="@/assets/Logo_Groupomania.png" max-height="200"></v-img><!-- section image back du profil qui englobe l'avatar -->
+      <v-img :aspect-ratio="16/9" src="@/assets/Logo_Groupomania.png" max-height="300"></v-img><!-- section image back du profil qui englobe l'avatar -->
         <v-card-title class="text-h5">email@email.com</v-card-title><!-- insert l'email user qui commente en tant que titre commentaire-->
         <v-card-text>ici on vera le commentaire de cet user, c'est un commentaire de fou, vous n'êtes pas pret.</v-card-text>
         <v-card-subtitle align="end">Publié le: 15/01/2021</v-card-subtitle><!-- insert date à laquelle le user aura créé le commentaire -->
         
         <v-card-actions class="justify-end"><!-- Section boutons de la carte commentaire -->
         
-          <v-btn plain text max-width="150" @click="chose"><!-- rendre visible que quand le role user est 2 -->
+          <v-btn plain text x-small @click="chose"><!-- rendre visible que quand le role user est 2 -->
             <v-icon>mdi-alert-circle</v-icon>Modération<!-- rendre visible que quand le role user est 2 -->
           </v-btn><!-- rendre visible que quand le role user est 2 -->
             
-          <v-btn plain text width="100" @click="delete_comment"><!-- delete commentaire -->
+          <v-btn plain text x-small @click="delete_comment"><!-- delete commentaire -->
             <v-icon>mdi-close</v-icon>Effacer
           </v-btn><!-- FIN - delete commentaire -->
 
-          <v-btn plain text width="100" @click="updateComment=true"><!-- rendre visible que quand le user est celui qui a créé le commentaire -->
+          <v-btn plain text x-small @click="updateComment=true"><!-- rendre visible que quand le user est celui qui a créé le commentaire -->
             <v-icon>mdi-cog</v-icon>Update<!-- rendre visible que quand le user est celui qui a créé le commentaire -->
           </v-btn><!-- rendre visible que quand le user est celui qui a créé le commentaire -->
 
 
           <v-badge overlap bordered offset-x="30" offset-y="15" color="error" content="10">
-            <v-btn plain width="100">
+            <v-btn plain text x-small>
               <v-icon>mdi-thumb-up</v-icon>J'aime
             </v-btn>
           </v-badge>
           
           <v-badge overlap bordered offset-x="30" offset-y="15" color="error" content="8">
-            <v-btn plain width="100">
+            <v-btn plain text x-small>
               <v-icon>mdi-thumb-down</v-icon>J'aime pas
             </v-btn>
           </v-badge>
@@ -49,7 +49,7 @@
                         <v-file-input label="Upload Photo/Vidéo"></v-file-input>
                     </v-col><!-- FIN - section création Post (message + upload multimedia) -->
                 </v-row>
-                <v-btn color="error" height="40" class="me-4" small @click="updateComment = false">
+                <v-btn color="error" height="40" class="me-4" text x-small @click="updateComment = false">
                     <v-icon>mdi-send</v-icon>
                     Updater
                 </v-btn>
@@ -72,7 +72,7 @@ export default {
   updateComment: false, //pour faire disparaitre section update commentaire au click sur bouton updater
   // controle le nombre de caractères inscrits dans partie Votre nouveau commentaire
   rules: [
-    value => (value && value.length >= 10 ) || 'Votre post doit faire au moins 10 caractères',
+    value => (value && value.length >= 10 ) || 'Votre commentaire doit faire au moins 10 caractères',
     ],  // FIN - controle le nombre de caractères inscrits dans partie Votre nouveau commentaire
   }),
 }

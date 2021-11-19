@@ -1,9 +1,12 @@
 <template>
   <v-app>
     <Header/>
-    <NavigationDrawerLeft/>
+    <NavigationDrawerLeft v-if="this.$vuetify.breakpoint.smAndUp"/>
+    <!-- <NavigationBottom v-if="this.$vuetify.breakpoint.smAndDown"/> -->
       <v-main>
+        <v-container fluid>
         <router-view/>
+        </v-container>
       </v-main>
     <Footer/>
   </v-app>

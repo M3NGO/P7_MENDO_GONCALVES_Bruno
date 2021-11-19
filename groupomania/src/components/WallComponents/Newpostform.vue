@@ -1,6 +1,6 @@
 <template>
-  <v-container>
-    <v-card class="d-flex align-center ms-15">
+  
+    <v-card class="d-flex align-center ms-15" >
       <v-row class="d-flex align-center">
         <v-col>
           <v-list-item-avatar class="ms-4"> <!-- Avatar du user connecté-->
@@ -12,12 +12,12 @@
           <v-file-input label="Upload Photo/Vidéo"></v-file-input>
         </v-col><!-- FIN - section création Post (message + upload multimedia) -->
       </v-row>
-      <v-btn color="error" height="40" class="me-4" small @click="upload">
+      <v-btn color="error" height="40" class="me-4" text x-small @click="upload">
         <v-icon>mdi-send</v-icon>
           Publier
       </v-btn>
     </v-card>
-  </v-container>
+ 
 </template>
 
 <script>

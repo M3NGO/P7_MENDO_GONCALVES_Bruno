@@ -1,10 +1,10 @@
 <template>
-  <v-container > <!-- Div Contenu Profil -->
-    <v-row  class="d-flex justify-center ms-15">
+  <v-container fluid> <!-- Div Contenu Profil -->
+   
         <Messages/>
         <Messages/>
         <Messages/>
-    </v-row>
+   
   </v-container>
 </template>
 

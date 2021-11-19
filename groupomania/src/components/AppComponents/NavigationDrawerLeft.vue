@@ -1,6 +1,6 @@
 <template>
   <v-div> <!-- navigation drawer pour mettre le menu sur la gauche de l'écran -->
-    <v-navigation-drawer v-model="drawer" :mini-variant.sync="mini" permanent fixed expand-on-hover v-if="this.$route.path !== '/'&& this.$route.path !== '/inscription'">
+    <v-navigation-drawer permanent fixed expand-on-hover v-if="this.$route.path !== '/'&& this.$route.path !== '/inscription'">
     <!-- mini-variant pour créér l'effet reduction menu + expand-on-hover pour l'agrandir en hover + v-if pour l'afficher quand on est dans l'app -->
       <v-list-item class="px-1 py-1"><!-- avatar drawer-->
         <v-avatar>
@@ -66,3 +66,11 @@
     </v-navigation-drawer>
   </v-div>
 </template>
+
+<script>
+
+export default {
+
+
+}
+</script>
