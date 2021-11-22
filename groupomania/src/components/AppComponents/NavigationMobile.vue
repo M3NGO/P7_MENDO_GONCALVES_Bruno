@@ -1,0 +1,21 @@
+<template>
+    <v-bottom-navigation app grow color="error" v-if="this.$route.path !== '/'&& this.$route.path !== '/inscription'">
+        <v-btn link :to="{path:'/wall'}"><!-- icone Home -->
+            <span class="text-caption">Mon actualité</span>
+            <v-icon>mdi-home</v-icon>
+        </v-btn><!-- icone Home -->
+
+        <v-btn link :to="{path:'/activite'}"><!-- icone email -->
+            <span class="text-caption">Mes Posts</span>
+            <v-icon>mdi-email</v-icon>
+        </v-btn><!-- icone email -->
+
+        <!-- menu spécial chargé de communication / modération-->
+        <v-btn link :to="{path:'/utilisateurs'}"><!-- icone tous les utlisateurs -->
+            <span class="text-caption">Utilisateurs</span>
+            <v-icon>mdi-account-multiple</v-icon>
+        </v-btn><!-- icone tous les utlisateurs -->
+
+    </v-bottom-navigation>
+
+</template>

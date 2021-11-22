@@ -1,7 +1,9 @@
 <template>
   <v-main>
+    <v-container fluid>
       <Newpostform/>
       <Posts/>
+    </v-container>
   </v-main>
 </template>
 

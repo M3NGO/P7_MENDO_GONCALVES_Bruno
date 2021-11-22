@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid> <!-- Div Contenu Profil -->
+  <v-container fluid > <!-- Div Contenu Profil -->
    
         <Messages/>
         <Messages/>

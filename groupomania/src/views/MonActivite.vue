@@ -1,7 +1,7 @@
 <template>
     <v-main>
         <v-container>
-            <v-card-title class="mb-15">Mon activité</v-card-title>
+            <v-card-title>Mon activité</v-card-title>
             <Posts/>
         </v-container>
     </v-main>

@@ -1,7 +1,7 @@
 <template>
-  <v-container> <!-- Div Contenu Profil -->
-    <v-card class=" ms-15">
-      <v-img height="100%" src="@/assets/Logo_Groupomania.png"><!-- haut de la carte profil update-->
+  <v-container fluid> <!-- Div Contenu Profil -->
+    <v-card>
+      <v-img height="100%" min-height="300" src="@/assets/Logo_Groupomania.png"><!-- haut de la carte profil update-->
         <v-row align="end" class="fill-height">
           <v-col align-self="start" class="pa-0" cols="12">
             <v-avatar class="profile" color="grey" size="20%" rounded tile>

@@ -1,7 +1,7 @@
 <!-- Composant login Groupomania -->
 
 <!-- HTML -->
-<template >  
+<template>  
   <v-container  class="fill-height ">
     <v-card elevation="20" class="mx-auto rounded-xl"><!-- carte login -->
       <v-col cols="12" class="text-center">

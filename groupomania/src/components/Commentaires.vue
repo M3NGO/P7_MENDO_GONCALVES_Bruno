@@ -1,52 +1,90 @@
 <template>
-  <v-timeline align-top dense class="me-5"><!-- timeline des commentaires -->
-    <v-timeline-item large><!-- créé l'item commentaire et place sur timeline -->
+  <v-timeline align-top dense class="me-3"><!-- timeline des commentaires -->
+    <v-timeline-item><!-- créé l'item commentaire et place sur timeline -->
       <template  v-slot:icon><!-- icone sur la timeline a gauche du commentaire ajouter l'avatar de la personne qui commente-->
-        <v-avatar >
+        <v-avatar>
           <img src="https://i.pravatar.cc/64">
         </v-avatar>
       </template><!-- FIN - icone sur la timeline a gauche du commentaire ajouter l'avatar de la personne qui commente-->
 
       <v-card class="d-flex flex-column elevation-2"><!-- créé carte commentaire accolée a la timeline -->
       <v-img :aspect-ratio="16/9" src="@/assets/Logo_Groupomania.png" max-height="300"></v-img><!-- section image back du profil qui englobe l'avatar -->
-        <v-card-title class="text-h5">email@email.com</v-card-title><!-- insert l'email user qui commente en tant que titre commentaire-->
-        <v-card-text>ici on vera le commentaire de cet user, c'est un commentaire de fou, vous n'êtes pas pret.</v-card-text>
-        <v-card-subtitle align="end">Publié le: 15/01/2021</v-card-subtitle><!-- insert date à laquelle le user aura créé le commentaire -->
+        <v-card-title class="body-2">email@email.com</v-card-title><!-- insert l'email user qui commente en tant que titre commentaire-->
+        <v-card-text class="caption text-justify">ici on vera le commentaire de cet user, c'est un commentaire de fou, vous n'êtes pas pret.</v-card-text>
+        <v-card-subtitle align="end" class="caption font-italic">Publié le: 15/01/1521</v-card-subtitle><!-- insert date à laquelle le user aura créé le commentaire -->
         
-        <v-card-actions class="justify-end"><!-- Section boutons de la carte commentaire -->
-        
-          <v-btn plain text x-small @click="chose"><!-- rendre visible que quand le role user est 2 -->
-            <v-icon>mdi-alert-circle</v-icon>Modération<!-- rendre visible que quand le role user est 2 -->
-          </v-btn><!-- rendre visible que quand le role user est 2 -->
+        <v-card-actions class="d-flex justify-end flex-wrap"  ><!-- section boutons card messages -->
+            <v-tooltip bottom><!-- rendre visible que quand le role user est 2 -->
+                <template v-slot:activator="{ on, attrs }">
+                    <v-btn v-bind="attrs" v-on="on" plain text x-small @click="chose"
+                    ><v-icon size="15">mdi-alert-circle</v-icon>
+                    </v-btn>
+                </template>
+                    <span>Modération</span>
+            </v-tooltip><!-- rendre visible que quand le role user est 2 -->
+
+
+
+            <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                    <v-btn v-bind="attrs" v-on="on" plain text x-small @click="delete_comment"
+                    ><v-icon size="15">mdi-close</v-icon>
+                    </v-btn>
+                </template>
+                    <span>Effacer</span>
+            </v-tooltip>
+
             
-          <v-btn plain text x-small @click="delete_comment"><!-- delete commentaire -->
-            <v-icon>mdi-close</v-icon>Effacer
-          </v-btn><!-- FIN - delete commentaire -->
 
-          <v-btn plain text x-small @click="updateComment=true"><!-- rendre visible que quand le user est celui qui a créé le commentaire -->
-            <v-icon>mdi-cog</v-icon>Update<!-- rendre visible que quand le user est celui qui a créé le commentaire -->
-          </v-btn><!-- rendre visible que quand le user est celui qui a créé le commentaire -->
+            <v-tooltip bottom><!-- rendre visible que quand le user est celui qui a créé le commentaire -->
+                <template v-slot:activator="{ on, attrs }">
+                    <v-btn v-bind="attrs" v-on="on" plain text x-small @click="updateComment=true"
+                    ><v-icon size="15">mdi-cog</v-icon>
+                    </v-btn>
+                </template>
+                    <span>Mise à jour</span>
+            </v-tooltip>
+    
+           
+            <!-- bouton Like avec badge rouge compte les nombre de likes -->
+
+            <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                    <v-badge overlap offset-x="15" offset-y="10" color="error" content="10">
+                        <v-btn v-bind="attrs" v-on="on" plain text x-small @click="Like"
+                        ><v-icon size="15">mdi-thumb-up</v-icon>
+                        </v-btn>
+                    </v-badge>
+                </template>
+                    <span>J'aime</span>
+            </v-tooltip>
+
+            
+
+            <!-- FIN - bouton Like avec badge rouge compte les nombre de likes -->
+            
+            <!-- bouton dislike avec badge rouge compte les nombre de dislikes -->
 
 
-          <v-badge overlap bordered offset-x="30" offset-y="15" color="error" content="10">
-            <v-btn plain text x-small>
-              <v-icon>mdi-thumb-up</v-icon>J'aime
-            </v-btn>
-          </v-badge>
-          
-          <v-badge overlap bordered offset-x="30" offset-y="15" color="error" content="8">
-            <v-btn plain text x-small>
-              <v-icon>mdi-thumb-down</v-icon>J'aime pas
-            </v-btn>
-          </v-badge>
-        </v-card-actions><!-- FIN - Section boutons de la carte commentaire -->
+            <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                    <v-badge overlap offset-x="15" offset-y="10" color="error" content="8">
+                        <v-btn v-bind="attrs" v-on="on" plain text x-small @click="Dislike"
+                        ><v-icon size="15">mdi-thumb-down</v-icon>
+                        </v-btn>
+                    </v-badge>
+                </template>
+                    <span>J'aime</span>
+            </v-tooltip>
+            <!-- FIN - bouton disike avec badge rouge compte les nombre de dislikes -->
+        </v-card-actions><!-- FIN - section boutons card messages -->
         
         <v-expand-transition><!-- transition fait apparaitre section update commentaire sous la section boutons card-->
             <v-card-title v-if="updateComment" class="transition-fast-in-fast-out">
                 <v-row class="d-flex align-center">
                     <v-col cols="10" class="me-5"><!-- section création Post (message + upload multimedia) -->
-                        <v-text-field label="Votre nouveau commentaire ici" :rules="rules" hide-details="auto"></v-text-field> 
-                        <v-file-input label="Upload Photo/Vidéo"></v-file-input>
+                        <v-text-field class=" body-2" label="Votre nouveau commentaire ici" :rules="rules" hide-details="auto"></v-text-field> 
+                        <v-file-input class=" body-2" label="Upload Photo/Vidéo"></v-file-input>
                     </v-col><!-- FIN - section création Post (message + upload multimedia) -->
                 </v-row>
                 <v-btn color="error" height="40" class="me-4" text x-small @click="updateComment = false">
@@ -79,10 +117,14 @@ export default {
 </script>
 
 <style>
-.image{
+/* .image{
     height: 10em;
     width: 10em;
-}
+} */
+/* .v-timeline-item__divider{
+   justify-content: left
+} */
+
 
 
 
