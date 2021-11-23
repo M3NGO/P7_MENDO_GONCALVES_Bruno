@@ -14,7 +14,7 @@
         </v-div>
     </v-app-bar>
     <v-div> <!-- navigation drawer pour mettre le menu sur la gauche de l'écran -->
-    <v-navigation-drawer v-model="drawer" app width="220" absolute temporary v-if="this.$route.path !== '/'&& this.$route.path !== '/inscription'">
+    <v-navigation-drawer v-model="drawer" fixed app width="220" temporary v-if="this.$route.path !== '/'&& this.$route.path !== '/inscription'">
     <!-- mini-variant pour créér l'effet reduction menu + expand-on-hover pour l'agrandir en hover + v-if pour l'afficher quand on est dans l'app -->
       <v-list-item class="px-1 py-1"><!-- avatar drawer-->
         <v-avatar>
@@ -25,7 +25,7 @@
 
       <v-list> <!-- Liste MENU drawer gauche-->
 
-          <v-list-item color="error" link :to="{path:'/profil'}"><!-- icone Rouage -->
+          <v-list-item color="error" link :to="{path:'/profil'}" @click="top"><!-- icone Rouage -->
             <v-list-item-icon>
               <v-icon>mdi-account-cog</v-icon>
             </v-list-item-icon>
@@ -34,21 +34,21 @@
 
           <!-- menu spécial chargé de communication / modération-->
 
-          <v-list-item color="primary" link :to="{path:'/utilisateurs-desinscrits'}"><!-- icone tous les utlisateurs désinscrits -->
+          <v-list-item color="primary" link :to="{path:'/utilisateurs-desinscrits'}" @click="top"><!-- icone tous les utlisateurs désinscrits -->
             <v-list-item-icon>
               <v-icon>mdi-account-multiple-remove</v-icon>
             </v-list-item-icon>
               <v-list-item-title class="caption">Utilisateurs désinscrits</v-list-item-title>
           </v-list-item><!-- icone tous les utlisateurs désinscrits -->
 
-          <v-list-item color="primary" link :to="{path:'/moderation'}"><!-- icone tous les utlisateurs désinscrits -->
+          <v-list-item color="primary" link :to="{path:'/moderation'}" @click="top"><!-- icone tous les utlisateurs désinscrits -->
             <v-list-item-icon>
               <v-icon>mdi-message-bulleted-off</v-icon>
             </v-list-item-icon>
               <v-list-item-title class="caption" >Modération</v-list-item-title>
           </v-list-item><!-- icone tous les utlisateurs désinscrits -->
 
-          <v-list-item link :to="{path:'/'}"><!-- icone Déconnexion -->
+          <v-list-item link :to="{path:'/'}" @click="top"><!-- icone Déconnexion -->
             <v-list-item-icon>
               <v-icon>mdi-logout</v-icon>
             </v-list-item-icon>
@@ -66,11 +66,16 @@
 
 <script>
 export default {
-data () {
-    return {
+data: () => ({
+  
       drawer: null,
-    }
-    },
+    
+      top(){ // to top au click sur les boutons menu
+        window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
+        }
+})
+
+
 }
 </script>
 

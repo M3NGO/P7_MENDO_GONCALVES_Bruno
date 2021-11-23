@@ -10,9 +10,10 @@
       <v-main>
        
         <router-view/>
-       
+
       </v-main>
     <Footer/>
+    
     <NavigationMobile v-if="this.$vuetify.breakpoint.smAndDown"/>
   </v-app>
 </template>
@@ -23,6 +24,7 @@ import NavigationDrawerLeft from '@/components/AppComponents/NavigationDrawerLef
 import Footer from '@/components/AppComponents/Footer.vue'
 import HeaderMobile from '@/components/AppComponents/HeaderMobile.vue'
 import NavigationMobile from '@/components/AppComponents/NavigationMobile.vue'
+
 
 export default {
   name: 'App',
@@ -35,6 +37,9 @@ export default {
 
   },
 
+  mounted() { // au refresh de nimporte quelle page de l'app on scroll vers le haut automatiquement smoothly
+    window.onload = window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
+    },
 
   data: () => ({
     //
