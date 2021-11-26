@@ -6,6 +6,9 @@ GROUPOMANIA
 cd backend
 npm install
 
+- Run backend:
+nodemon serve
+
 - initialize project :
 cd backend
 npm init (entry point server.js)

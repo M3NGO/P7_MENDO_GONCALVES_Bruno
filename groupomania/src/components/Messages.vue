@@ -1,8 +1,8 @@
 <template>
 <v-container fluid>
-    <v-card> <!-- carte contenant le Post + commentaires -->
-        <v-img :aspect-ratio="16/9" src="@/assets/Logo_Groupomania.png" max-height="400"><!-- section image back du profil qui englobe l'avatar -->
-
+    <v-card class="mb-15" v-for="post in allPosts" :key="post.id"> <!-- carte contenant le Post + commentaires -->
+        <v-img :aspect-ratio="16/9" v-bind:src= "post.upload_url" max-height="400"><!-- section image back du profil qui englobe l'avatar -->
+{{post.upload_url}}
         </v-img> <!-- FIN section image back du profil qui englobe l'avatar -->
         <v-divider></v-divider>
 
@@ -16,8 +16,8 @@
                
             </v-col>
             <v-col cols="10" class="d-flex-column flex-wrap">
-        <v-card-text class="text-justify body-2">Ici le message du user Lambda!</v-card-text>
-        <v-card-subtitle align="end" class="caption font-italic">Publié le: 15/01/2021</v-card-subtitle><!-- insert date à laquelle le user aura créé le commentaire -->
+        <v-card-text class="text-justify body-2" >{{post.content}}</v-card-text>
+        <v-card-subtitle align="end" class="caption font-italic">Publié le: {{post.updatedAt}}</v-card-subtitle><!-- insert date à laquelle le user aura créé le commentaire -->
             </v-col>
 
         </v-row>
@@ -135,7 +135,10 @@
     <v-divider></v-divider>
         <!-- FIN - Bloc création commentaire -->
     <!-- Section timeline avec commentaires -->
-    <Commentaires/>
+        <div v-for="commentaire in post.comment" :key="commentaire.id" >
+        <Commentaires :commentaire="commentaire"/>
+        </div>
+
     <!-- FIN - Section timeline avec commentaires -->
     </v-card>
 </v-container>
@@ -143,7 +146,7 @@
 
 <script>
 import Commentaires from '@/components/Commentaires.vue'
-
+import { mapState } from 'vuex'
 
 export default {
   name: 'Message',
@@ -151,9 +154,16 @@ export default {
       Commentaires,
       
   },
-      mounted () {
-      console.log(this.$vuetify.breakpoint.width)
-    },
+//debut gestion axios + vuex
+  computed: {
+    ...mapState('getPosts', ['allPosts']), //('nom du module dans index.js', ['nomstate dans fichier dossier module'])
+    
+  },
+  mounted(){
+    this.$store.dispatch('getPosts/getAllPostsAct') //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
+  },
+
+//FIN gestion axios + vuex
 
   data: () => ({
  

@@ -10,7 +10,7 @@
       <v-card class="d-flex flex-column elevation-2"><!-- créé carte commentaire accolée a la timeline -->
       <v-img :aspect-ratio="16/9" src="@/assets/Logo_Groupomania.png" max-height="300"></v-img><!-- section image back du profil qui englobe l'avatar -->
         <v-card-title class="body-2">email@email.com</v-card-title><!-- insert l'email user qui commente en tant que titre commentaire-->
-        <v-card-text class="caption text-justify">ici on vera le commentaire de cet user, c'est un commentaire de fou, vous n'êtes pas pret.</v-card-text>
+        <v-card-text class="caption text-justify">{{ commentaire.content }}</v-card-text>
         <v-card-subtitle align="end" class="caption font-italic">Publié le: 15/01/1521</v-card-subtitle><!-- insert date à laquelle le user aura créé le commentaire -->
         
         <v-card-actions class="d-flex justify-end flex-wrap"  ><!-- section boutons card messages -->
@@ -105,6 +105,13 @@
 <script>
 export default {
   name: 'Commentaires',
+  props: {
+   commentaire: {
+        type: Object,
+        default: null
+   }
+  },
+
 
   data: () => ({
   updateComment: false, //pour faire disparaitre section update commentaire au click sur bouton updater

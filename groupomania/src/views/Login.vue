@@ -7,14 +7,14 @@
       <v-col cols="12" class="text-center">
         <img width="200" src="../assets/Logo_Groupomania.png" alt="logo Groupomania">
         <v-form ref="form" class="mb-5 me-5 ms-5" v-model="valid" lazy-validation><!-- Formulaire login -->
-          <v-text-field v-model="email" :rules="emailRules" label="E-mail" outlined dense required></v-text-field>
+          <v-text-field v-model="email" :rules="emailRules" label="E-mail" id="email"  outlined dense required></v-text-field>
           <v-text-field v-model="password"
             name="password"
             :rules="passwordRules"
             :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
             :type="show ? 'text' : 'password'"
             @click:append="show = !show"
-            
+            id="password"
             hint="Au moins 8 caractères"
             label="Password"
             required
@@ -73,7 +73,7 @@
               </v-card><!-- FIN - Carte inscription dans le dialog -->
             </v-dialog><!-- FIN - Dialog inscription -->
 
-          <v-btn :disabled="!valid" color="error" class="ms-4 rounded-xl" @click="validate" elevation="10">
+          <v-btn :disabled="!valid" color="error" class="ms-4 rounded-xl" v-on:click="send()" elevation="10">
               Entrer
           </v-btn>
         </v-form><!-- FIN - Formulaire login -->
@@ -85,7 +85,7 @@
 
 <!-- JAVASCRIPT -->
 <script>
-
+import { mapState } from 'vuex'
 
 export default {
   name: 'Login',
@@ -118,13 +118,25 @@ export default {
     
 
     
+
+  }), //fin de data
+
     methods: {
-    validate () {
-      this.$refs.form.validate()
-    },
-  
+      send(){
+        this.$store.dispatch('login/postLogin', {email: this.email, password: this.password}) 
+      }
+      
+
       },
-  }),
+
+  //debut gestion axios + vuex
+  computed: {
+    ...mapState('login', ['login']), //('nom du module dans index.js', ['nomstate dans fichier dossier module'])
+    
+  },
+
+
+//FIN gestion axios + vuex
 
 
 };
