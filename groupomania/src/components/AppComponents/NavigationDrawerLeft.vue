@@ -1,12 +1,12 @@
 <template>
-  <v-div> <!-- navigation drawer pour mettre le menu sur la gauche de l'écran -->
+  <div> <!-- navigation drawer pour mettre le menu sur la gauche de l'écran -->
     <v-navigation-drawer app permanent expand-on-hover v-if="this.$route.path !== '/'&& this.$route.path !== '/inscription'">
     <!-- mini-variant pour créér l'effet reduction menu + expand-on-hover pour l'agrandir en hover + v-if pour l'afficher quand on est dans l'app -->
       <v-list-item class="px-1 py-1"><!-- avatar drawer-->
         <v-avatar>
           <v-img src="https://i.pravatar.cc/64" alt="avatar user"/>
         </v-avatar>
-        <v-list-item-title class="ms-1">email@groupomania.com</v-list-item-title>
+        <v-list-item-title class="ms-1">{{profile.email}}</v-list-item-title>
       </v-list-item><!-- FIN - avatar drawer-->
 
       <v-list> <!-- Liste MENU drawer gauche-->
@@ -40,21 +40,21 @@
               <v-list-item-title>Tous les utilisateurs</v-list-item-title>
           </v-list-item><!-- icone tous les utlisateurs -->
 
-          <v-list-item color="primary" link :to="{path:'/utilisateurs-desinscrits'}" @click="top"><!-- icone tous les utlisateurs désinscrits -->
+          <v-list-item color="primary" link :to="{path:'/utilisateurs-desinscrits'}" @click="top" v-if="profile.role == 2"><!-- icone tous les utlisateurs désinscrits -->
             <v-list-item-icon>
               <v-icon>mdi-account-multiple-remove</v-icon>
             </v-list-item-icon>
               <v-list-item-title>Utilisateurs désinscrits</v-list-item-title>
           </v-list-item><!-- icone tous les utlisateurs désinscrits -->
 
-          <v-list-item color="primary" link :to="{path:'/moderation'}" @click="top"><!-- icone tous les utlisateurs désinscrits -->
+          <v-list-item color="primary" link :to="{path:'/moderation'}" @click="top" v-if="profile.role == 2"><!-- icone tous les utlisateurs désinscrits -->
             <v-list-item-icon>
               <v-icon>mdi-message-bulleted-off</v-icon>
             </v-list-item-icon>
               <v-list-item-title>Modération</v-list-item-title>
           </v-list-item><!-- icone tous les utlisateurs désinscrits -->
 
-          <v-list-item link :to="{path:'/'}"><!-- icone Déconnexion -->
+          <v-list-item  v-on:click="logout()"><!-- icone Déconnexion -->
             <v-list-item-icon>
               <v-icon>mdi-logout</v-icon>
             </v-list-item-icon>
@@ -64,17 +64,38 @@
       </v-list><!-- FIN - Liste MENU drawer gauche-->
 
     </v-navigation-drawer>
-  </v-div>
+  </div>
 </template>
 
 <script>
+import { mapState} from 'vuex'
 
 export default {
+name: 'NavigationDrawer',
 data: () => ({
       top(){ // to top au click sur les boutons menu
         window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
-        }
-})
+        },
+
+}),
+
+methods:{
+  logout(){
+    this.$store.dispatch('Auth/logout') //(appel fonction logout dans le store auth pour clean :localstorage et getout)
+  }
+
+},
+computed: {
+    ...mapState('getProfile', ['profile']), //('nom du module dans index.js', ['nomstate dans fichier dossier module'])
+  },
+//  beforeMount(){
+//     this.$store.dispatch('getProfile/getProfile') //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
+//   },
+
+
+ 
+
+
 
 }
 </script>

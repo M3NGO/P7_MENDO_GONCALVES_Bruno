@@ -8,15 +8,15 @@
       </template><!-- FIN - icone sur la timeline a gauche du commentaire ajouter l'avatar de la personne qui commente-->
 
       <v-card class="d-flex flex-column elevation-2"><!-- créé carte commentaire accolée a la timeline -->
-      <v-img :aspect-ratio="16/9" src="@/assets/Logo_Groupomania.png" max-height="300"></v-img><!-- section image back du profil qui englobe l'avatar -->
-        <v-card-title class="body-2">email@email.com</v-card-title><!-- insert l'email user qui commente en tant que titre commentaire-->
+      <v-img v-if="commentaire.upload_url !== null" :aspect-ratio="16/9" src="@/assets/Logo_Groupomania.png" max-height="300"></v-img><!-- section image back du profil qui englobe l'avatar -->
+        <v-card-title class="body-2">{{commentaire.email}}</v-card-title><!-- insert l'email user qui commente en tant que titre commentaire-->
         <v-card-text class="caption text-justify">{{ commentaire.content }}</v-card-text>
-        <v-card-subtitle align="end" class="caption font-italic">Publié le: 15/01/1521</v-card-subtitle><!-- insert date à laquelle le user aura créé le commentaire -->
+        <v-card-subtitle align="end" class="caption font-italic">Publié {{ commentaire.updatedAt}}</v-card-subtitle><!-- insert date à laquelle le user aura créé le commentaire -->
         
-        <v-card-actions class="d-flex justify-end flex-wrap"  ><!-- section boutons card messages -->
-            <v-tooltip bottom><!-- rendre visible que quand le role user est 2 -->
+        <v-card-actions class="d-flex justify-end flex-wrap" ><!-- section boutons card messages -->
+            <v-tooltip bottom v-if="profile.role == 2"><!-- rendre visible que quand le role user est 2 -->
                 <template v-slot:activator="{ on, attrs }">
-                    <v-btn v-bind="attrs" v-on="on" plain text x-small @click="chose"
+                    <v-btn v-bind="attrs" v-on="on" plain text x-small 
                     ><v-icon size="15">mdi-alert-circle</v-icon>
                     </v-btn>
                 </template>
@@ -27,7 +27,7 @@
 
             <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
-                    <v-btn v-bind="attrs" v-on="on" plain text x-small @click="delete_comment"
+                    <v-btn v-bind="attrs" v-on="on" plain text x-small 
                     ><v-icon size="15">mdi-close</v-icon>
                     </v-btn>
                 </template>
@@ -51,7 +51,7 @@
             <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
                     <v-badge overlap offset-x="15" offset-y="10" color="error" content="10">
-                        <v-btn v-bind="attrs" v-on="on" plain text x-small @click="Like"
+                        <v-btn v-bind="attrs" v-on="on" plain text x-small
                         ><v-icon size="15">mdi-thumb-up</v-icon>
                         </v-btn>
                     </v-badge>
@@ -69,7 +69,7 @@
             <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
                     <v-badge overlap offset-x="15" offset-y="10" color="error" content="8">
-                        <v-btn v-bind="attrs" v-on="on" plain text x-small @click="Dislike"
+                        <v-btn v-bind="attrs" v-on="on" plain text x-small 
                         ><v-icon size="15">mdi-thumb-down</v-icon>
                         </v-btn>
                     </v-badge>
@@ -83,7 +83,7 @@
             <v-card-title v-if="updateComment" class="transition-fast-in-fast-out">
                 <v-row class="d-flex align-center">
                     <v-col cols="10" class="me-5"><!-- section création Post (message + upload multimedia) -->
-                        <v-text-field class=" body-2" label="Votre nouveau commentaire ici" :rules="rules" hide-details="auto"></v-text-field> 
+                        <v-text-field class=" body-2" label="Votre nouveau commentaire ici" :rules="rules" hide-details="auto" ></v-text-field> 
                         <v-file-input class=" body-2" label="Upload Photo/Vidéo"></v-file-input>
                     </v-col><!-- FIN - section création Post (message + upload multimedia) -->
                 </v-row>
@@ -109,8 +109,13 @@ export default {
    commentaire: {
         type: Object,
         default: null
+   },
+   profile:{
+        type: Object,
+        default: null
    }
   },
+
 
 
   data: () => ({

@@ -18,6 +18,11 @@ module.exports = {
         allowNull: false,
         allowEmpty: false
       },
+      email: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true
+      },
       post_id: {
         type: DataTypes.INTEGER
       },

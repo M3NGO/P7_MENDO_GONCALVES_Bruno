@@ -7,7 +7,7 @@
       <v-col cols="12" class="text-center">
         <img width="200" src="../assets/Logo_Groupomania.png" alt="logo Groupomania">
         <v-form ref="form" class="mb-5 me-5 ms-5" v-model="valid" lazy-validation><!-- Formulaire login -->
-          <v-text-field v-model="email" :rules="emailRules" label="E-mail" id="email"  outlined dense required></v-text-field>
+          <v-text-field v-model="email" :rules="emailRules" label="E-mail" id="email" hint="E-mail obligatoire" outlined dense required></v-text-field>
           <v-text-field v-model="password"
             name="password"
             :rules="passwordRules"
@@ -66,14 +66,14 @@
                   <v-btn color="blue darken-1" text class="rounded-xl" @click="dialog = false">
                     Quitter
                   </v-btn>
-                  <v-btn :disabled="!valid" color="error darken-1" text class="rounded-xl" @click="dialog = false">
+                  <v-btn :disabled="!valid" color="error darken-1" text class="rounded-xl" @click="dialog = false" v-on:click="Register()">
                     Valider
                   </v-btn>
                 </v-card-actions>
               </v-card><!-- FIN - Carte inscription dans le dialog -->
             </v-dialog><!-- FIN - Dialog inscription -->
 
-          <v-btn :disabled="!valid" color="error" class="ms-4 rounded-xl" v-on:click="send()" elevation="10">
+          <v-btn :disabled="!valid" color="error" class="ms-4 rounded-xl" v-on:click="LogIn()" elevation="10">
               Entrer
           </v-btn>
         </v-form><!-- FIN - Formulaire login -->
@@ -122,8 +122,11 @@ export default {
   }), //fin de data
 
     methods: {
-      send(){
-        this.$store.dispatch('login/postLogin', {email: this.email, password: this.password}) 
+      LogIn(){
+        this.$store.dispatch('Auth/postLogin', {email: this.email, password: this.password}) //('nom module dans index.js/nom action liée'), payload
+      },
+      Register(){
+        this.$store.dispatch('Auth/register', {email: this.email, password: this.password}) //('nom module dans index.js/nom action liée'), payload
       }
       
 
@@ -131,7 +134,7 @@ export default {
 
   //debut gestion axios + vuex
   computed: {
-    ...mapState('login', ['login']), //('nom du module dans index.js', ['nomstate dans fichier dossier module'])
+    ...mapState('Auth', ['login']), //('nom du module dans index.js', ['nomstate dans fichier dossier module'])
     
   },
 

@@ -2,17 +2,17 @@ let { User,Comment } = require('../models')
 let fs = require('fs'); //Systeme Filesystem de node.JS
 
 exports.createComment = async (req,res) => {
-    let {uuid, content, post_id} = req.body
+    let {uuid, content, post_id, email} = req.body
      try {
          let user = await User.findOne({where: { uuid : uuid, active: true}})
          if(!user){
              return res.status(401).json({error: 'Utilisateur non trouvé'})
          }
          if(req.file == null){
-            let comment = await Comment.create({content: content, uuid: uuid, post_id: post_id, upload_url:null, active: true})
+            let comment = await Comment.create({content: content, uuid: uuid, email:email, post_id: post_id, upload_url:null, active: true})
             return res.json(comment) // renvoit la réponse
          }else{
-            let comment = await Comment.create({content: content, uuid: uuid, post_id: post_id, upload_url:req.file.path, active: true})
+            let comment = await Comment.create({content: content, uuid: uuid, email:email, post_id: post_id, upload_url:req.file.path, active: true})
             return res.json(comment) // renvoit la réponse
          }
      }catch(err) {

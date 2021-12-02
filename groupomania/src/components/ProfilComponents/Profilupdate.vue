@@ -5,14 +5,14 @@
         <v-row align="end" class="fill-height">
           <v-col align-self="start" class="pa-0" cols="12">
             <v-avatar class="profile" color="grey" size="20%" rounded tile>
-              <v-img src="https://i.pravatar.cc/64"></v-img>
+              <v-img src="https://i.pravatar.cc/64">{{profile.upload_url}}</v-img>
             </v-avatar>
           </v-col>
           <v-col class="py-0">
             <v-list-item color="grey">
               <v-list-item-content>
-                <v-list-item-title class="text-h6">Prénom Nom</v-list-item-title>
-                <v-list-item-subtitle>Poste</v-list-item-subtitle>
+                <v-list-item-title class="text-h6">{{profile.firstname}} {{profile.lastname}}</v-list-item-title>
+                <v-list-item-subtitle>{{profile.poste}}</v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
           </v-col>
@@ -21,14 +21,16 @@
       
       <v-col class="d-flex flex-column mt-5 mb-5 me-5"><!-- colonne contenant les field update du profil + boutons -->  
 
-        <v-text-field  dense outlined disabled label="email@email.com" ></v-text-field>
-        <v-text-field dense outlined label="Poste" ></v-text-field>
-        <v-text-field dense outlined label="Prénom" ></v-text-field>
-        <v-text-field dense outlined label="Nom" ></v-text-field>
-        <v-text-field dense outlined label="Mot de passe" ></v-text-field>
+        <v-text-field dense outlined disabled :label= profile.email></v-text-field>
+        <v-text-field v-model="poste" dense outlined placeholder="Poste" :label= profile.poste></v-text-field>
+        <v-text-field v-model="firstname" dense outlined placeholder="Prénom" :label= profile.firstname></v-text-field>
+        <v-text-field v-model="lastname" dense outlined placeholder="Nom" :label= profile.lastname></v-text-field>
+        
+        <v-text-field v-model="password" dense outlined label="Mot de passe" clearable :append-outer-icon=" 'mdi-lock-reset' " @click:append-outer="updatePassword()"></v-text-field>
+        
         <v-file-input dense outlined label="Update Avatar"></v-file-input>
 
-        <v-btn  text color="error">Mettre à jour</v-btn>
+        <v-btn  text color="error" v-on:click="updateUser()">Mettre à jour</v-btn>
 
       </v-col><!-- FIN - colonne contenant les field update du profil + boutons -->  
 
@@ -41,8 +43,32 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
+
 export default {
   name: 'ProfilUpdate',
+
+  methods:{
+    updateUser(){
+    this.$store.dispatch('getProfile/updateUser', {poste: this.poste, firstname: this.firstname, lastname: this.lastname, password: this.password}) //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
+    },
+    updatePassword(){
+    this.$store.dispatch('getProfile/updatePassword', {password: this.password}) //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
+    }
+
+  },
+
+
+  computed: {
+    ...mapState('getProfile', ['profile']), //('nom du module dans index.js', ['nomstate dans fichier dossier module'])
+  },
+    mounted(){ //monte profil a la creation de page
+    this.$store.dispatch('getProfile/getProfile') //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
+  },
+  //   updated(){//update profil a la mise a jour par le user de page
+  //   this.$store.dispatch('getProfile/getProfile') //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
+  // },
 
 }
 </script>

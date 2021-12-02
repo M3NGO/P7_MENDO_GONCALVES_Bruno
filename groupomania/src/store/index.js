@@ -4,7 +4,11 @@ import axios from 'axios'//ajout axios a vuex pour call API
 
 //import store
 import getPosts from './modules/getAllPosts'
-import login from './modules/login'
+import comments from './modules/comments'
+import getUsers from './modules/getAllUsers'
+import Auth from './modules/auth'
+import getProfile from './modules/getProfile'
+
 
 
 
@@ -14,6 +18,10 @@ Vue.use(axios) //ajout axios a vuex pour call API
 export default new Vuex.Store({
   modules: {
     getPosts,
-    login,
+    comments,
+    getUsers,
+    Auth,
+    getProfile,
+
   }
 })

@@ -1,57 +1,44 @@
 import axios from 'axios'
 
-const getAllPosts = {
+const comments = {
     namespaced: true,
     state: {
-        allPosts: [],
-        // createdPosts:[]
+        createComment: [],
         
     },
     mutations: {
-        GET_POSTS(state, data) {
-            // console.log(data)
-            state.allPosts = data
-        },
-        CREATE_POSTS(state, data){
-            state.allPosts.push(data)
+        CREATE_COMMENTS(state, data){
+            state.createComment = data
         }
 
 
 
     },
     actions: {
-       async getAllPostsAct ({commit}){
-        
-            await axios
-                .get('http://localhost:3000/api/v1/')
-                
-                .then(response => {
-                    // console.log(response.data.comment)
-                    commit('GET_POSTS', response.data)
-                    
-                })
-                .catch(error => {console.log(error)})
-        },//fin getAllPostsAct
 
-        async createPosts ({commit}, payload){
+        async createComments ({commit}, payload){
+            let uuid= localStorage.getItem('uuid')
+            alert(payload.postid)
             await axios
-            .post('http://localhost:3000/api/v1/post',
+            .post('http://localhost:3000/api/v1/comment/',
                 //body axios
-
+            
                 {
-                "uuid": localStorage.getItem('uuid'),
-                "content": payload.content,
-                "upload": payload.upload,
+                "uuid": uuid,
+                "post_id": payload.postid,
+                "email": payload.email,
+                "content": payload.contentCom,
+                "upload": payload.uploadCom,
                 },
                 //header axios
-                {'Authorization': 'Bearer'+' '+ localStorage.getItem('token'), 
-                'Content-Type': 'application/json'
-              },
+            //     {'Authorization': 'Bearer '+localStorage.getItem('token'), 
+            //     'Content-Type': 'application/json'
+            //   },
             
             )
             .then(response => {
                 console.log(response.data)
-                commit('CREATE_POSTS', response.data)
+                commit('CREATE_COMMENTS', response.data)
             })
             .catch(error => {console.log(error)})
         }
@@ -61,7 +48,7 @@ const getAllPosts = {
 
 }
 
-export default getAllPosts
+export default comments
 
 // formdata pour gestion des fichiers
 

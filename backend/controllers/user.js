@@ -28,7 +28,7 @@ exports.profile = async(req,res)=>{
 //Update d'un user
 exports.update = async (req, res, next) => {
     let uuid = req.params.uuid;
-    await User.findOne({where:{ uuid : uuid, active:true}}) //find et delete ancienne image
+    await User.findOne({where:{ uuid, active:true}}) //find et delete ancienne image
     .then( async userUpdated => {
         // console.log(req.file) // pour voir la requete fichier
         if(!userUpdated){
@@ -49,9 +49,9 @@ exports.update = async (req, res, next) => {
                 await User.update({ firstname: req.body.firstname, lastname:req.body.lastname, upload_url:req.file.path, active: req.body.active}, {where:{ uuid : uuid}})
                 return res.status(200).json({message:'Utilisateur mis à jour'})
             }
-            if(fs.existsSync(!filename)&&!req.file) { //si le fichier de requete est null ou undefined alors on renseigne null dans upload_url mysql
+            if(fs.existsSync(!filename)&&!req.file || !req.file) { //si le fichier de requete est null ou undefined alors on renseigne null dans upload_url mysql
                 await User.update({ firstname: req.body.firstname, lastname:req.body.lastname, upload_url:null, active: req.body.active}, {where:{ uuid : uuid}})
-                return res.status(200).json({message:'Utilisateur mis à jour'})
+                return res.status(200).json(userUpdated)
             }
             else{ //si le fichier de requete est présent et que upload_url est vide dans mysql alors on extrait le path du fichier requete et on l'enregistre dans mysql
                 await User.update({ firstname: req.body.firstname, lastname:req.body.lastname, upload_url:req.file.path, active: req.body.active}, {where:{ uuid : uuid}})

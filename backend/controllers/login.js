@@ -51,6 +51,7 @@ exports.login = (req, res, next) => {
                 }
                 res.status(200).json({
                     uuid: user.uuid,
+                    role: user.role,
                     token: jwt.sign(
                         {uuid: user.uuid},
                         'Opazlf11"é&&0_"??.zrfiofzhgo@PMld,fr', //clé d'encodage du token a mettre aléatoirement faut qu'elle soit très longue

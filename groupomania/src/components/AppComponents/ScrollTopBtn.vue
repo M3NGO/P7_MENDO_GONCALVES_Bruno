@@ -9,6 +9,7 @@
 
 export default {
 
+name:'ScrollTopBtn',
   data() {
 return {appear:0, scrollBas:0}
   },

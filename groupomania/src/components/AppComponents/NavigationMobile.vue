@@ -22,6 +22,7 @@
 
 <script>
 export default {
+name: 'NavigationMobile',
 data: () => ({
       top(){ // to top au click sur les boutons menu du bas mobile
         window.scrollTo({top: 0, left: 0, behavior: 'smooth'});

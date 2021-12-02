@@ -1,13 +1,14 @@
 <template>
 <v-container fluid>
     <v-card class="mb-15" v-for="post in allPosts" :key="post.id"> <!-- carte contenant le Post + commentaires -->
-        <v-img :aspect-ratio="16/9" v-bind:src= "post.upload_url" max-height="400"><!-- section image back du profil qui englobe l'avatar -->
+        <v-img v-if="post.upload_url !== null" :aspect-ratio="16/9" v-bind:src= "post.upload_url" max-height="400"><!-- section image back du profil qui englobe l'avatar -->
 {{post.upload_url}}
         </v-img> <!-- FIN section image back du profil qui englobe l'avatar -->
         <v-divider></v-divider>
 
         <!-- Section message du user -->
         <v-row no-gutters>
+            <!-- <v-div v-model="postid" :value= post.id>{{post.id}}</v-div> -->
                 <v-col class="d-flex align-center justify-center">          
                 
                     <v-avatar class="profile" color="grey"  rounded-pill border>
@@ -25,9 +26,9 @@
         <v-divider></v-divider>
 
         <v-card-actions class="d-flex justify-end"  ><!-- section boutons card messages -->
-            <v-tooltip bottom><!-- rendre visible que quand le role user est 2 -->
+            <v-tooltip bottom v-if="profile.role == 2"><!-- rendre visible que quand le role user est 2 -->
                 <template v-slot:activator="{ on, attrs }">
-                    <v-btn v-bind="attrs" v-on="on" plain text x-small @click="chose"
+                    <v-btn v-bind="attrs" v-on="on" plain text x-small 
                     ><v-icon size="20">mdi-alert-circle</v-icon>
                     </v-btn>
                 </template>
@@ -38,7 +39,7 @@
 
             <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
-                    <v-btn v-bind="attrs" v-on="on" plain text x-small @click="delete_comment"
+                    <v-btn v-bind="attrs" v-on="on" plain text x-small 
                     ><v-icon size="20">mdi-close</v-icon>
                     </v-btn>
                 </template>
@@ -60,7 +61,7 @@
 
             <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
-                    <v-btn v-bind="attrs" v-on="on" plain text x-small @click="reveal=true"
+                    <v-btn v-bind="attrs" v-on="on" plain text x-small @click="reveal=true" 
                     ><v-icon size="20">mdi-comment-text</v-icon>
                     </v-btn>
                 </template>
@@ -73,7 +74,7 @@
             <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
                     <v-badge overlap offset-x="15" offset-y="10" color="error" content="10">
-                        <v-btn v-bind="attrs" v-on="on" plain text x-small @click="Like"
+                        <v-btn v-bind="attrs" v-on="on" plain text x-small 
                         ><v-icon size="20">mdi-thumb-up</v-icon>
                         </v-btn>
                     </v-badge>
@@ -91,7 +92,7 @@
             <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
                     <v-badge overlap offset-x="15" offset-y="10" color="error" content="8">
-                        <v-btn v-bind="attrs" v-on="on" plain text x-small @click="Dislike"
+                        <v-btn v-bind="attrs" v-on="on" plain text x-small 
                         ><v-icon size="20">mdi-thumb-down</v-icon>
                         </v-btn>
                     </v-badge>
@@ -104,14 +105,14 @@
     <!-- Bloc création commentaire -->
         <v-divider></v-divider>
         <v-expand-transition><!-- transition fait apparaitre section écrire commentaire sous la section boutons card-->
-            <v-card-title v-if="reveal" class="transition-fast-in-fast-out v-card-text--reveal">
+            <v-card-title v-if="reveal" class="transition-fast-in-fast-out v-card-text--reveal" ref="monNewComment">
                 <v-row class="d-flex align-center">
                     <v-col cols="10" class="me-5"><!-- section création Post (message + upload multimedia) -->
-                        <v-text-field class=" body-2" label="Votre commentaire ici" :rules="rules" hide-details="auto"></v-text-field> 
-                        <v-file-input class=" body-2" label="Upload Photo/Vidéo"></v-file-input>
+                        <v-text-field class=" body-2" label="Votre commentaire ici" :rules="rules" hide-details="auto" clearable v-model="contentCom"></v-text-field> 
+                        <v-file-input class=" body-2" label="Upload Photo/Vidéo" v-model="uploadCom"></v-file-input>
                     </v-col><!-- FIN - section création Post (message + upload multimedia) -->
                 </v-row>
-                <v-btn color="error" height="40" class="me-4" text x-small @click="reveal = false">
+                <v-btn color="error" height="40" class="me-4" text x-small v-on:click="publierCommentaire(post.id, profile.email)" @click="reveal = false">
                     <v-icon>mdi-send</v-icon>
                     Publier
                 </v-btn>
@@ -136,7 +137,7 @@
         <!-- FIN - Bloc création commentaire -->
     <!-- Section timeline avec commentaires -->
         <div v-for="commentaire in post.comment" :key="commentaire.id" >
-        <Commentaires :commentaire="commentaire"/>
+        <Commentaires :commentaire="commentaire" :role="role" :profile="profile"/>
         </div>
 
     <!-- FIN - Section timeline avec commentaires -->
@@ -154,26 +155,51 @@ export default {
       Commentaires,
       
   },
-//debut gestion axios + vuex
-  computed: {
-    ...mapState('getPosts', ['allPosts']), //('nom du module dans index.js', ['nomstate dans fichier dossier module'])
-    
-  },
-  mounted(){
-    this.$store.dispatch('getPosts/getAllPostsAct') //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
-  },
-
-//FIN gestion axios + vuex
-
   data: () => ({
- 
+    contentCom:'',
+    postid: '',
+    uploadCom:[],
+
   reveal: false, // reveal false pour faire disparaitre section écrire commentaire au dessus de timeline commentaires
   updatePost: false, //pour faire disparaitre section update post au click sur bouton updater
   // controle le nombre de caractères inscrits dans partie Votre nouveau message UPDATEPOST
+  
   rules: [
     value => (value && value.length >= 10 ) || 'Votre message doit faire au moins 10 caractères',
     ],  // FIN - controle le nombre de caractères inscrits dans partie Votre nouveau message UPDATEPOST
   }),
+
+//debut gestion axios + vuex
+  computed: {
+    ...mapState('getPosts', ['allPosts']), //('nom du module dans index.js', ['nomstate dans fichier dossier module'])
+    ...mapState('getProfile', ['profile']), //('nom du module dans index.js', ['nomstate dans fichier dossier module'])
+    
+  },
+  beforeMount(){
+    this.$store.dispatch('getPosts/getAllPostsAct') //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
+    this.$store.dispatch('getProfile/getProfile') //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
+    // this.role = localStorage.getItem('role')// déclare role au montage = localstorage on s'en sert ensuite dans v-if pour cacher aux role 1
+  },
+//     updated(){
+//     this.$store.dispatch('getPosts/getAllPostsAct') //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
+//     this.role = localStorage.getItem('role')// déclare role au montage = localstorage on s'en sert ensuite dans v-if pour cacher aux role 1
+//   },
+
+  methods:{
+    publierCommentaire(postId, email){
+        // let PostId = document.getElementById("postich").innerHTML
+        // this.postid = this.$refs.pich.innerHTML
+        // alert('Post N°' + postid)
+        this.$store.dispatch('comments/createComments', {contentCom: this.contentCom, postid: postId, email: email, uploadCom: this.uploadCom}) //('nom module dans index.js/nom action liée'), payload
+        this.$refs.monNewComment.reset(); // reset le formulaire un fois envoyé le post
+        
+      },
+
+  },
+
+//FIN gestion axios + vuex
+
+
 }
 </script>
 

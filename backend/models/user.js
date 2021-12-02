@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate({Post, Comment, Post_likes_dislikes, Comment_likes_dislikes}) {
       this.hasMany(Post, {foreignKey: 'uuid', as:'post', onDelete: 'cascade', hooks: true}) // on est dans le modele User donc on dit a sequelize qu'on va associer notre uuid
       this.hasMany(Comment, {foreignKey: 'uuid', as:'comment', onDelete: 'cascade', hooks: true})
+      this.hasMany(Comment, {foreignKey: 'email', as:'commentemail', onDelete: 'cascade', hooks: true})
       this.hasMany(Post_likes_dislikes, {foreignKey: 'uuid', as:'postlikes', onDelete: 'cascade', hooks: true})
       this.hasMany(Comment_likes_dislikes, {foreignKey: 'uuid', as:'commentlikes', onDelete: 'cascade', hooks: true})
       // define association here

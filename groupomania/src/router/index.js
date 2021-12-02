@@ -6,6 +6,8 @@ import Login from '@/views/Login.vue'
 import MonActivite from '@/views/MonActivite.vue'
 import AllUsers from '@/views/AllUsers.vue'
 import Moderation from '@/views/Moderation.vue'
+import AllInactiveUsers from '@/views/AllInactiveUsers.vue'
+
 
 Vue.use(VueRouter)
 
@@ -44,8 +46,8 @@ const routes = [
   },
   {
     path: '/utilisateurs-desinscrits',
-    name: 'AllUsers',
-    component: AllUsers
+    name: 'AllInactiveUsers',
+    component: AllInactiveUsers
   },
   {
     path: '/moderation',
