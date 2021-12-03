@@ -27,7 +27,7 @@
 
             <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
-                    <v-btn v-bind="attrs" v-on="on" plain text x-small 
+                    <v-btn v-bind="attrs" v-on="on" plain text x-small v-on:click="deleteComments(commentaire.id)"
                     ><v-icon size="15">mdi-close</v-icon>
                     </v-btn>
                 </template>
@@ -83,11 +83,11 @@
             <v-card-title v-if="updateComment" class="transition-fast-in-fast-out">
                 <v-row class="d-flex align-center">
                     <v-col cols="10" class="me-5"><!-- section création Post (message + upload multimedia) -->
-                        <v-text-field class=" body-2" label="Votre nouveau commentaire ici" :rules="rules" hide-details="auto" ></v-text-field> 
-                        <v-file-input class=" body-2" label="Upload Photo/Vidéo"></v-file-input>
+                        <v-text-field class=" body-2" label="Votre nouveau commentaire ici" :rules="rules" hide-details="auto" v-model="contentUpdate"></v-text-field> 
+                        <v-file-input class=" body-2" label="Upload Photo/Vidéo" v-model="uploadUpdate"></v-file-input>
                     </v-col><!-- FIN - section création Post (message + upload multimedia) -->
                 </v-row>
-                <v-btn color="error" height="40" class="me-4" text x-small @click="updateComment = false">
+                <v-btn color="error" height="40" class="me-4" text x-small @click="updateComment = false" v-on:click="updaterComments(commentaire.post_id, commentaire.id)">
                     <v-icon>mdi-send</v-icon>
                     Updater
                 </v-btn>
@@ -115,10 +115,23 @@ export default {
         default: null
    }
   },
+  methods:{
+    updaterComments(postId, commentId){
+        this.$store.dispatch('comments/updateComments', {contentUpdate: this.contentUpdate, postid: postId, commentId:commentId, uploadUpdate: this.uploadUpdate}) 
+
+      },
+    deleteComments(commentId){
+        this.$store.dispatch('comments/deleteComments', { commentId: commentId}) 
+
+      }
+  },
 
 
 
   data: () => ({
+    contentUpdate:'',
+    uploadUpdate:'',
+    
   updateComment: false, //pour faire disparaitre section update commentaire au click sur bouton updater
   // controle le nombre de caractères inscrits dans partie Votre nouveau commentaire
   rules: [

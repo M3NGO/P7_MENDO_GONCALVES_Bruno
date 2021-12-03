@@ -28,18 +28,18 @@ exports.getPost = async (req, res) => {
 }
 
 exports.createPost = async (req,res) => {
-    let {uuid, content } = req.body
+    let {uuid, content, email } = req.body
     try{
         let user = await User.findOne({where: {uuid: uuid, active: true}})
         if(!user){
             return res.status(401).json({error: 'Utilisateur non trouvé!'})
         }
         if (req.file == null) { //si upload_url est présent pour le uuid dans mysql ET pas de fichier dans la requete, alors on efface le fichier et on met la valeur upload_url a null dans mysql
-            let newpost = await Post.create({ content: content, uuid: uuid,upload_url:null})
+            let newpost = await Post.create({ content: content, uuid: uuid, email:email, upload_url:null})
             return res.status(200).json(newpost)
           //file exists
         }else{ //si le fichier de requete est présent et que upload_url est vide dans mysql alors on extrait le path du fichier requete et on l'enregistre dans mysql
-            let newpost = await Post.create({ content: content, uuid: uuid, upload_url:req.file.path})
+            let newpost = await Post.create({ content: content, uuid: uuid, email:email, upload_url:req.file.path})
             return res.status(200).json(newpost)
         }
     }catch(err) {
@@ -65,15 +65,15 @@ exports.createPost = async (req,res) => {
         // console.log(req.file);
         if (fs.existsSync(filename)&&req.file == null ) { //si upload_url est présent pour le uuid dans mysql ET pas de fichier dans la requete, alors on efface le fichier et on met la valeur upload_url a null dans mysql
             fs.unlinkSync(filename)
-            let postupdated = await Post.update({ content: req.body.content, upload_url:null}, {where:{uuid, id: post_id}})
-            return res.status(200).json(postupdated)
+            await Post.update({ content: req.body.content, upload_url:null}, {where:{uuid, id: post_id}})
+            return res.status(200).json(postUpdated)
           //file exists
         }
         //si upload_url de l'objet trouvé à une url enregistrée &&  requete fichier envoyée par l'utilisateur alors:
         if(fs.existsSync(filename)&&req.file !== null) { //si upload_url est rempli dans mysql alors on efface le fichier et on renseigne le nouveau link vers le fichier uploadé dans upload_url de mysql (via req.file.path)
             fs.unlinkSync(filename)
             let postupdated= await Post.update({ content: req.body.content, upload_url:req.file.path}, {where: {uuid, id: post_id}})
-            return res.status(200).json(postupdated)
+            return res.status(200).json(postUpdated)
         }
         //si dans la requete body le content est vide && pas de fichier requete alors:
         if(req.body.content == ''&&req.file == null){ // pour effacer les post avec du content vide et pas d'images lors d'une mise a jour
@@ -82,8 +82,8 @@ exports.createPost = async (req,res) => {
         }
         //si dans la requete body content n'est pas vide && pas de fichier requete alors:
         if(req.body.content !== ''&& req.file == null) { //si le fichier de requete est null ou undefined alors on renseigne null dans upload_url mysql
-            let postupdated = await Post.update({ content: req.body.content, upload_url:null}, {where:{uuid, id: post_id}})
-            return res.status(200).json(postupdated)
+            await Post.update({ content: req.body.content, upload_url:null}, {where:{uuid, id: post_id}})
+            return res.status(200).json(postUpdated)
         }       
         // si la requete body content && fichier requete alors :
         else{ //si le fichier de requete est présent et que upload_url est vide dans mysql alors on extrait le path du fichier requete et on l'enregistre dans mysql
@@ -96,49 +96,50 @@ exports.createPost = async (req,res) => {
 };
 
 exports.deletePost = async(req, res) =>{
-    try{
-    let uuid = req.body.uuid;
+    // let uuid = req.body.uuid;
     let post_id = req.params.id;
-   
-    await Comment.findOne({ where: { post_id: post_id} })
-    .then(async userdelete =>{
-        if(!userdelete){
-            return res.status(401).json({error: 'Utilisateur non trouvé!'})
-        }if(userdelete){
-            let filename = userdelete.upload_url; //delete l'image avatar du user
-            if(fs.existsSync(!filename)){
-                await Comment_likes_dislikes.destroy({ where: {post_id: post_id}})
-                await Comment.destroy({ where: {post_id: post_id} })
-            }if(fs.existsSync(filename)){
-                fs.unlinkSync(filename, async (err)=>{
-                    if (err) console.log(err); console.log('Fichier du commentaire a été effacé du back')})//delete l'image avatar du user
-                    await Comment_likes_dislikes.destroy({ where: {post_id: post_id}})
-                    await Comment.destroy({ where: {post_id: post_id}})  
-            }
-            await Comment_likes_dislikes.destroy({ where: {post_id: post_id}})
-            await Comment.destroy({ where: {post_id: post_id} })
-        }
-    })
-    
-    await Post.findOne({ where: {uuid, id: post_id} })
+    try{
+        // await Comment.findOne({ where: { post_id: post_id} })
+        // .then(async userdelete =>{
+        //     if(!userdelete){
+        //         return res.status(401).json({error: 'Utilisateur non trouvé! commentaire'})
+        //     }if(userdelete){
+        //         let filename = userdelete.upload_url; //delete l'image avatar du user
+        //         if(fs.existsSync(!filename)){
+        //             await Comment_likes_dislikes.destroy({ where: {post_id: post_id}})
+        //             await Comment.destroy({ where: {post_id: post_id} })
+        //         }if(fs.existsSync(filename)){
+        //             fs.unlinkSync(filename, async (err)=>{
+        //                 if (err) console.log(err); console.log('Fichier du commentaire a été effacé du back')})//delete l'image avatar du user
+        //                 await Comment_likes_dislikes.destroy({ where: {post_id: post_id}})
+        //                 await Comment.destroy({ where: {post_id: post_id}})  
+        //         }
+        //         await Comment_likes_dislikes.destroy({ where: {post_id: post_id}})
+        //         await Comment.destroy({ where: {post_id: post_id} })
+        //     }
+        // })
+
+    await Post.findOne({ where: { id: post_id} })
         .then(async userdelete =>{
             if(!userdelete){
-                return res.status(401).json({error: 'Utilisateur non trouvé!'})
+                return res.status(401).json({error: 'Utilisateur non trouvé! post'})
             }if(userdelete){
                 let filename = userdelete.upload_url; //delete l'image avatar du user
                 if(fs.existsSync(!filename)){
                     await Post_likes_dislikes.destroy({ where: {post_id: post_id}})
-                   await Post.destroy({ where: {uuid, id: post_id} })
+                   await Post.destroy({ where: { id: post_id} })
                 }if(fs.existsSync(filename)){
                     fs.unlinkSync(filename, async (err)=>{
                         if (err) console.log(err); console.log('Fichier du Post a été effacé du back')})//delete l'image avatar du user
                         await Post_likes_dislikes.destroy({ where: {post_id: post_id}})
-                        await Post.destroy({ where: {uuid, id: post_id}})
+                        await Post.destroy({ where: { id: post_id}})
                 }
                 await Post_likes_dislikes.destroy({ where: {post_id: post_id}})
-                await Post.destroy({ where: {uuid, id: post_id} })
+                await Post.destroy({ where: { id: post_id} })
             }
         })
+
+
 
         return res.status(200).json({message: "Le post et ses commentaires ont été éffacés de Groupomania"})
     }catch(err){

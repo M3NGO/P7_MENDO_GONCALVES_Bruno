@@ -26,6 +26,7 @@ const getProfile = {
     actions: {
        async getProfile ({commit}){
         let uuid= localStorage.getItem('uuid')
+        // alert(uuid)
            await axios
                 .get('http://localhost:3000/api/v1/profil/'+uuid)
             
@@ -98,6 +99,33 @@ const getProfile = {
                 
                         .catch(error => {console.log(error)})
                 },
+
+                async toNotActiveUser ({commit}){
+                    let uuid= localStorage.getItem('uuid')
+            
+                        await axios
+            
+                            .delete('http://localhost:3000/api/v1/profil/'+uuid, 
+                            //body axios
+            
+                               //header axios
+                {'Authorization': 'Bearer'+' '+ localStorage.getItem('token'), 
+                'Content-Type': 'application/json'
+              },
+                            
+                              )//fin post HTTP
+                              
+                    
+                              .then(response => {
+                                  // console.log(response.data.comment)
+                                  commit('GET_PROFILE', response.data)
+                                  alert("Nous regrettons de vous voir partir de GROUPOMANIA. Votre profil ne sera plus accessible!!")
+                                  window.location.href ="/"
+                                  
+                              })
+                    
+                            .catch(error => {console.log(error)})
+                    },
 
     },//FIN ACTIONS
 

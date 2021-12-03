@@ -9,6 +9,9 @@ const comments = {
     mutations: {
         CREATE_COMMENTS(state, data){
             state.createComment = data
+        },
+        UPDATE_COMMENTS(state, data){
+            state.createComment.push(data)
         }
 
 
@@ -18,7 +21,7 @@ const comments = {
 
         async createComments ({commit}, payload){
             let uuid= localStorage.getItem('uuid')
-            alert(payload.postid)
+            // alert(payload.postid)
             await axios
             .post('http://localhost:3000/api/v1/comment/',
                 //body axios
@@ -41,7 +44,55 @@ const comments = {
                 commit('CREATE_COMMENTS', response.data)
             })
             .catch(error => {console.log(error)})
+        },
+
+        async updateComments ({commit}, payload){
+            let comment = payload.commentId
+            await axios
+            .put('http://localhost:3000/api/v1/comment/'+comment,
+                //body axios
+
+                {
+                "uuid": localStorage.getItem('uuid'),
+                "post_id": payload.postid,
+                "content": payload.contentUpdate,
+                "upload": payload.uploadUpdate,
+                },
+                //header axios
+                {'Authorization': 'Bearer '+ localStorage.getItem('token'), 
+                'Content-Type': 'application/json'
+              },
+            
+            )
+            .then(response => {
+                commit('UPDATE_COMMENTS', response.data)
+            })
+            .catch(error => {console.log(error)})
+        },
+
+
+        async deleteComments ({commit},payload){
+            alert(payload.commentId)
+            let commentId = payload.commentId
+            await axios
+            .delete('http://localhost:3000/api/v1/comment/'+commentId
+                //body axios
+                
+                // {
+                // "id": payload.commentId,
+                
+                // },
+                //header axios
+            //     {'Authorization': 'Bearer '+ localStorage.getItem('token'), 
+            //     'Content-Type': 'application/json'
+            //   },
+            )
+            .then(response => {
+                commit('UPDATE_COMMENTS', response.data)
+            })
+            .catch(error => {console.log(error)})
         }
+
 
 
     },//fin actions

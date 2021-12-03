@@ -35,7 +35,7 @@
       </v-col><!-- FIN - colonne contenant les field update du profil + boutons -->  
 
       <v-row class="d-flex justify-end me-1 mb-1"><!--  BOUTON SUPPRIMER COMPTE -->
-        <v-btn  text color="primary">Supprimer compte</v-btn>
+        <v-btn  text color="primary" v-on:click="toNotActiveUser()">Supprimer compte</v-btn>
       </v-row><!--  BOUTON SUPPRIMER COMPTE -->
       
     </v-card>
@@ -48,13 +48,22 @@ import { mapState } from 'vuex'
 
 export default {
   name: 'ProfilUpdate',
+  data: () => ({
+    poste:'',
+    firstname:'',
+    lastname:'',
+    password:'',
+  }),
 
   methods:{
     updateUser(){
-    this.$store.dispatch('getProfile/updateUser', {poste: this.poste, firstname: this.firstname, lastname: this.lastname, password: this.password}) //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
+      this.$store.dispatch('getProfile/updateUser', {poste: this.poste, firstname: this.firstname, lastname: this.lastname, password: this.password}) //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
     },
     updatePassword(){
-    this.$store.dispatch('getProfile/updatePassword', {password: this.password}) //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
+      this.$store.dispatch('getProfile/updatePassword', {password: this.password}) //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
+    },
+    toNotActiveUser(){
+      this.$store.dispatch('getProfile/toNotActiveUser')
     }
 
   },

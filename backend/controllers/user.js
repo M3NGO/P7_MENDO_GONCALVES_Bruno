@@ -9,20 +9,21 @@ exports.profile = async(req,res)=>{
     let uuid = req.params.uuid;
     // let lastname = req.params.lastname;
     // let email = req.body.email;
-    try{
-        let userProfile = await User.findOne({ 
+console.log(req.body)
+        await User.findOne({ 
             where: {uuid, active:true}, // si user pas actif alors son profil n'apparait pas
             include:['post', 'comment', 'postlikes','commentlikes'], //on récupère tous les post, comment, likes du user via les alias mis dans models
         })//sans uui + email dans la requete => requete rejetée
-            if(!userProfile){
+            .then(async userProfile =>{
+                if(!userProfile){
                 return res.status(401).json({error: 'Utilisateur non trouvé!'})
+            }else{
+                return res.json(userProfile)
             }
-        return res.json(userProfile)
-    }catch(err){
-        console.log(err)
-        return res.status(500).json({message: err.message})
-    }
-}
+        })
+            .catch(error => res.status(400).json({error}));
+        
+};
 //FIN - get un seul user pour le profil
 
 //Update d'un user
@@ -41,21 +42,21 @@ exports.update = async (req, res, next) => {
 
             if (fs.existsSync(filename)&&!req.file) { //si upload_url est présent pour le uuid dans mysql ET pas de fichier dans la requete, alors on efface le fichier et on met la valeur upload_url a null dans mysql
                 fs.unlinkSync(filename)
-                await User.update({ firstname: req.body.firstname, lastname:req.body.lastname,upload_url:null, active: req.body.active}, {where:{ uuid : uuid}})
-                return res.status(200).json({message:'Utilisateur mis à jour'})
+                await User.update({ firstname: req.body.firstname, lastname:req.body.lastname, poste: req.body.poste, upload_url:null, active: req.body.active}, {where:{ uuid : uuid}})
+                return res.status(200).json(userUpdated)
               //file exists
             } if(fs.existsSync(filename)) { //si upload_url est rempli dans mysql alors on efface le fichier et on renseigne le nouveau link vers le fichier uploadé dans upload_url de mysql (via req.file.path)
                 fs.unlinkSync(filename)
-                await User.update({ firstname: req.body.firstname, lastname:req.body.lastname, upload_url:req.file.path, active: req.body.active}, {where:{ uuid : uuid}})
-                return res.status(200).json({message:'Utilisateur mis à jour'})
+                await User.update({ firstname: req.body.firstname, lastname:req.body.lastname, poste: req.body.poste, upload_url:req.file.path, active: req.body.active}, {where:{ uuid : uuid}})
+                return res.status(200).json(userUpdated)
             }
             if(fs.existsSync(!filename)&&!req.file || !req.file) { //si le fichier de requete est null ou undefined alors on renseigne null dans upload_url mysql
-                await User.update({ firstname: req.body.firstname, lastname:req.body.lastname, upload_url:null, active: req.body.active}, {where:{ uuid : uuid}})
+                await User.update({ firstname: req.body.firstname, lastname:req.body.lastname, poste: req.body.poste, upload_url:null, active: req.body.active}, {where:{ uuid : uuid}})
                 return res.status(200).json(userUpdated)
             }
             else{ //si le fichier de requete est présent et que upload_url est vide dans mysql alors on extrait le path du fichier requete et on l'enregistre dans mysql
-                await User.update({ firstname: req.body.firstname, lastname:req.body.lastname, upload_url:req.file.path, active: req.body.active}, {where:{ uuid : uuid}})
-                return res.status(200).json({message:'Utilisateur mis à jour'})
+                await User.update({ firstname: req.body.firstname, lastname:req.body.lastname, poste: req.body.poste, upload_url:req.file.path, active: req.body.active}, {where:{ uuid : uuid}})
+                return res.status(200).json(userUpdated)
             }
         }
     })//else

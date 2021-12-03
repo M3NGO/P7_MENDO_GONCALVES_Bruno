@@ -2,7 +2,7 @@ let { Comment, Post, User, Post_likes_dislikes, Comment_likes_dislikes } = requi
 let fs = require('fs'); //Systeme Filesystem de node.JS
 
 exports.moderationUser = async (req, res) => {
-    let uuid = req.params.uuid;
+    let uuid = req.body.uuid;
     await User.findOne({where:{ uuid : uuid}}) //Cherche le user avec son uuid et vérifie si modérateur
     .then( async moderator => {
         if(!moderator){
@@ -32,7 +32,7 @@ exports.moderationUser = async (req, res) => {
 
 
 exports.moderationPost = async (req, res) => {
-    let uuid = req.params.uuid;
+    let uuid = req.body.uuid;
     await User.findOne({where:{ uuid : uuid}}) //cherche User parmi les moderateurs
     .then( async moderator => {
         if(!moderator){
@@ -65,7 +65,7 @@ exports.moderationPost = async (req, res) => {
 
 
 exports.moderationComment = async (req, res) => {
-    let uuid = req.params.uuid;
+    let uuid = req.body.uuid;
     await User.findOne({where:{ uuid : uuid}})//cherche User parmi les moderateurs
     .then( async moderator => {
         if(!moderator){
@@ -96,15 +96,15 @@ exports.moderationComment = async (req, res) => {
 
 exports.deleteUser = async (req, res)=>{
     let uuid = req.params.uuid;
-    await User.findOne({where:{ uuid : uuid, active: true}}) //Cherche le user avec son uuid et vérifie si modérateur
-    .then( async moderator => {
-        if(!moderator){
-            return res.status(401).json({error: 'Moderateur non trouvé!'})
-        }if(moderator && moderator.role !==2 ){
-            return res.status(401).json({error: "Vous n'êtes pas modérateur, vous ne pouvez pas faire cette action"})
-        }
-        if(moderator && moderator.role === 2){
-            let uuid = req.body.uuid
+    // await User.findOne({where:{ uuid : uuid, active: true}}) //Cherche le user avec son uuid et vérifie si modérateur
+    // .then( async moderator => {
+    //     if(!moderator){
+    //         return res.status(401).json({error: 'Moderateur non trouvé!'})
+    //     }if(moderator && moderator.role !==2 ){
+    //         return res.status(401).json({error: "Vous n'êtes pas modérateur, vous ne pouvez pas faire cette action"})
+    //     }
+    //     if(moderator && moderator.role === 2){
+    //         let uuid = req.body.uuid
             await User.findOne({where:{uuid, active: false}})
             .then(async userdelete=>{
                 if(!userdelete){
@@ -115,13 +115,14 @@ exports.deleteUser = async (req, res)=>{
                     fs.rm(folderName,{ recursive: true},async (err)=>{
                         if (err) console.log(err); console.log('Fichier Post effacé du back')})
                     await User.destroy({where:{uuid, active: false}})
+                    // on laisse les post et commentaires du user pour garder les infos sur le site puisque site interne a l'entreprise
                     return res.status(200).json({message:"L'utilsiateur ainsi que tout son contenu a été éffacé"})
 
                 }
             }).catch(error => res.status(400).json({error}));
 
-        }
-    }).catch(error => res.status(400).json({error}));
+    //     }
+    // }).catch(error => res.status(400).json({error}));
 };
 
 

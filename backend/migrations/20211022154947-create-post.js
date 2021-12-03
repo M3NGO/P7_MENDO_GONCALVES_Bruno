@@ -18,6 +18,11 @@ module.exports = {
         allowNull: false,
         allowEmpty: false
       },
+      email: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        allowEmpty: false
+      },
       content: {
         type: DataTypes.TEXT,
         allowNull: false,

@@ -11,7 +11,7 @@
         <v-file-input label="Upload Photo/Vidéo" v-model="upload"></v-file-input>
       </v-col>
       <div class="d-flex align-end justify-center mb-4" no-gutters>
-        <v-btn color="error"  height="40" text x-small v-on:click="publier()">
+        <v-btn color="error"  height="40" text x-small v-on:click="publier(profile.email)">
           <v-icon>mdi-send</v-icon>
             Publier
         </v-btn>
@@ -24,7 +24,7 @@
 </template>
 
 <script>
-// import {mapState} from 'vuex'
+import {mapState} from 'vuex'
 export default {
   name: 'Newposts',
 
@@ -35,9 +35,12 @@ export default {
       value => (value && value.length >= 10 ) || 'Votre post doit faire au moins 10 caractères',
     ],
 }),//FIN - Data
+computed:{
+  ...mapState('getProfile', ['profile']), //('nom du module dans index.js', ['nomstate dans fichier dossier module'])
+},
     methods: {
-      publier(){
-        this.$store.dispatch('getPosts/createPosts', {content: this.content, upload: this.upload}) //('nom module dans index.js/nom action liée'), payload
+      publier(email){
+        this.$store.dispatch('getPosts/createPosts', {content: this.content, email:email, upload: this.upload}) //('nom module dans index.js/nom action liée'), payload
         this.$refs.monNewPost.reset(); // reset le formulaire un fois envoyé le post
         
       },

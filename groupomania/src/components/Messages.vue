@@ -17,6 +17,7 @@
                
             </v-col>
             <v-col cols="10" class="d-flex-column flex-wrap">
+        <v-card-title class="body-1"> {{post.email}}</v-card-title>
         <v-card-text class="text-justify body-2" >{{post.content}}</v-card-text>
         <v-card-subtitle align="end" class="caption font-italic">Publié le: {{post.updatedAt}}</v-card-subtitle><!-- insert date à laquelle le user aura créé le commentaire -->
             </v-col>
@@ -39,7 +40,7 @@
 
             <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
-                    <v-btn v-bind="attrs" v-on="on" plain text x-small 
+                    <v-btn v-bind="attrs" v-on="on" plain text x-small v-on:click="deletePosts(post.id)"
                     ><v-icon size="20">mdi-close</v-icon>
                     </v-btn>
                 </template>
@@ -123,11 +124,11 @@
             <v-card-title v-if="updatePost" class="transition-fast-in-fast-out">
                 <v-row class="d-flex align-center">
                     <v-col cols="10" class="me-5"><!-- section création Post (message + upload multimedia) -->
-                        <v-text-field class=" body-2" label="Votre nouveau Message" :rules="rules" hide-details="auto"></v-text-field> 
-                        <v-file-input class=" body-2" label="Upload Photo/Vidéo"></v-file-input>
+                        <v-text-field class=" body-2" label="Votre nouveau Message" :rules="rules" hide-details="auto" v-model="contentUpdate"></v-text-field> 
+                        <v-file-input class=" body-2" label="Upload Photo/Vidéo" v-model="uploadUpdate">></v-file-input>
                     </v-col><!-- FIN - section création Post (message + upload multimedia) -->
                 </v-row>
-                <v-btn color="error" height="40" class="me-4" text x-small @click="updatePost = false">
+                <v-btn color="error" height="40" class="me-4" text x-small @click="updatePost = false" v-on:click="updaterPost(post.id)">
                     <v-icon>mdi-send</v-icon>
                     Updater
                 </v-btn>
@@ -158,7 +159,11 @@ export default {
   data: () => ({
     contentCom:'',
     postid: '',
+    uuid:'',
     uploadCom:[],
+
+    contentUpdate:'',
+    uploadUpdate:'',
 
   reveal: false, // reveal false pour faire disparaitre section écrire commentaire au dessus de timeline commentaires
   updatePost: false, //pour faire disparaitre section update post au click sur bouton updater
@@ -194,6 +199,14 @@ export default {
         this.$refs.monNewComment.reset(); // reset le formulaire un fois envoyé le post
         
       },
+      updaterPost(postId){
+        this.$store.dispatch('getPosts/updatePosts', {contentUpdate: this.contentUpdate, postid: postId, uploadUpdate: this.uploadUpdate}) 
+
+      },
+      deletePosts(postId){
+        this.$store.dispatch('getPosts/deletePosts', { postid: postId}) 
+
+      }
 
   },
 

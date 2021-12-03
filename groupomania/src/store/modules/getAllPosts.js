@@ -14,7 +14,11 @@ const getAllPosts = {
         },
         CREATE_POSTS(state, data){
             state.allPosts.push(data)
-        }
+        },
+        UPDATE_POSTS(state, data){
+            state.allPosts.push(data)
+        },
+
 
 
 
@@ -41,6 +45,7 @@ const getAllPosts = {
                 {
                 "uuid": localStorage.getItem('uuid'),
                 "content": payload.content,
+                "email": payload.email,
                 "upload": payload.upload,
                 },
                 //header axios
@@ -51,7 +56,53 @@ const getAllPosts = {
             )
             .then(response => {
                 console.log(response.data)
-                commit('CREATE_POSTS', response.data)
+                commit('GET_POSTS', response.data)
+            })
+            .catch(error => {console.log(error)})
+        },
+
+
+        async updatePosts ({commit}, payload){
+            // alert(payload.contentUpdate)
+            let post = payload.postid
+            await axios
+            .put('http://localhost:3000/api/v1/post/'+post,
+                //body axios
+
+                {
+                "uuid": localStorage.getItem('uuid'),
+                "content": payload.contentUpdate,
+                "upload": payload.uploadUpdate,
+                },
+                //header axios
+                {'Authorization': 'Bearer '+ localStorage.getItem('token'), 
+                'Content-Type': 'application/json'
+              },
+            
+            )
+            .then(response => {
+                commit('UPDATE_POSTS', response.data)
+            })
+            .catch(error => {console.log(error)})
+        },
+
+        async deletePosts ({commit}, payload){
+            alert(payload.postid)
+            let post = payload.postid
+            await axios
+            .delete('http://localhost:3000/api/v1/post/'+post,
+                //body axios
+                
+                // {
+                // "uuid": payload.uuid,
+                // },
+                //header axios
+            //     {'Authorization': 'Bearer '+ localStorage.getItem('token'), 
+            //     'Content-Type': 'application/json'
+            //   },
+            )
+            .then(response => {
+                commit('UPDATE_POSTS', response.data)
             })
             .catch(error => {console.log(error)})
         }
