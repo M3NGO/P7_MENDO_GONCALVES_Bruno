@@ -29,6 +29,10 @@ module.exports = {
         allowNull: true,
         // defaultValue: 'Groupomania',
       },
+      poste: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
       email: {
         type: DataTypes.STRING,
         allowNull: false,
