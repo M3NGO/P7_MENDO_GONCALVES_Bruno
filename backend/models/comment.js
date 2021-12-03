@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate({User, Post}) {
       // define association here
       this.belongsTo(User, {foreignKey: 'uuid', as:'user', onDelete: 'cascade', hooks: true})
-      this.belongsTo(User, {foreignKey: 'email', as:'useremail', onDelete: 'cascade', hooks: true})
+      // this.belongsTo(User, {foreignKey: 'email', as:'useremail', onDelete: 'cascade', hooks: true})
       this.belongsTo(Post, {foreignKey: 'post_id', as:'post', onDelete: 'cascade', hooks: true})
     }
     // toJSON() { 
@@ -33,12 +33,7 @@ module.exports = (sequelize, DataTypes) => {
     email: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true, //unique pour forcer la BDD a n'avoir qu'une fois un email
-      validate:{
-        notNull: { msg: "L'utilisateur doit avoir une adresse mail"},
-        notEmpty: { msg: "L'utilisateur doit renseigner son adresse mail'"},
-        isEmail: { msg: "L'utilisateur doit utiiliser un email valide"}
-      }
+      allowEmpty: false
     },
     post_id:{
       type: DataTypes.INTEGER,

@@ -21,7 +21,7 @@ module.exports = {
       email: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true
+        allowEmpty: false
       },
       post_id: {
         type: DataTypes.INTEGER
