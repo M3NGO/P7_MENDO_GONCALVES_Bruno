@@ -12,7 +12,6 @@ module.exports = (sequelize, DataTypes) => {
     static associate({User, Post}) {
       // define association here
       this.belongsTo(User, {foreignKey: 'uuid', as:'user', onDelete: 'cascade', hooks: true})
-      // this.belongsTo(User, {foreignKey: 'email', as:'useremail', onDelete: 'cascade', hooks: true})
       this.belongsTo(Post, {foreignKey: 'post_id', as:'post', onDelete: 'cascade', hooks: true})
     }
     // toJSON() { 
