@@ -8,6 +8,7 @@ import comments from './modules/comments'
 import getUsers from './modules/getAllUsers'
 import Auth from './modules/auth'
 import getProfile from './modules/getProfile'
+import moderation from './modules/moderation'
 
 
 
@@ -22,6 +23,7 @@ export default new Vuex.Store({
     getUsers,
     Auth,
     getProfile,
+    moderation,
 
   }
 })

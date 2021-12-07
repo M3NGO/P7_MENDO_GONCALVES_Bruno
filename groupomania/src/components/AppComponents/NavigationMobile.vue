@@ -6,7 +6,7 @@
         </v-btn><!-- icone Home -->
 
         <v-btn @click="top" link :to="{path:'/activite'}" ><!-- icone email -->
-            <span class="text-caption">Mes Posts</span>
+            <span class="text-caption">Mon activité</span>
             <v-icon>mdi-email</v-icon>
         </v-btn><!-- icone email -->
 

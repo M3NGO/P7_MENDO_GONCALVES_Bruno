@@ -44,6 +44,7 @@ const login = {
                   )//fin post HTTP
                 
                 .then(response => {
+  
                     // console.log(response.data.comment)
                     commit('POST_LOGIN', response.data),
                     localStorage.setItem('uuid', response.data.uuid)
@@ -52,7 +53,9 @@ const login = {
                     window.location.href ="/wall" // redirect vers wall si rep backend ok + localstorage uuid + token
                     
                 })
-                .catch(error => {console.log(error)})
+                .catch(error => {
+         alert('Email ou mot de passe non valide, Connexion refusée!!')
+                    console.log(error) })
         },
 
         async logout () {

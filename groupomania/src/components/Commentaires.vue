@@ -1,5 +1,5 @@
 <template>
-  <v-timeline align-top dense class="me-3"><!-- timeline des commentaires -->
+  <v-timeline align-top dense class="me-3" v-if="commentaire.active == true" ><!-- timeline des commentaires -->
     <v-timeline-item><!-- créé l'item commentaire et place sur timeline -->
       <template  v-slot:icon><!-- icone sur la timeline a gauche du commentaire ajouter l'avatar de la personne qui commente-->
         <v-avatar>
@@ -16,7 +16,7 @@
         <v-card-actions class="d-flex justify-end flex-wrap" ><!-- section boutons card messages -->
             <v-tooltip bottom v-if="profile.role == 2"><!-- rendre visible que quand le role user est 2 -->
                 <template v-slot:activator="{ on, attrs }">
-                    <v-btn v-bind="attrs" v-on="on" plain text x-small 
+                    <v-btn v-bind="attrs" v-on="on" plain text x-small v-on:click="moderationComment(commentaire.id, profile.uuid)"
                     ><v-icon size="15">mdi-alert-circle</v-icon>
                     </v-btn>
                 </template>
@@ -27,7 +27,7 @@
 
             <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
-                    <v-btn v-bind="attrs" v-on="on" plain text x-small v-on:click="deleteComments(commentaire.id)"
+                    <v-btn v-if="profile.uuid === commentaire.uuid" v-bind="attrs" v-on="on" plain text x-small v-on:click="deleteComments(commentaire.id)"
                     ><v-icon size="15">mdi-close</v-icon>
                     </v-btn>
                 </template>
@@ -38,7 +38,7 @@
 
             <v-tooltip bottom><!-- rendre visible que quand le user est celui qui a créé le commentaire -->
                 <template v-slot:activator="{ on, attrs }">
-                    <v-btn v-bind="attrs" v-on="on" plain text x-small @click="updateComment=true"
+                    <v-btn v-if="profile.uuid === commentaire.uuid" v-bind="attrs" v-on="on" plain text x-small @click="updateComment=true"
                     ><v-icon size="15">mdi-cog</v-icon>
                     </v-btn>
                 </template>
@@ -83,7 +83,7 @@
             <v-card-title v-if="updateComment" class="transition-fast-in-fast-out">
                 <v-row class="d-flex align-center">
                     <v-col cols="10" class="me-5"><!-- section création Post (message + upload multimedia) -->
-                        <v-text-field class=" body-2" label="Votre nouveau commentaire ici" :rules="rules" hide-details="auto" v-model="contentUpdate"></v-text-field> 
+                        <v-text-field class=" body-2" label="Votre nouveau commentaire ici" :rules="rules" hide-details="auto" v-model="contentUpdate" clearable></v-text-field> 
                         <v-file-input class=" body-2" label="Upload Photo/Vidéo" v-model="uploadUpdate"></v-file-input>
                     </v-col><!-- FIN - section création Post (message + upload multimedia) -->
                 </v-row>
@@ -122,8 +122,10 @@ export default {
       },
     deleteComments(commentId){
         this.$store.dispatch('comments/deleteComments', { commentId: commentId}) 
-
-      }
+      },
+    moderationComment(commentId, uuid){
+        this.$store.dispatch('moderation/moderationComment', {comment_id: commentId, uuid:uuid}) 
+      },
   },
 
 

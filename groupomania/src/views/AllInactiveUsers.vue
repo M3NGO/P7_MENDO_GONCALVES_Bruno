@@ -1,7 +1,7 @@
 <template>
     <v-main>
         <v-container v-if="profile.role == 2">
-            <v-card-title>Liste de tous les utilisateurs INACTIFS</v-card-title>
+            <v-card-title>Utilisateurs supprimés</v-card-title>
 
             <v-card class="mx-auto mb-5" max-width="400" v-for="user in allInactiveUsers" :key="user.id">
             <v-card-title>
@@ -24,14 +24,9 @@
                 <v-row align="center" justify="end">
 
                     <v-btn icon class="rounded-xl" ><!-- Delete user ne doit apparaitre que dans utilisateurs désinscrits et pour moderateurs -->
-                        <v-icon @click="deleteUser" color="error">mdi-close-circle</v-icon><!-- a présenter que quand user est désactivé et uniquement pour les moderateurs-->
+                        <v-icon v-on:click="deleteUser(user.uuid, user.email)" color="error">mdi-close-circle</v-icon><!-- a présenter que quand user est désactivé et uniquement pour les moderateurs-->
                     </v-btn>
 
-                    <span class="mr-1" color="primary">·</span>
-
-                    <v-btn icon class="rounded-xl"><!-- Lock user doit apparaitre que dans Liste tous les utilisateurs et uniquement pour moderateurs -->
-                        <v-icon class="mr-1" @click="blockUser" color="error">mdi-lock</v-icon><!-- bouton moderation user pour les moderateurs uniquement -->
-                    </v-btn>
                     <span class="mr-1" color="primary">·</span>
 
                     <v-icon class="mr-1" color="primary">mdi-email</v-icon>
@@ -71,6 +66,27 @@ computed: {
     this.$store.dispatch('getUsers/getAllInactiveUsersAct') //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
     this.$store.dispatch('getProfile/getProfile') //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
   },
-        
+      
+    methods:{
+        deleteUser(user, email){
+        let confirmation = confirm("Êtes-vous sûr(e) de vouloir supprimer définitivement l'utilisateur : "+email+ " ? tout son contenu sera irrécupérable")
+
+            if(confirmation){
+                this.$store.dispatch('moderation/deleteUser',{user:user})
+            }else{
+                window.location.reload
+            }
+        },
+
+        unblockUser(user, moderator, email){
+        let confirmation = confirm("Êtes-vous sûr(e) de vouloir débloquer l'utilisateur : "+email)
+            if(confirmation){
+                this.$store.dispatch('moderation/unblockUser', {uuid:user, moderator:moderator, email:email})
+            }else{
+                window.location.reload
+            }
+        },
+    }
+      
 }
 </script>

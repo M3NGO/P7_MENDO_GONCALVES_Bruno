@@ -33,10 +33,11 @@ const getAllUsers = {
         async getAllInactiveUsersAct ({commit}){
         
             await axios
-                .get('http://localhost:3000/api/v1/allusers/notactive')
+                .get('http://localhost:3000/api/v1/moderation/get/users/deleted')
                 
                 .then(response => {
-                    // console.log(response.data.comment)
+                    // if(response.data.email)
+                    console.log(response.data)
                     commit('GET_INACTIVE_USERS', response.data)
                     
                 })

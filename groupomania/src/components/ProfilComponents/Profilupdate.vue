@@ -63,7 +63,13 @@ export default {
       this.$store.dispatch('getProfile/updatePassword', {password: this.password}) //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
     },
     toNotActiveUser(){
-      this.$store.dispatch('getProfile/toNotActiveUser')
+      let confirmation = confirm("Êtes-vous sûr(e) de vouloir supprimer votre compte Groupomania?")
+      if(confirmation){
+        this.$store.dispatch('getProfile/toNotActiveUser')
+      }else{
+        window.location.reload
+      }
+      
     }
 
   },

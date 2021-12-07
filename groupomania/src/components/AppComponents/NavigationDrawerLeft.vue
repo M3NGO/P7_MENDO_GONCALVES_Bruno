@@ -22,7 +22,7 @@
             <v-list-item-icon>
               <v-icon>mdi-email</v-icon>
             </v-list-item-icon>
-              <v-list-item-title>Mes Posts</v-list-item-title>
+              <v-list-item-title>Mon activité</v-list-item-title>
           </v-list-item><!-- icone Email -->
 
           <v-list-item color="error" link :to="{path:'/profil'}" @click="top"><!-- icone Rouage -->

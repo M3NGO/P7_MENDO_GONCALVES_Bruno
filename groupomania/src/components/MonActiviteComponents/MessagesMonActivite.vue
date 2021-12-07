@@ -1,6 +1,6 @@
 <template>
 <v-container fluid>
-    <v-card class="mb-15" v-for="post in allPosts" :key="post.id"> <!-- carte contenant le Post + commentaires -->
+    <v-card class="mb-15" v-for="post in profile.post" :key="post.id"> <!-- carte contenant le Post + commentaires -->
         <v-img v-if="post.upload_url !== null" :aspect-ratio="16/9" v-bind:src= "post.upload_url" max-height="400"><!-- section image back du profil qui englobe l'avatar -->
 {{post.upload_url}}
         </v-img> <!-- FIN section image back du profil qui englobe l'avatar -->
@@ -27,38 +27,28 @@
         <v-divider></v-divider>
 
         <v-card-actions class="d-flex justify-end"  ><!-- section boutons card messages -->
-            <v-tooltip bottom v-if="profile.role == 2"><!-- rendre visible que quand le role user est 2 -->
-                <template v-slot:activator="{ on, attrs }">
-                    <v-btn v-bind="attrs" v-on="on" plain text x-small v-on:click="moderationPost(post.id, profile.uuid)"
-                    ><v-icon size="20">mdi-alert-circle</v-icon>
-                    </v-btn>
-                </template>
-                    <span>Modération</span>
-            </v-tooltip>
-
-            <v-divider v-if="profile.uuid === post.uuid" vertical></v-divider><!-- rendre visible que quand le role user est 2 -->
 
             <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
-                    <v-btn v-if="profile.uuid === post.uuid" v-bind="attrs" v-on="on" plain text x-small v-on:click="deletePosts(post.id)"
+                    <v-btn v-bind="attrs" v-on="on" plain text x-small v-on:click="deletePosts(post.id)"
                     ><v-icon size="20">mdi-close</v-icon>
                     </v-btn>
                 </template>
                     <span>Effacer</span>
             </v-tooltip>
 
-            <v-divider v-if="profile.uuid === post.uuid" vertical></v-divider><!-- rendre visible que quand le user est celui qui a créé le commentaire -->
+            <v-divider vertical></v-divider><!-- rendre visible que quand le user est celui qui a créé le commentaire -->
 
             <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
-                    <v-btn v-if="profile.uuid === post.uuid" v-bind="attrs" v-on="on" plain text x-small @click="updatePost=true"
+                    <v-btn v-bind="attrs" v-on="on" plain text x-small @click="updatePost=true"
                     ><v-icon size="20">mdi-cog</v-icon>
                     </v-btn>
                 </template>
                     <span>Mise à jour</span>
             </v-tooltip>
 
-            <v-divider v-if="profile.uuid === post.uuid" vertical></v-divider><!-- rendre visible que quand le user est celui qui a créé le commentaire -->
+            <v-divider vertical></v-divider><!-- rendre visible que quand le user est celui qui a créé le commentaire -->
 
             <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
@@ -137,9 +127,6 @@
     <v-divider></v-divider>
         <!-- FIN - Bloc création commentaire -->
     <!-- Section timeline avec commentaires -->
-        <div v-for="commentaire in post.comment" :key="commentaire.id" >
-        <Commentaires :commentaire="commentaire" :role="role" :profile="profile"/>
-        </div>
 
     <!-- FIN - Section timeline avec commentaires -->
     </v-card>
@@ -147,13 +134,13 @@
 </template>
 
 <script>
-import Commentaires from '@/components/Commentaires.vue'
+
 import { mapState } from 'vuex'
 
 export default {
   name: 'Message',
   components:{
-      Commentaires,
+    
       
   },
   data: () => ({
@@ -177,12 +164,11 @@ export default {
 
 //debut gestion axios + vuex
   computed: {
-    ...mapState('getPosts', ['allPosts']), //('nom du module dans index.js', ['nomstate dans fichier dossier module'])
     ...mapState('getProfile', ['profile']), //('nom du module dans index.js', ['nomstate dans fichier dossier module'])
     
   },
   beforeMount(){
-    this.$store.dispatch('getPosts/getAllPostsAct') //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
+   
     this.$store.dispatch('getProfile/getProfile') //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
     
     // this.role = localStorage.getItem('role')// déclare role au montage = localstorage on s'en sert ensuite dans v-if pour cacher aux role 1
