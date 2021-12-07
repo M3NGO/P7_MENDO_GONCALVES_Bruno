@@ -22,10 +22,6 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   User.init({
-    active:{
-      type: DataTypes.BOOLEAN,
-      defaultValue: true
-    },
     uuid: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
@@ -33,6 +29,14 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       allowEmpty: false
     }, // UUID pour la création d'url perso sans divulguer le ranking de l'user dans la BDD
+    active:{
+      type: DataTypes.BOOLEAN,
+      defaultValue: true
+    },
+    user_deleted:{
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
+    },
     firstname: {
       type: DataTypes.STRING,
       allowNull: true,

@@ -8,16 +8,20 @@ module.exports = {
         primaryKey: true,
         type: DataTypes.INTEGER
       },
-      active:{
-        type: DataTypes.BOOLEAN,
-        defaultValue: true
-      },
       uuid: {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
         allowNull: false,
         allowEmpty: false
+      },
+      active:{
+        type: DataTypes.BOOLEAN,
+        defaultValue: true
+      },
+      user_deleted:{
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
       },
       firstname: {
         type: DataTypes.STRING,

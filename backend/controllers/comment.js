@@ -25,7 +25,7 @@ exports.createComment = async (req,res) => {
     let comment_id = req.params.id;
     try{
         let commentview = await Comment.findOne({ 
-            where: { id: comment_id}, include:['post'] //include post pour avoir le post + les commentaires liés => voir alias as:'post' dans models
+            where: { id: comment_id, active: true}, include:['post'] //include post pour avoir le post + les commentaires liés => voir alias as:'post' dans models
         })//sans uui + email dans la requete => requete rejetée
             if(!commentview){
                 return res.status(401).json({error: 'Commentaire non trouvé!'})

@@ -14,12 +14,3 @@ exports.getallusers = async(req,res)=>{
 }
 //FIN - get tous les users (a voir si utile pour l'appli)
 
-exports.allusersnotactive = async(req,res)=>{
-    try{
-        let users = await User.findAll({where: {active: false}},{include:['comment','post']})
-        return res.json(users)
-    }catch(err){
-        console.log(err)
-        return res.status(500).json({message: err.message})
-    }
-}
