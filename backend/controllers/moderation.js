@@ -153,7 +153,7 @@ exports.deleteUser = async (req, res)=>{
                     return res.status(401).json({error: 'Utilisateur non trouvé!'})
                 }
                 if(userdelete){
-                    let folderName = '../uploads/'+userdelete.uuid
+                    let folderName = './uploads/'+userdelete.uuid
                     fs.rm(folderName,{ recursive: true},async (err)=>{
                         if (err) console.log(err); console.log('Fichier Post effacé du back')})
                     await User.destroy({where:{uuid, active: false}})

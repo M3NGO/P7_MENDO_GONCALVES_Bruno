@@ -18,14 +18,14 @@ exports.signup = async (req,res) => {
                 email:req.body.email, 
                 password:hash,
                 }) //{email, password} objet json envoyé dans body request
-                fs.mkdirSync('../uploads/'+user.uuid)
-                fs.mkdirSync('../uploads/'+user.uuid +'/avatar')
-                fs.mkdirSync('../uploads/'+user.uuid +'/images')
-                fs.mkdirSync('../uploads/'+user.uuid + '/images/posts')
-                fs.mkdirSync('../uploads/'+user.uuid + '/images/comments')
-                fs.mkdirSync('../uploads/'+user.uuid +'/videos')
-                fs.mkdirSync('../uploads/'+user.uuid + '/videos/posts')
-                fs.mkdirSync('../uploads/'+user.uuid + '/videos/comments')
+                fs.mkdirSync('./uploads/'+user.uuid)
+                fs.mkdirSync('./uploads/'+user.uuid +'/avatar')
+                fs.mkdirSync('./uploads/'+user.uuid +'/images')
+                fs.mkdirSync('./uploads/'+user.uuid + '/images/posts')
+                fs.mkdirSync('./uploads/'+user.uuid + '/images/comments')
+                fs.mkdirSync('./uploads/'+user.uuid +'/videos')
+                fs.mkdirSync('./uploads/'+user.uuid + '/videos/posts')
+                fs.mkdirSync('./uploads/'+user.uuid + '/videos/comments')
             return res.json(user) // renvoit la réponse
         }catch(err) {
             console.log(err)

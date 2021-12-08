@@ -1,7 +1,7 @@
 <template>
 <v-container fluid>
     <v-card class="mb-15" v-for="post in allPostsModeration" :key="post.id"> <!-- carte contenant le Post + commentaires -->
-        <v-img v-if="post.upload_url !== null" :aspect-ratio="16/9" v-bind:src= "post.upload_url" max-height="400"><!-- section image back du profil qui englobe l'avatar -->
+        <v-img v-if="post.upload_url !== null" :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' + post.upload_url" max-height="400"><!-- section image back du profil qui englobe l'avatar -->
 {{post.upload_url}}
         </v-img> <!-- FIN section image back du profil qui englobe l'avatar -->
         <v-divider></v-divider>
@@ -9,12 +9,18 @@
         <!-- Section message du user -->
         <v-row no-gutters>
             <!-- <v-div v-model="postid" :value= post.id>{{post.id}}</v-div> -->
-                <v-col class="d-flex align-center justify-center">          
+            <v-col class="d-flex align-center justify-center" v-if="post.avatar != null">          
                 
                     <v-avatar class="profile" color="grey"  rounded-pill border>
-                    <v-img small src="https://i.pravatar.cc/64"></v-img>
+                    <v-img small v-bind:src="'http://localhost:3000/' + post.avatar"></v-img>
                     </v-avatar>
+
                
+            </v-col>
+            <v-col class="d-flex align-center justify-center" v-if="post.avatar == null"> 
+                    <v-avatar class="profile" color="grey"  rounded-pill border >
+                    <v-icon center dark >mdi-account-circle</v-icon>
+                    </v-avatar>
             </v-col>
             <v-col cols="10" class="d-flex-column flex-wrap">
         <v-card-title class="body-1"> {{post.email}}</v-card-title>

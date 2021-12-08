@@ -2,8 +2,11 @@
   <v-timeline align-top dense class="me-3"><!-- timeline des commentaires -->
     <v-timeline-item><!-- créé l'item commentaire et place sur timeline -->
       <template  v-slot:icon><!-- icone sur la timeline a gauche du commentaire ajouter l'avatar de la personne qui commente-->
-        <v-avatar>
-          <img src="https://i.pravatar.cc/64">
+        <v-avatar color="grey" v-if="commentaire.avatar != null">
+          <v-img small v-bind:src="'http://localhost:3000/' + commentaire.avatar"></v-img>
+        </v-avatar>
+        <v-avatar color="grey" v-if="commentaire.avatar == null">
+          <v-icon center dark >mdi-account-circle</v-icon>
         </v-avatar>
       </template><!-- FIN - icone sur la timeline a gauche du commentaire ajouter l'avatar de la personne qui commente-->
 

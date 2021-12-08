@@ -23,6 +23,11 @@ module.exports = {
         allowNull: false,
         allowEmpty: false
       },
+      avatar: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        allowEmpty: true
+      },
       post_id: {
         type: DataTypes.INTEGER
       },

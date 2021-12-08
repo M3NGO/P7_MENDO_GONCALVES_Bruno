@@ -8,9 +8,13 @@
             
                 <v-list-item class="grow">
                     <v-btn icon class="rounded-xl" link :to="{path:'/profil'}"><!-- click sur icone avatar et go to profil user -->
-                <v-list-item-avatar color="grey darken-3" >
-                    <v-img class="elevation-6" src="https://i.pravatar.cc/64" alt="avatar user"></v-img>
-                </v-list-item-avatar>
+                        <v-avatar color="grey" class="me-5" v-if="user.upload_url != null">
+                            <v-img small v-bind:src="'http://localhost:3000/' + user.upload_url" ></v-img>
+                        </v-avatar>
+                    
+                        <v-avatar color="grey" class="me-5" v-if="user.upload_url == null">
+                            <v-icon center color="white" >mdi-account-circle</v-icon>
+                        </v-avatar>
                     </v-btn>
                 <v-list-item-title class="text-wrap">{{user.email}}
                     <v-list-item-subtitle class="text-wrap">{{user.firstname}} {{user.lastname}}</v-list-item-subtitle>

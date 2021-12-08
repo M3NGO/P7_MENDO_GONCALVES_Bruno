@@ -1,12 +1,18 @@
 <template>
   <v-container fluid> <!-- Div Contenu Profil -->
     <v-card>
-      <v-img height="100%" min-height="300" src="@/assets/Logo_Groupomania.png"><!-- haut de la carte profil update-->
+      <v-img height="100%" min-height="200" max-height="400" src="@/assets/Logo_Groupomania.png"><!-- haut de la carte profil update-->
         <v-row align="end" class="fill-height">
-          <v-col align-self="start" class="pa-0" cols="12">
-            <v-avatar class="profile" color="grey" size="20%" rounded tile>
-              <v-img src="https://i.pravatar.cc/64">{{profile.upload_url}}</v-img>
+          <v-col align-self="start" class="pa-0" cols="12" >
+            
+            <v-avatar class="profile" color="grey" size="20%" rounded tile border v-if="profile.upload_url != null">
+              <v-img small v-bind:src="'http://localhost:3000/' + profile.upload_url"></v-img>
             </v-avatar>
+
+            <v-avatar class="profile" color="white" size="25%" rounded tile border v-if="profile.upload_url == null" >
+              <v-img small src="@/assets/Logo_Groupomania.png"></v-img>
+            </v-avatar>
+
           </v-col>
           <v-col class="py-0">
             <v-list-item color="grey">

@@ -2,8 +2,9 @@
  <v-container fluid>
   <v-card class="d-flex-column" >
     <v-form class="d-flex justify-center monPost"  no-gutters ref="monNewPost">
-      <v-list-item-avatar class="ms-4"> <!-- Avatar du user connecté-->
-        <v-img src="https://i.pravatar.cc/64" alt="avatar user"/>
+      <v-list-item-avatar class="ms-4" color="grey" > <!-- Avatar du user connecté-->
+        <v-img small v-bind:src="'http://localhost:3000/' + profile.upload_url" v-if="profile.upload_url != null"></v-img>
+        <v-icon center color="white" v-if="profile.upload_url == null">mdi-account-circle</v-icon>
       </v-list-item-avatar><!-- FIN - Avatar du user connecté-->
        
       <v-col>

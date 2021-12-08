@@ -3,8 +3,13 @@
     <v-navigation-drawer app permanent expand-on-hover v-if="this.$route.path !== '/'&& this.$route.path !== '/inscription'">
     <!-- mini-variant pour créér l'effet reduction menu + expand-on-hover pour l'agrandir en hover + v-if pour l'afficher quand on est dans l'app -->
       <v-list-item class="px-1 py-1"><!-- avatar drawer-->
-        <v-avatar>
-          <v-img src="https://i.pravatar.cc/64" alt="avatar user"/>
+      
+        <v-avatar class="profile" color="grey"  rounded-pill border v-if="profile.upload_url != null">
+          <v-img small v-bind:src="'http://localhost:3000/' + profile.upload_url"></v-img>
+        </v-avatar>
+        
+        <v-avatar class="profile" color="grey"  rounded-pill border v-if="profile.upload_url == null" >
+          <v-icon center dark >mdi-account-circle</v-icon>
         </v-avatar>
         <v-list-item-title class="ms-1">{{profile.email}}</v-list-item-title>
       </v-list-item><!-- FIN - avatar drawer-->
