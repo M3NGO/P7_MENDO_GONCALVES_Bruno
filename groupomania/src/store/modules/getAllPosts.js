@@ -38,25 +38,38 @@ const getAllPosts = {
         },//fin getAllPostsAct
 
         async createPosts ({commit}, payload){
-            await axios
-            .post('http://localhost:3000/api/v1/post',
-                //body axios
+            //formData Axios
+                let formData = new FormData();
+                    formData.append('file', payload.file);
+                    formData.append('uuid', localStorage.getItem('uuid'));
+                    formData.append('email', payload.email);
+                    formData.append('content', payload.content,);
+                    formData.append('upload', payload.upload);
 
-                {
-                "uuid": localStorage.getItem('uuid'),
-                "content": payload.content,
-                "email": payload.email,
-                "upload": payload.upload,
-                },
-                //header axios
-                {'Authorization': 'Bearer'+' '+ localStorage.getItem('token'), 
-                'Content-Type': 'application/json'
-              },
+                await axios
+                .post('http://localhost:3000/api/v1/post',
+                    
+                formData,
+                //body axios
+                    // {
+                    // "uuid": localStorage.getItem('uuid'),
+                    // "content": payload.content,
+                    // "email": payload.email,
+                    // "upload": payload.upload,
+                    // },
+                    // //header axios
+                    {'Authorization': 'Bearer'+' '+ localStorage.getItem('token'), 
+                    // 'Content-Type': 'application/json'
+                    'Content-Type': 'multipart/form-data'
+                  },
+                
+                )
+
             
-            )
+ 
             .then(response => {
                 console.log(response.data)
-                commit('GET_POSTS', response.data)
+                commit('CREATE_POSTS', response.data)
             })
             .catch(error => {console.log(error)})
         },
@@ -65,18 +78,41 @@ const getAllPosts = {
         async updatePosts ({commit}, payload){
             // alert(payload.contentUpdate)
             let post = payload.postid
+// console.log('payload le voici: '+ payload)
+            let formData = new FormData();
+            // formData.append('file', payload.file);
+            // formData.append('uuid', localStorage.getItem('uuid'));
+            // formData.append('content', payload.content,);
+            // formData.append('upload', payload.upload);
+            formData.append('uuid', localStorage.getItem('uuid'));
+
+            if(payload.contentUpdate != '' || null){
+              formData.append('content', payload.contentUpdate);
+            }else if(payload.uploadUpdate != '' || null){
+              formData.append('upload', payload.uploadUpdate);
+            }else if(payload.file != '' || null ){
+            formData.append('file', payload.file);
+            }
+            
+            
+            //check console des infos envoyées par formData
+            for (var pair of formData.entries()) {
+              console.log(pair[0]+ ', ' + pair[1]); 
+          }
+
             await axios
             .put('http://localhost:3000/api/v1/post/'+post,
                 //body axios
-
-                {
-                "uuid": localStorage.getItem('uuid'),
-                "content": payload.contentUpdate,
-                "upload": payload.uploadUpdate,
-                },
+                formData,
+                // {
+                // "uuid": localStorage.getItem('uuid'),
+                // "content": payload.contentUpdate,
+                // "upload": payload.uploadUpdate,
+                // },
                 //header axios
                 {'Authorization': 'Bearer '+ localStorage.getItem('token'), 
-                'Content-Type': 'application/json'
+                // 'Content-Type': 'application/json'
+                'Content-Type': 'multipart/form-data'
               },
             
             )
@@ -87,7 +123,7 @@ const getAllPosts = {
         },
 
         async deletePosts ({commit}, payload){
-            alert(payload.postid)
+            // alert(payload.postid)
             let post = payload.postid
             await axios
             .delete('http://localhost:3000/api/v1/post/'+post,

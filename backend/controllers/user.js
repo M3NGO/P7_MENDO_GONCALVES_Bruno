@@ -41,8 +41,8 @@ exports.update = async (req, res, next) => {
     //block gestion des upload avatar :
 
             if (fs.existsSync(filename)&&!req.file) { //si upload_url est présent pour le uuid dans mysql ET pas de fichier dans la requete, alors on efface le fichier et on met la valeur upload_url a null dans mysql
-                fs.unlinkSync(filename)
-                await User.update({ firstname: req.body.firstname, lastname:req.body.lastname, poste: req.body.poste, upload_url:null, active: req.body.active}, {where:{ uuid : uuid}})
+                // fs.unlinkSync(filename)
+                await User.update({ firstname: req.body.firstname, lastname:req.body.lastname, poste: req.body.poste, active: req.body.active}, {where:{ uuid : uuid}})
                 let user = await User.findOne({where:{ uuid, active:true}}) //on attend l'update user et on find ne nouvea puis on distribue l'url d'image
                     await Post.update({ avatar: user.upload_url}, {where:{uuid}})
                     await Comment.update({ avatar: user.upload_url}, {where:{uuid}})
@@ -57,7 +57,7 @@ exports.update = async (req, res, next) => {
                 return res.status(200).json(userUpdated)
             }
             if(fs.existsSync(!filename)&&!req.file || !req.file) { //si le fichier de requete est null ou undefined alors on renseigne null dans upload_url mysql
-                await User.update({ firstname: req.body.firstname, lastname:req.body.lastname, poste: req.body.poste, upload_url:null, active: req.body.active}, {where:{ uuid : uuid}})
+                await User.update({ firstname: req.body.firstname, lastname:req.body.lastname, poste: req.body.poste, active: req.body.active}, {where:{ uuid : uuid}})
                 let user = await User.findOne({where:{ uuid, active:true}}) //on attend l'update user et on find ne nouvea puis on distribue l'url d'image
                     await Post.update({ avatar: user.upload_url}, {where:{uuid}})
                     await Comment.update({ avatar: user.upload_url}, {where:{uuid}})
@@ -97,6 +97,32 @@ exports.updatePassword = async (req, res)=>{
         })//then
         .catch(err=> res.status(500).json({message: err.message}))
 }
+
+exports.deleteAvatar = async (req, res, next) => {
+    let uuid = req.params.uuid;
+    await User.findOne({where:{ uuid, active:true}}) //find et delete ancienne image
+    .then( async userUpdated => {
+        // console.log(req.file) // pour voir la requete fichier
+        if(!userUpdated){
+        
+            return res.status(401).json({error: 'Utilisateur non trouvé!'})
+            
+    }if(userUpdated){
+    let filename = userUpdated.upload_url;
+    if(fs.existsSync(filename)) { //si upload_url est rempli dans mysql alors on efface le fichier et on renseigne le nouveau link vers le fichier uploadé dans upload_url de mysql (via req.file.path)
+        fs.unlinkSync(filename)
+        await User.update({upload_url:null}, {where:{ uuid : uuid}})
+        let user = await User.findOne({where:{ uuid, active:true}}) //on attend l'update user et on find ne nouvea puis on distribue l'url d'image
+            await Post.update({ avatar: user.upload_url}, {where:{uuid}})
+            await Comment.update({ avatar: user.upload_url}, {where:{uuid}})
+        return res.status(200).json(userUpdated)
+    }else{
+        return res.status(401).json({message:"L'utilisateur n'a pas d'avatr"})
+    }
+}
+    }).catch(err=> res.status(500).json({message: err.message}))
+}
+
 
 exports.delete = async (req, res)=>{
     let uuid = req.params.uuid;

@@ -40,6 +40,7 @@ exports.createComment = async (req,res) => {
  exports.updateComment = async (req, res) => {
     // let uuid = req.params.uuid;
     // console.log(uuid)
+    let uuid = req.body.uuid;
     let comment_id = req.params.id;
 await Comment.findOne({where:{ id: comment_id}})
 .then( async commentUpdated =>{
@@ -52,8 +53,8 @@ await Comment.findOne({where:{ id: comment_id}})
     let filename = commentUpdated.upload_url;
     let user = await User.findOne({where: { uuid : uuid, active: true}})
     if (fs.existsSync(filename)&&req.file == null) { //si upload_url est présent pour le uuid dans mysql ET pas de fichier dans la requete, alors on efface le fichier et on met la valeur upload_url a null dans mysql
-        fs.unlinkSync(filename)
-        await Comment.update({ content: req.body.content, avatar: user.upload_url, upload_url:null}, {where:{ id: comment_id}})
+        // fs.unlinkSync(filename)
+        await Comment.update({ content: req.body.content, avatar: user.upload_url}, {where:{ id: comment_id}})
         return res.status(200).json(commentUpdated)
       //file exists
     }
@@ -65,8 +66,8 @@ await Comment.findOne({where:{ id: comment_id}})
     }
     //si dans la requete body le content est vide && pas de fichier requete alors:
     if(req.body.content == ''&&req.file == null){ // pour effacer les comment avec du content vide et pas d'images lors d'une mise a jour
-        await Comment.destroy({where:{id: comment_id}})
-        return res.status(200).json({error: "Votre mise a jour ne peut pas être vide, votre comment a été éffacé"})
+        // await Comment.destroy({where:{id: comment_id}})
+        return res.status(200).json(commentUpdated)
     }
     //si dans la requete body content n'est pas vide && pas de fichier requete alors:
     if(req.body.content !== ''&&req.file == null) { //si le fichier de requete est null ou undefined alors on renseigne null dans upload_url mysql

@@ -13,7 +13,7 @@
           </template><!-- FIN - icone sur la timeline a gauche du commentaire ajouter l'avatar de la personne qui commente-->
 
           <v-card class="d-flex flex-column elevation-2"><!-- créé carte commentaire accolée a la timeline -->
-          <v-img v-if="commentaire.upload_url !== null" :aspect-ratio="16/9" src="@/assets/Logo_Groupomania.png" max-height="300"></v-img><!-- section image back du profil qui englobe l'avatar -->
+          <v-img v-if="commentaire.upload_url !== null" :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' +commentaire.upload_url" max-height="300"></v-img><!-- section image back du profil qui englobe l'avatar -->
             <v-card-title class="body-2">{{commentaire.email}}</v-card-title><!-- insert l'email user qui commente en tant que titre commentaire-->
             <v-card-text class="caption text-justify">{{ commentaire.content }}</v-card-text>
             <v-card-subtitle align="end" class="caption font-italic">Publié {{ commentaire.updatedAt}}</v-card-subtitle><!-- insert date à laquelle le user aura créé le commentaire -->

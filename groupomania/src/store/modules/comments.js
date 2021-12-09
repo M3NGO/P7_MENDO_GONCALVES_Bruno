@@ -20,23 +20,32 @@ const comments = {
     actions: {
 
         async createComments ({commit}, payload){
-            let uuid= localStorage.getItem('uuid')
+            // let uuid= localStorage.getItem('uuid')
             // alert(payload.postid)
+                        //formData Axios
+                        let formData = new FormData();
+                        formData.append('file', payload.file);
+                        formData.append('uuid', localStorage.getItem('uuid'));
+                        formData.append('post_id', payload.postid);
+                        formData.append('email', payload.email);
+                        formData.append('content', payload.contentCom,);
+                        formData.append('upload', payload.uploadCom);
+
             await axios
             .post('http://localhost:3000/api/v1/comment/',
                 //body axios
-            
-                {
-                "uuid": uuid,
-                "post_id": payload.postid,
-                "email": payload.email,
-                "content": payload.contentCom,
-                "upload": payload.uploadCom,
-                },
+            formData,
+                // {
+                // "uuid": uuid,
+                // "post_id": payload.postid,
+                // "email": payload.email,
+                // "content": payload.contentCom,
+                // "upload": payload.uploadCom,
+                // },
                 //header axios
-            //     {'Authorization': 'Bearer '+localStorage.getItem('token'), 
-            //     'Content-Type': 'application/json'
-            //   },
+                {'Authorization': 'Bearer '+localStorage.getItem('token'), 
+                'Content-Type': 'multipart/form-data'
+              },
             
             )
             .then(response => {
@@ -48,19 +57,46 @@ const comments = {
 
         async updateComments ({commit}, payload){
             let comment = payload.commentId
+                      //formData Axios
+                      let formData = new FormData();
+                    //   formData.append('file', payload.file);
+                    //   formData.append('uuid', localStorage.getItem('uuid'));
+                      
+                    //   formData.append('content', payload.content,);
+                    //   formData.append('upload', payload.upload);
+
+                      formData.append('uuid', localStorage.getItem('uuid'));
+
+                      if(payload.contentUpdate != '' || null){
+                        formData.append('content', payload.contentUpdate);
+                      }if(payload.postid != '' || null){
+                        formData.append('post_id', payload.postid);
+                      }if(payload.uploadUpdate != '' || null){
+                        formData.append('upload', payload.uploadUpdate);
+                      }if(payload.file != '' || null ){
+                      formData.append('file', payload.file);
+                      }
+                      
+                      console.log(payload.uploadUpdate)
+                      //check console des infos envoyées par formData
+                      for (var pair of formData.entries()) {
+                        console.log(pair[0]+ ', ' + pair[1]); 
+                    }
+
+
             await axios
             .put('http://localhost:3000/api/v1/comment/'+comment,
                 //body axios
-
-                {
-                "uuid": localStorage.getItem('uuid'),
-                "post_id": payload.postid,
-                "content": payload.contentUpdate,
-                "upload": payload.uploadUpdate,
-                },
+                    formData,
+                // {
+                // "uuid": localStorage.getItem('uuid'),
+                // "post_id": payload.postid,
+                // "content": payload.contentUpdate,
+                // "upload": payload.uploadUpdate,
+                // },
                 //header axios
                 {'Authorization': 'Bearer '+ localStorage.getItem('token'), 
-                'Content-Type': 'application/json'
+                'Content-Type': 'multipart/form-data'
               },
             
             )
@@ -72,7 +108,7 @@ const comments = {
 
 
         async deleteComments ({commit},payload){
-            alert(payload.commentId)
+            // alert(payload.commentId)
             let commentId = payload.commentId
             await axios
             .delete('http://localhost:3000/api/v1/comment/'+commentId
@@ -100,46 +136,3 @@ const comments = {
 }
 
 export default comments
-
-// formdata pour gestion des fichiers
-
-// export const actions = {
-//     async create ({ rootState }, payload) {
-//       if (payload.file) {
-//         const formData = new FormData();
-  
-//         formData.append('file', payload.file);
-//         formData.append('city_id', rootState.city.id);
-//         formData.append('author', payload.author ? payload.author : 'Non renseigné');
-//         formData.append('description', payload.description);
-//         formData.append('category', payload.category);
-  
-//         if (payload.latitude || payload.longitude) {
-//           formData.append('latitude', payload.latitude);
-//           formData.append('longitude', payload.longitude);
-//         }
-  
-//         const res = await this.$axios.post('/incident/create',
-//           formData,
-//           {
-//             headers: {
-//               'Content-Type': 'multipart/form-data'
-//             }
-//           }
-//         );
-  
-//         return res;
-//       } else {
-//         const res = await this.$axios.post('/incident/create', {
-//           city_id: rootState.city.id,
-//           author: payload.author ? payload.author : 'Non renseigné',
-//           description: payload.description,
-//           category: payload.category,
-//           latitude: payload.latitude ? payload.latitude : null,
-//           longitude: payload.longitude ? payload.longitude : null
-//         });
-  
-//         return res;
-//       }
-//     }
-//   };

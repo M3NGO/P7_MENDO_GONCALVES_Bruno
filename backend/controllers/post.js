@@ -65,8 +65,8 @@ exports.createPost = async (req,res) => {
         let filename = postUpdated.upload_url;
         // console.log(req.file);
         if (fs.existsSync(filename)&&req.file == null ) { //si upload_url est présent pour le uuid dans mysql ET pas de fichier dans la requete, alors on efface le fichier et on met la valeur upload_url a null dans mysql
-            fs.unlinkSync(filename)
-            await Post.update({ content: req.body.content, avatar: user.upload_url, upload_url:null}, {where:{uuid, id: post_id}})
+            // fs.unlinkSync(filename)
+            await Post.update({ content: req.body.content, avatar: user.upload_url}, {where:{uuid, id: post_id}})
             return res.status(200).json(postUpdated)
           //file exists
         }
@@ -78,8 +78,8 @@ exports.createPost = async (req,res) => {
         }
         //si dans la requete body le content est vide && pas de fichier requete alors:
         if(req.body.content == ''&&req.file == null){ // pour effacer les post avec du content vide et pas d'images lors d'une mise a jour
-            await Post.destroy({where:{uuid, id: post_id}})
-            return res.status(200).json({error: "Votre mise a jour ne peut pas être vide, votre post a été éffacé"})
+            // await Post.destroy({where:{uuid, id: post_id}})
+            return res.status(200).json(postUpdated)
         }
         //si dans la requete body content n'est pas vide && pas de fichier requete alors:
         if(req.body.content !== ''&& req.file == null) { //si le fichier de requete est null ou undefined alors on renseigne null dans upload_url mysql

@@ -40,21 +40,42 @@ const getProfile = {
 
         async updateUser ({commit}, payload){
             let uuid= localStorage.getItem('uuid')
-            console.log(payload)
+
+                      //formData Axios
+            
+                      let formData = new FormData();
+                        //décomposition des infos a envoyer au back pour ne pas updater toutes les infos user en même temps
+                      if(payload.firstname != '' || null){
+                          formData.append('firstname', payload.firstname);
+                      }if(payload.lastname != '' || null){
+                        formData.append('lastname', payload.lastname);
+                      }if(payload.poste != '' || null){
+                        formData.append('poste', payload.poste);
+                      }if(payload.upload != '' || null){
+                        formData.append('file', payload.file);
+                        formData.append('upload', payload.upload);
+                      }
+                      
+                      
+                    //   //check console des infos envoyées par formData
+                    //   for (var pair of formData.entries()) {
+                    //     console.log(pair[0]+ ', ' + pair[1]); 
+                    // }
+            
                 await axios
     
                     .put('http://localhost:3000/api/v1/profil/'+uuid+'/update', 
                     //body axios
-    
-                       {
-                        "firstname": payload.firstname,
-                        "lastname": payload.lastname,
-                        "poste": payload.poste,
-                        "upload": payload.upload,
-                      },
+                    formData,
+                    //    {
+                    //     "firstname": payload.firstname,
+                    //     "lastname": payload.lastname,
+                    //     "poste": payload.poste,
+                    //     "upload": payload.upload,
+                    //   },
                        //header axios
         {'Authorization': 'Bearer'+' '+ localStorage.getItem('token'), 
-        'Content-Type': 'application/json'
+        'Content-Type': 'multipart/form-data'
       },
                     
                       )//fin post HTTP
@@ -72,7 +93,7 @@ const getProfile = {
 
             async updatePassword ({commit},payload){
                 let uuid= localStorage.getItem('uuid')
-                console.log(payload)
+                // console.log(payload)
                     await axios
         
                         .put('http://localhost:3000/api/v1/profil/'+uuid+'/password', 
@@ -99,6 +120,30 @@ const getProfile = {
                 
                         .catch(error => {console.log(error)})
                 },
+
+                async deleteAvatar ({commit}, payload) {
+                    let uuid= localStorage.getItem('uuid')
+            
+                        await axios
+            
+                            .put('http://localhost:3000/api/v1/profil/'+uuid+'/delete_avatar', 
+                            //body axios
+                            {
+                                "upload_url": payload.avatar,
+                            },
+                               //header axios
+                {'Authorization': 'Bearer'+' '+ localStorage.getItem('token'), 
+                'Content-Type': 'application/json'
+              },
+                            
+                              )//fin post HTTP
+                              .then(response => {
+                                  // console.log(response.data.comment)
+                                  commit('GET_PROFILE', response.data)
+                              })
+                            .catch(error => {console.log(error)})
+                    },
+
 
                 async toNotActiveUser ({commit}){
                     let uuid= localStorage.getItem('uuid')
