@@ -57,14 +57,14 @@ server.on('listening', () => { // serveur ON, si tout se passe bien on a un cons
 // let { sequelize } = require('./models')     //lance synchro sequelize            
 // server.listen(port, async () =>{
 //     await sequelize.sync({force: true});
-//     console.log ('Mysql Synchronisée sur')
+//     console.log ('Mysql Synchronisée sur / serveur dev')
 // }); // serveur écoute le port définit au serveur + synchronise asynchrone MYSQL
 // // // // // //FIN - Version sequelize.sync pour créer table dans BDD
 
 let { sequelize } = require('./models')     //lance synchro sequelize            
 server.listen(port, async () =>{
     await sequelize.authenticate();
-    console.log ('Connexion Mysql authentifiée!!!')
+    console.log ('Connexion Mysql authentifiée!!! / serveur prod')
 }); // serveur écoute le port définit au serveur + synchronise asynchrone MYSQL
 
 

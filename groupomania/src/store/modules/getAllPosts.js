@@ -13,10 +13,10 @@ const getAllPosts = {
             state.allPosts = data
         },
         CREATE_POSTS(state, data){
-            state.allPosts.push(data)
+            state.allPosts = data
         },
         UPDATE_POSTS(state, data){
-            state.allPosts.push(data)
+            state.allPosts = data
         },
 
 

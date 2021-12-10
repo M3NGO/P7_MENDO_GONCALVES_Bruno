@@ -46,7 +46,7 @@ exports.update = async (req, res, next) => {
                 let user = await User.findOne({where:{ uuid, active:true}}) //on attend l'update user et on find ne nouvea puis on distribue l'url d'image
                     await Post.update({ avatar: user.upload_url}, {where:{uuid}})
                     await Comment.update({ avatar: user.upload_url}, {where:{uuid}})
-                return res.status(200).json(userUpdated)
+                return res.status(200).json(user)
               //file exists
             } if(fs.existsSync(filename)) { //si upload_url est rempli dans mysql alors on efface le fichier et on renseigne le nouveau link vers le fichier uploadé dans upload_url de mysql (via req.file.path)
                 fs.unlinkSync(filename)
@@ -54,21 +54,21 @@ exports.update = async (req, res, next) => {
                 let user = await User.findOne({where:{ uuid, active:true}}) //on attend l'update user et on find ne nouvea puis on distribue l'url d'image
                     await Post.update({ avatar: user.upload_url}, {where:{uuid}})
                     await Comment.update({ avatar: user.upload_url}, {where:{uuid}})
-                return res.status(200).json(userUpdated)
+                return res.status(200).json(user)
             }
             if(fs.existsSync(!filename)&&!req.file || !req.file) { //si le fichier de requete est null ou undefined alors on renseigne null dans upload_url mysql
                 await User.update({ firstname: req.body.firstname, lastname:req.body.lastname, poste: req.body.poste, active: req.body.active}, {where:{ uuid : uuid}})
                 let user = await User.findOne({where:{ uuid, active:true}}) //on attend l'update user et on find ne nouvea puis on distribue l'url d'image
                     await Post.update({ avatar: user.upload_url}, {where:{uuid}})
                     await Comment.update({ avatar: user.upload_url}, {where:{uuid}})
-                return res.status(200).json(userUpdated)
+                return res.status(200).json(user)
             }
             else{ //si le fichier de requete est présent et que upload_url est vide dans mysql alors on extrait le path du fichier requete et on l'enregistre dans mysql
                 await User.update({ firstname: req.body.firstname, lastname:req.body.lastname, poste: req.body.poste, upload_url:req.file.path, active: req.body.active}, {where:{ uuid : uuid}})
                 let user = await User.findOne({where:{ uuid, active:true}}) //on attend l'update user et on find ne nouvea puis on distribue l'url d'image
                     await Post.update({ avatar: user.upload_url}, {where:{uuid}})
                     await Comment.update({ avatar: user.upload_url}, {where:{uuid}})
-                return res.status(200).json(userUpdated)
+                return res.status(200).json(user)
             }
         }
     })//else

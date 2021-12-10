@@ -82,7 +82,7 @@ const getProfile = {
                       
             
                       .then(response => {
-                          // console.log(response.data.comment)
+                          console.log(response.data)
                           commit('UPDATE_PROFILE', response.data)
                           
                       })

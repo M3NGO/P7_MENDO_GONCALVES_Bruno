@@ -9,7 +9,7 @@ import getUsers from './modules/getAllUsers'
 import Auth from './modules/auth'
 import getProfile from './modules/getProfile'
 import moderation from './modules/moderation'
-
+import likesDislikes from './modules/likesDislikes.js'
 
 
 
@@ -24,6 +24,7 @@ export default new Vuex.Store({
     Auth,
     getProfile,
     moderation,
+    likesDislikes,
 
   }
 })

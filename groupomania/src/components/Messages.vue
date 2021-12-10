@@ -1,9 +1,11 @@
 <template>
 <v-container fluid>
     <v-card class="mb-15" v-for="post in allPosts" :key="post.id"> <!-- carte contenant le Post + commentaires -->
-        <v-img v-if="post.upload_url !== null" :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' + post.upload_url" max-height="400"><!-- section image back du profil qui englobe l'avatar -->
+        <video controls width="100%" hegth="auto" v-if="post.upload_url !== null && post.upload_url.includes('mp4') || post.upload_url.includes('mpeg') || post.upload_url.includes('avi') " :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' + post.upload_url" max-height="400"><!-- section image back du profil qui englobe l'avatar -->
+        </video> <!-- FIN section image back du profil qui englobe l'avatar -->
+        <v-img v-if="post.upload_url !== null && post.upload_url.includes('png') || post.upload_url.includes('jpg') || post.upload_url.includes('gif') || post.upload_url.includes('svg')" :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' + post.upload_url" max-height="400"><!-- section image back du profil qui englobe l'avatar -->
         </v-img> <!-- FIN section image back du profil qui englobe l'avatar -->
-        <v-divider></v-divider>
+        <!-- <v-divider></v-divider> -->
 
         <!-- Section message du user -->
         <v-row no-gutters>
@@ -79,8 +81,8 @@
 
             <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
-                    <v-badge overlap offset-x="15" offset-y="10" color="error" content="10">
-                        <v-btn v-bind="attrs" v-on="on" plain text x-small 
+                    <v-badge overlap offset-x="15" offset-y="10" color="error" content="10" >
+                        <v-btn v-bind="attrs" v-on="on" plain text x-small v-on:click="clickLike, clickDislike ,postLike(post.id, clickLike, clickDislike)"
                         ><v-icon size="20">mdi-thumb-up</v-icon>
                         </v-btn>
                     </v-badge>
@@ -98,12 +100,12 @@
             <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
                     <v-badge overlap offset-x="15" offset-y="10" color="error" content="8">
-                        <v-btn v-bind="attrs" v-on="on" plain text x-small 
+                        <v-btn v-bind="attrs" v-on="on" plain text x-small v-on:click="clickLike, clickDislike, postDislike(post.id,clickLike, clickDislike)"
                         ><v-icon size="20">mdi-thumb-down</v-icon>
                         </v-btn>
                     </v-badge>
                 </template>
-                    <span>J'aime</span>
+                    <span>J'aime pas</span>
             </v-tooltip>
             <!-- FIN - bouton disike avec badge rouge compte les nombre de dislikes -->
         </v-card-actions><!-- FIN - section boutons card messages -->
@@ -171,6 +173,9 @@ export default {
     contentUpdate:'',
     uploadUpdate:'',
 
+    clickLike: false,
+    clickDislike : false,
+
   reveal: false, // reveal false pour faire disparaitre section écrire commentaire au dessus de timeline commentaires
   updatePost: false, //pour faire disparaitre section update post au click sur bouton updater
   // controle le nombre de caractères inscrits dans partie Votre nouveau message UPDATEPOST
@@ -188,7 +193,6 @@ export default {
   created(){
     this.$store.dispatch('getPosts/getAllPostsAct') //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
     this.$store.dispatch('getProfile/getProfile') //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
-    
     // this.role = localStorage.getItem('role')// déclare role au montage = localstorage on s'en sert ensuite dans v-if pour cacher aux role 1
   },
 //     updated(){
@@ -216,6 +220,41 @@ export default {
       moderationPost(postId, uuid){
         this.$store.dispatch('moderation/moderationPost', {post_id: postId, uuid:uuid}) 
       },
+      postLike(postId, clickLike, clickDislike){
+          //click déclaré false au début dans data
+        if(clickLike == false && clickDislike == false){ //si clck false alors on envoit un like et on déclare a true
+            this.$store.dispatch('likesDislikes/postLikesDislikes', {postId: postId, likes: 1})
+            this.clickLike = true
+            this.clickDislike = false
+
+        }if(clickLike == false && clickDislike == true){ //si clck false alors on envoit un like et on déclare a true
+            this.$store.dispatch('likesDislikes/postLikesDislikes', {postId: postId, likes: 1})
+            this.clickLike = true
+            this.clickDislike = false
+
+        }if(clickLike == true){//si click true on evoit 0 like et on déclare click false
+              
+              this.$store.dispatch('likesDislikes/postLikesDislikes', {postId: postId, likes: 0})
+              this.clickLike = false
+              this.clickDislike = false
+          }
+      },
+      postDislike(postId, clickLike, clickDislike){
+        if(clickDislike == false && clickLike== false){
+            this.$store.dispatch('likesDislikes/postLikesDislikes', {postId: postId, likes: -1})
+            this.clickDislike = true
+            this.clickLike = false
+          }if(clickDislike == false && clickLike== true){
+            this.$store.dispatch('likesDislikes/postLikesDislikes', {postId: postId, likes: -1})
+            this.clickDislike = true
+            this.clickLike = false
+          }if(clickDislike == true && clickLike== false){
+            this.$store.dispatch('likesDislikes/postLikesDislikes', {postId: postId, likes: 0})
+            this.clickDislike = false
+            this.clickLike = false
+          }
+        
+      }
 
 
   },

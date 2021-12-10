@@ -8,8 +8,8 @@ exports.postLikesDislikes = async (req, res)=>{
     if(postLikes === 1){
         await Post_likes_dislikes.destroy({where:{ uuid: uuid, post_id: post_id}})
             .then(async ()=>{
-                await Post_likes_dislikes.create({ likes: req.body.likes,uuid: uuid, post_id: post_id})
-                    .then(() => res.status(200).json({message: 'Hmmm je Like!'}))
+               await Post_likes_dislikes.create({ likes: req.body.likes,uuid: uuid, post_id: post_id})
+                    .then(() => res.status(200).json(Post_likes_dislikes))
                     .catch(error => res.status(400).json({error}));
             })
             .catch(error => res.status(400).json({error}));
@@ -19,7 +19,7 @@ exports.postLikesDislikes = async (req, res)=>{
         await Post_likes_dislikes.destroy({where:{ uuid: uuid, post_id: post_id}})
             .then(async()=>{
                 await Post_likes_dislikes.create({ dislikes: -(req.body.likes),uuid: uuid, post_id: post_id})
-                    .then(() => res.status(200).json({message: 'Beurk je Dislike!'}))
+                    .then(() => res.status(200).json(Post_likes_dislikes))
                     .catch(error => res.status(400).json({error}));
             })
             .catch(error => res.status(400).json({error}));
@@ -31,7 +31,7 @@ exports.postLikesDislikes = async (req, res)=>{
                     return res.status(401).json({error: "Vous n'êtes pas autorisé à faire cette suppression!!"})
                 }
                 Post_likes_dislikes.destroy({where:{ uuid: uuid, post_id: post_id}})
-                .then(()=> res.status(200).json({message :"Vos likes/dislikes ont bien été éffacés!"}))
+                .then(()=> res.status(200).json(Post_likes_dislikes))
             })
             .catch(err=> res.status(500).json({message: err.message}))
 
@@ -50,7 +50,7 @@ exports.commentLikesDislikes = async (req, res)=>{
                 let comment = await Comment.findOne({where: {id: comment_id}}) //Comment id pour rajouter lepost_id pour le delete all concernant le postID => delete tout concernant ce postID
                 let post_id = comment.post_id
                 await Comment_likes_dislikes.create({ likes: req.body.likes,uuid: uuid, comment_id: comment_id, post_id:post_id})
-                    .then(() => res.status(200).json({message: 'Hmmm je Like!'}))
+                    .then(() => res.status(200).json(Comment_likes_dislikes))
                     .catch(error => res.status(400).json({error}));
             })
             .catch(error => res.status(400).json({error}));
@@ -62,7 +62,7 @@ exports.commentLikesDislikes = async (req, res)=>{
                 let comment = await Comment.findOne({where: {id: comment_id}}) //Comment id pour rajouter lepost_id pour le delete all concernant le postID => delete tout concernant ce postID
                 let post_id = comment.post_id
                 await Comment_likes_dislikes.create({ dislikes: -(req.body.likes),uuid: uuid, comment_id: comment_id, post_id:post_id})
-                    .then(() => res.status(200).json({message: 'Beurk je Dislike!'}))
+                    .then(() => res.status(200).json(Comment_likes_dislikes))
                     .catch(error => res.status(400).json({error}));
             })
             .catch(error => res.status(400).json({error}));
@@ -76,7 +76,7 @@ exports.commentLikesDislikes = async (req, res)=>{
                     return res.status(401).json({error: "Vous n'êtes pas autorisé à faire cette suppression!!"})
                 }
                 Comment_likes_dislikes.destroy({where:{ uuid: uuid,comment_id: comment_id }||{uuid: uuid,post_id: post_id} })
-                .then(()=> res.status(200).json({message :"Vos likes/dislikes ont bien été éffacés!"}))
+                .then(()=> res.status(200).json(Comment_likes_dislikes))
             })
             .catch(err=> res.status(500).json({message: err.message}))
 

@@ -44,6 +44,7 @@ module.exports = (sequelize, DataTypes) => {
     },
   }, {
     sequelize,
+    underscored: true,
     tableName: 'post_likes_dislikes',
     modelName: 'Post_likes_dislikes',
   });

@@ -67,28 +67,33 @@ exports.createPost = async (req,res) => {
         if (fs.existsSync(filename)&&req.file == null ) { //si upload_url est présent pour le uuid dans mysql ET pas de fichier dans la requete, alors on efface le fichier et on met la valeur upload_url a null dans mysql
             // fs.unlinkSync(filename)
             await Post.update({ content: req.body.content, avatar: user.upload_url}, {where:{uuid, id: post_id}})
-            return res.status(200).json(postUpdated)
+            let postupdated = await Post.findOne({where:{uuid, id: post_id}})
+            return res.status(200).json(postupdated)
           //file exists
         }
         //si upload_url de l'objet trouvé à une url enregistrée &&  requete fichier envoyée par l'utilisateur alors:
         if(fs.existsSync(filename)&&req.file !== null) { //si upload_url est rempli dans mysql alors on efface le fichier et on renseigne le nouveau link vers le fichier uploadé dans upload_url de mysql (via req.file.path)
             fs.unlinkSync(filename)
-            let postupdated= await Post.update({ content: req.body.content, avatar: user.upload_url, upload_url:req.file.path}, {where: {uuid, id: post_id}})
-            return res.status(200).json(postUpdated)
+            await Post.update({ content: req.body.content, avatar: user.upload_url, upload_url:req.file.path}, {where: {uuid, id: post_id}})
+            let postupdated = await Post.findOne({where:{uuid, id: post_id}})
+            return res.status(200).json(postupdated)
         }
         //si dans la requete body le content est vide && pas de fichier requete alors:
         if(req.body.content == ''&&req.file == null){ // pour effacer les post avec du content vide et pas d'images lors d'une mise a jour
             // await Post.destroy({where:{uuid, id: post_id}})
-            return res.status(200).json(postUpdated)
+            let postupdated = await Post.findOne({where:{uuid, id: post_id}})
+            return res.status(200).json(postupdated)
         }
         //si dans la requete body content n'est pas vide && pas de fichier requete alors:
         if(req.body.content !== ''&& req.file == null) { //si le fichier de requete est null ou undefined alors on renseigne null dans upload_url mysql
             await Post.update({ content: req.body.content, avatar: user.upload_url, upload_url:null}, {where:{uuid, id: post_id}})
-            return res.status(200).json(postUpdated)
+            let postupdated = await Post.findOne({where:{uuid, id: post_id}})
+            return res.status(200).json(postupdated)
         }       
         // si la requete body content && fichier requete alors :
         else{ //si le fichier de requete est présent et que upload_url est vide dans mysql alors on extrait le path du fichier requete et on l'enregistre dans mysql
-            let postupdated = await Post.update({ content: req.body.content, avatar: user.upload_url, upload_url:req.file.path}, {where:{uuid, id: post_id}})
+            await Post.update({ content: req.body.content, avatar: user.upload_url, upload_url:req.file.path}, {where:{uuid, id: post_id}})
+            let postupdated = await Post.findOne({where:{uuid, id: post_id}})
             return res.status(200).json(postupdated)
         }
     }

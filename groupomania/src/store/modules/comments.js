@@ -11,7 +11,7 @@ const comments = {
             state.createComment = data
         },
         UPDATE_COMMENTS(state, data){
-            state.createComment.push(data)
+            state.createComment = data
         }
 
 

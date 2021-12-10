@@ -55,13 +55,15 @@ await Comment.findOne({where:{ id: comment_id}})
     if (fs.existsSync(filename)&&req.file == null) { //si upload_url est présent pour le uuid dans mysql ET pas de fichier dans la requete, alors on efface le fichier et on met la valeur upload_url a null dans mysql
         // fs.unlinkSync(filename)
         await Comment.update({ content: req.body.content, avatar: user.upload_url}, {where:{ id: comment_id}})
-        return res.status(200).json(commentUpdated)
+        let commentupdated = await Comment.findOne({where:{ id: comment_id}})
+        return res.status(200).json(commentupdated)
       //file exists
     }
     //si upload_url de l'objet trouvé à une url enregistrée &&  requete fichier envoyée par l'utilisateur alors:
     if(fs.existsSync(filename)&&req.file !== null) { //si upload_url est rempli dans mysql alors on efface le fichier et on renseigne le nouveau link vers le fichier uploadé dans upload_url de mysql (via req.file.path)
         fs.unlinkSync(filename)
         await Comment.update({ content: req.body.content, avatar: user.upload_url, upload_url:req.file.path}, {where: {id: comment_id}})
+        let commentupdated = await Comment.findOne({where:{ id: comment_id}})
         return res.status(200).json(commentUpdated)
     }
     //si dans la requete body le content est vide && pas de fichier requete alors:
@@ -72,12 +74,14 @@ await Comment.findOne({where:{ id: comment_id}})
     //si dans la requete body content n'est pas vide && pas de fichier requete alors:
     if(req.body.content !== ''&&req.file == null) { //si le fichier de requete est null ou undefined alors on renseigne null dans upload_url mysql
         await Comment.update({ content: req.body.content, avatar: user.upload_url, upload_url:null}, {where:{id: comment_id}})
-        return res.status(200).json(commentUpdated)
+        let commentupdated = await Comment.findOne({where:{ id: comment_id}})
+        return res.status(200).json(commentupdated)
     }       
     // si la requete body content && fichier requete alors :
     else{ //si le fichier de requete est présent et que upload_url est vide dans mysql alors on extrait le path du fichier requete et on l'enregistre dans mysql
         await Comment.update({ content: req.body.content, avatar: user.upload_url, upload_url:req.file.path}, {where:{id: comment_id}})
-        return res.status(200).json(commentUpdated)
+        let commentupdated = await Comment.findOne({where:{ id: comment_id}})
+        return res.status(200).json(commentupdated)
     }
 })
 .catch(error => res.status(400).json({error}));
