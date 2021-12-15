@@ -1,16 +1,14 @@
 <template>
   <v-main>
-    <v-container fluid>
-      <Newpostform/>
-      <Posts/>
-    </v-container>
+    <Newpostform/>
+    <Posts/>
   </v-main>
 </template>
 
 <script>
 // @ is an alias to /src
 
-import Posts from '@/components/WallComponents/Posts.vue'
+import Posts from '@/components/WallComponents/Messages.vue'
 import Newpostform from '@/components/WallComponents/Newpostform.vue'
 
 

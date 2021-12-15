@@ -1,10 +1,10 @@
 <template>
-<v-container fluid>
-    <v-card class="mb-15" v-for="post in allPosts" :key="post.id"> <!-- carte contenant le Post + commentaires -->
-        <video controls width="100%" hegth="auto" v-if="post.upload_url !== null && post.upload_url.includes('mp4') || post.upload_url.includes('mpeg') || post.upload_url.includes('avi') " :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' + post.upload_url" max-height="400"><!-- section image back du profil qui englobe l'avatar -->
+<v-container v-model="post" fluid>
+    <v-card  class="mb-15" v-for="post in allPosts" :key="post.id" > <!-- carte contenant le Post + commentaires -->
+        <video controls width="100%" hegth="auto" v-if="post.upload_url !== null && post.upload_url.includes('videos') " :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' + post.upload_url" max-height="400">section image back du profil qui englobe l'avatar
         </video> <!-- FIN section image back du profil qui englobe l'avatar -->
-        <v-img v-if="post.upload_url !== null && post.upload_url.includes('png') || post.upload_url.includes('jpg') || post.upload_url.includes('gif') || post.upload_url.includes('svg')" :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' + post.upload_url" max-height="400"><!-- section image back du profil qui englobe l'avatar -->
-        </v-img> <!-- FIN section image back du profil qui englobe l'avatar -->
+        <v-img v-if="post.upload_url !== null && post.upload_url.includes('images')" :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' + post.upload_url" max-height="400"><!-- section image back du profil qui englobe l'avatar -->
+        </v-img> <!-- FIN section image back du profil qui englobe l'avatar --> <!--post.upload_url.includes('images') car les images sont stockées dans dossier images et le lien contiendra tjrs images -->
         <!-- <v-divider></v-divider> -->
 
         <!-- Section message du user -->
@@ -34,7 +34,7 @@
         <v-divider></v-divider>
 
         <v-card-actions class="d-flex justify-end"  ><!-- section boutons card messages -->
-            <v-tooltip bottom v-if="profile.role == 2"><!-- rendre visible que quand le role user est 2 -->
+            <v-tooltip bottom v-if="profile.role === 2"><!-- rendre visible que quand le role user est 2 -->
                 <template v-slot:activator="{ on, attrs }">
                     <v-btn v-bind="attrs" v-on="on" plain text x-small v-on:click="moderationPost(post.id, profile.uuid)"
                     ><v-icon size="20">mdi-alert-circle</v-icon>
@@ -43,7 +43,7 @@
                     <span>Modération</span>
             </v-tooltip>
 
-            <v-divider v-if="profile.uuid === post.uuid" vertical></v-divider><!-- rendre visible que quand le role user est 2 -->
+            <v-divider v-if="profile.uuid == post.uuid" vertical></v-divider><!-- rendre visible que quand le role user est 2 -->
 
             <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
@@ -79,15 +79,18 @@
             <v-divider vertical></v-divider>
             <!-- bouton Like avec badge rouge compte les nombre de likes -->
 
-            <v-tooltip bottom>
-                <template v-slot:activator="{ on, attrs }">
-                    <v-badge overlap offset-x="15" offset-y="10" color="error" content="10" >
-                        <v-btn v-bind="attrs" v-on="on" plain text x-small v-on:click="clickLike, clickDislike ,postLike(post.id, clickLike, clickDislike)"
+            <v-tooltip bottom >
+                <template v-slot:activator="{ on }" >
+                    <v-badge overlap offset-x="15" offset-y="10" color="error" >
+                        <span slot="badge" >{{post.nbre_likes}}</span>
+                        <!-- v-for="likes in postLikesDislikes" :key="likes.id" -->
+                        <v-btn  v-on="on" plain text x-small v-on:click="clickLike, clickDislike, postLike(post.id, clickLike, clickDislike)"
                         ><v-icon size="20">mdi-thumb-up</v-icon>
                         </v-btn>
                     </v-badge>
                 </template>
                     <span>J'aime</span>
+                
             </v-tooltip>
 
             
@@ -99,8 +102,9 @@
 
             <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
-                    <v-badge overlap offset-x="15" offset-y="10" color="error" content="8">
-                        <v-btn v-bind="attrs" v-on="on" plain text x-small v-on:click="clickLike, clickDislike, postDislike(post.id,clickLike, clickDislike)"
+                    <v-badge overlap offset-x="15" offset-y="10" color="error">
+                        <span slot="badge">{{post.nbre_dislikes}}</span>
+                        <v-btn v-bind="attrs" v-on="on" plain text x-small   v-on:click="clickLike, clickDislike, postDislike(post.id,clickLike, clickDislike)"
                         ><v-icon size="20">mdi-thumb-down</v-icon>
                         </v-btn>
                     </v-badge>
@@ -154,7 +158,7 @@
 </template>
 
 <script>
-import Commentaires from '@/components/Commentaires.vue'
+import Commentaires from '@/components/WallComponents/Commentaires.vue'
 import { mapState } from 'vuex'
 
 export default {
@@ -173,8 +177,15 @@ export default {
     contentUpdate:'',
     uploadUpdate:'',
 
-    clickLike: false,
-    clickDislike : false,
+    clickLike: '',
+    clickDislike : '',
+    
+    post:'',
+   nbre_dislikes:'',
+   
+   nbre_likes:'',
+
+
 
   reveal: false, // reveal false pour faire disparaitre section écrire commentaire au dessus de timeline commentaires
   updatePost: false, //pour faire disparaitre section update post au click sur bouton updater
@@ -186,19 +197,7 @@ export default {
   }),
 
 //debut gestion axios + vuex
-  computed: {
-    ...mapState('getPosts', ['allPosts']), //('nom du module dans index.js', ['nomstate dans fichier dossier module'])
-    ...mapState('getProfile', ['profile']), //('nom du module dans index.js', ['nomstate dans fichier dossier module'])
-  },
-  created(){
-    this.$store.dispatch('getPosts/getAllPostsAct') //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
-    this.$store.dispatch('getProfile/getProfile') //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
-    // this.role = localStorage.getItem('role')// déclare role au montage = localstorage on s'en sert ensuite dans v-if pour cacher aux role 1
-  },
-//     updated(){
-//     this.$store.dispatch('getPosts/getAllPostsAct') //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
-//     this.role = localStorage.getItem('role')// déclare role au montage = localstorage on s'en sert ensuite dans v-if pour cacher aux role 1
-//   },
+
 
   methods:{
     publierCommentaire(postId, email){
@@ -206,50 +205,65 @@ export default {
         // this.postid = this.$refs.pich.innerHTML
         // alert('Post N°' + postid)
         this.$store.dispatch('comments/createComments', {contentCom: this.contentCom, postid: postId, email: email, uploadCom: this.uploadCom}) //('nom module dans index.js/nom action liée'), payload
+        this.$store.dispatch('getPosts/getAllPostsAct')
         this.$refs.monNewComment.reset(); // reset le formulaire un fois envoyé le post
         
       },
       updaterPost(postId){
-        this.$store.dispatch('getPosts/updatePosts', {contentUpdate: this.contentUpdate, postid: postId, uploadUpdate: this.uploadUpdate}) 
-
+        
+        this.$store.dispatch('getPosts/updatePosts', {contentUpdate: this.contentUpdate, postid: postId, uploadUpdate: this.uploadUpdate})
+        this.$store.dispatch('getPosts/getAllPostsAct')
       },
       deletePosts(postId){
-        this.$store.dispatch('getPosts/deletePosts', { postid: postId}) 
+        this.$store.dispatch('getPosts/deletePosts', { postid: postId})
+        this.$store.dispatch('getPosts/getAllPostsAct')
 
       },
       moderationPost(postId, uuid){
         this.$store.dispatch('moderation/moderationPost', {post_id: postId, uuid:uuid}) 
       },
       postLike(postId, clickLike, clickDislike){
-          //click déclaré false au début dans data
+          console.log('voici le click: ' +clickLike)
+   
         if(clickLike == false && clickDislike == false){ //si clck false alors on envoit un like et on déclare a true
-            this.$store.dispatch('likesDislikes/postLikesDislikes', {postId: postId, likes: 1})
+  
+            // this.$store.dispatch('likesDislikes/postLikesDislikes', {postId: postId, likes: 1})
+            this.$store.dispatch('getPosts/postLikesDislikes', {postId: postId, likes: 1})
+            this.$store.dispatch('getPosts/getAllPostsAct')
+            // window.location.reload()
             this.clickLike = true
             this.clickDislike = false
+            
 
         }if(clickLike == false && clickDislike == true){ //si clck false alors on envoit un like et on déclare a true
-            this.$store.dispatch('likesDislikes/postLikesDislikes', {postId: postId, likes: 1})
-            this.clickLike = true
-            this.clickDislike = false
+            this.$store.dispatch('getPosts/postLikesDislikes', {postId: postId, likes: 1})
+            this.$store.dispatch('getPosts/getAllPostsAct')
+        //   window.location.reload()
+            
 
         }if(clickLike == true){//si click true on evoit 0 like et on déclare click false
               
-              this.$store.dispatch('likesDislikes/postLikesDislikes', {postId: postId, likes: 0})
+              this.$store.dispatch('getPosts/postLikesDislikes', {postId: postId, likes: 0})
+              this.$store.dispatch('getPosts/getAllPostsAct')
               this.clickLike = false
               this.clickDislike = false
+              
           }
       },
       postDislike(postId, clickLike, clickDislike){
         if(clickDislike == false && clickLike== false){
-            this.$store.dispatch('likesDislikes/postLikesDislikes', {postId: postId, likes: -1})
+            this.$store.dispatch('getPosts/postLikesDislikes', {postId: postId, likes: -1})
+            this.$store.dispatch('getPosts/getAllPostsAct')
             this.clickDislike = true
             this.clickLike = false
           }if(clickDislike == false && clickLike== true){
-            this.$store.dispatch('likesDislikes/postLikesDislikes', {postId: postId, likes: -1})
+            this.$store.dispatch('getPosts/postLikesDislikes', {postId: postId, likes: -1})
+            this.$store.dispatch('getPosts/getAllPostsAct')
             this.clickDislike = true
             this.clickLike = false
           }if(clickDislike == true && clickLike== false){
-            this.$store.dispatch('likesDislikes/postLikesDislikes', {postId: postId, likes: 0})
+            this.$store.dispatch('getPosts/postLikesDislikes', {postId: postId, likes: 0})
+            this.$store.dispatch('getPosts/getAllPostsAct')
             this.clickDislike = false
             this.clickLike = false
           }
@@ -258,6 +272,29 @@ export default {
 
 
   },
+
+    computed: {
+    ...mapState('getPosts', ['allPosts']), //('nom du module dans index.js', ['nomstate dans fichier dossier module'])
+    ...mapState('getProfile', ['profile']), //('nom du module dans index.js', ['nomstate dans fichier dossier module'])
+    ...mapState('likesDislikes', ['postLikesDislikes']),
+    // ...mapState({ touslesposts : state => state.allPosts})
+    
+  },
+  mounted(){
+    this.$store.dispatch('getPosts/getAllPostsAct') //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
+    this.$store.dispatch('getProfile/getProfile') //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
+    this.$store.dispatch('likesDislikes/getAllPostLikesDislikes')
+    // this.role = localStorage.getItem('role')// déclare role au montage = localstorage on s'en sert ensuite dans v-if pour cacher aux role 1
+  
+  },
+//   updated(){
+//       this.$store.dispatch('getPosts/getAllPostsAct') 
+//   }
+
+//     updated(){
+//     this.$store.dispatch('getPosts/getAllPostsAct') //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
+//     this.role = localStorage.getItem('role')// déclare role au montage = localstorage on s'en sert ensuite dans v-if pour cacher aux role 1
+//   },
 
 //FIN gestion axios + vuex
 

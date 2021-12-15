@@ -3,7 +3,7 @@ let fs = require('fs'); //Systeme Filesystem de node.JS
 
 exports.getallPosts = async (req,res) => {
     try{
-        let posts = await Post.findAll({where: {active: true}, include:['comment', 'postlikes', 'commentlikes']}) //let posts = await Post.findAll({include:[{model:User, as:'user'}]}) + ajouter alias  as 'user' dans model user section associations, si on veut retourner l'objet Post et User qui a créé le post en une seule requete
+        let posts = await Post.findAll({where: {active: true}, order: [['updatedAt', 'DESC']], include:['comment', 'postlikes', 'commentlikes']}) //let posts = await Post.findAll({include:[{model:User, as:'user'}]}) + ajouter alias  as 'user' dans model user section associations, si on veut retourner l'objet Post et User qui a créé le post en une seule requete
         return res.json(posts)
     }catch(err){
         console.log(err)
@@ -67,7 +67,7 @@ exports.createPost = async (req,res) => {
         if (fs.existsSync(filename)&&req.file == null ) { //si upload_url est présent pour le uuid dans mysql ET pas de fichier dans la requete, alors on efface le fichier et on met la valeur upload_url a null dans mysql
             // fs.unlinkSync(filename)
             await Post.update({ content: req.body.content, avatar: user.upload_url}, {where:{uuid, id: post_id}})
-            let postupdated = await Post.findOne({where:{uuid, id: post_id}})
+            let postupdated = await Post.findOne({where:{uuid, id: post_id}, include:['comment', 'postlikes', 'commentlikes']})
             return res.status(200).json(postupdated)
           //file exists
         }
@@ -75,25 +75,25 @@ exports.createPost = async (req,res) => {
         if(fs.existsSync(filename)&&req.file !== null) { //si upload_url est rempli dans mysql alors on efface le fichier et on renseigne le nouveau link vers le fichier uploadé dans upload_url de mysql (via req.file.path)
             fs.unlinkSync(filename)
             await Post.update({ content: req.body.content, avatar: user.upload_url, upload_url:req.file.path}, {where: {uuid, id: post_id}})
-            let postupdated = await Post.findOne({where:{uuid, id: post_id}})
+            let postupdated = await Post.findOne({where:{uuid, id: post_id}, include:['comment', 'postlikes', 'commentlikes']})
             return res.status(200).json(postupdated)
         }
         //si dans la requete body le content est vide && pas de fichier requete alors:
         if(req.body.content == ''&&req.file == null){ // pour effacer les post avec du content vide et pas d'images lors d'une mise a jour
             // await Post.destroy({where:{uuid, id: post_id}})
-            let postupdated = await Post.findOne({where:{uuid, id: post_id}})
+            let postupdated = await Post.findOne({where:{uuid, id: post_id}, include:['comment', 'postlikes', 'commentlikes']})
             return res.status(200).json(postupdated)
         }
         //si dans la requete body content n'est pas vide && pas de fichier requete alors:
         if(req.body.content !== ''&& req.file == null) { //si le fichier de requete est null ou undefined alors on renseigne null dans upload_url mysql
             await Post.update({ content: req.body.content, avatar: user.upload_url, upload_url:null}, {where:{uuid, id: post_id}})
-            let postupdated = await Post.findOne({where:{uuid, id: post_id}})
+            let postupdated = await Post.findOne({where:{uuid, id: post_id}, include:['comment', 'postlikes', 'commentlikes']})
             return res.status(200).json(postupdated)
         }       
         // si la requete body content && fichier requete alors :
         else{ //si le fichier de requete est présent et que upload_url est vide dans mysql alors on extrait le path du fichier requete et on l'enregistre dans mysql
             await Post.update({ content: req.body.content, avatar: user.upload_url, upload_url:req.file.path}, {where:{uuid, id: post_id}})
-            let postupdated = await Post.findOne({where:{uuid, id: post_id}})
+            let postupdated = await Post.findOne({where:{uuid, id: post_id}, include:['comment', 'postlikes', 'commentlikes']})
             return res.status(200).json(postupdated)
         }
     }
@@ -146,8 +146,8 @@ exports.deletePost = async(req, res) =>{
         })
 
 
-
-        return res.status(200).json({message: "Le post et ses commentaires ont été éffacés de Groupomania"})
+        let posts = await Post.findAll({where: {active: true}, include:['comment', 'postlikes', 'commentlikes']})
+        return res.status(200).json(posts)
     }catch(err){
         console.log(err)
         return res.status(500).json({message: err.message})

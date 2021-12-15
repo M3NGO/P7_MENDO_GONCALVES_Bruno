@@ -11,8 +11,8 @@
       </template><!-- FIN - icone sur la timeline a gauche du commentaire ajouter l'avatar de la personne qui commente-->
 
       <v-card class="d-flex flex-column elevation-2"><!-- créé carte commentaire accolée a la timeline -->
-        <video controls width="100%" hegth="auto" v-if="commentaire.upload_url !== null && commentaire.upload_url.includes('mp4') || commentaire.upload_url.includes('mpeg') || commentaire.upload_url.includes('avi') " :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' + commentaire.upload_url" max-height="300"></video> <!-- FIN section image back du profil qui englobe l'avatar -->
-        <v-img v-if="commentaire.upload_url !== null && commentaire.upload_url.includes('png') || commentaire.upload_url.includes('jpg') || commentaire.upload_url.includes('gif') || commentaire.upload_url.includes('svg')" :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' + commentaire.upload_url" max-height="300"></v-img><!-- section image back du profil qui englobe l'avatar -->
+        <video controls width="100%" hegth="auto" v-if="commentaire.upload_url !== null && commentaire.upload_url.includes('videos') " :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' + commentaire.upload_url" max-height="300"></video> <!-- FIN section image back du profil qui englobe l'avatar -->
+        <v-img v-if="commentaire.upload_url !== null && commentaire.upload_url.includes('images')" :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' + commentaire.upload_url" max-height="300"></v-img><!-- section image back du profil qui englobe l'avatar -->
         <v-card-title class="body-2">{{commentaire.email}}</v-card-title><!-- insert l'email user qui commente en tant que titre commentaire-->
         <v-card-text class="caption text-justify">{{ commentaire.content }}</v-card-text>
         <v-card-subtitle align="end" class="caption font-italic">Publié {{ commentaire.updatedAt}}</v-card-subtitle><!-- insert date à laquelle le user aura créé le commentaire -->
@@ -54,8 +54,9 @@
 
             <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
-                    <v-badge overlap offset-x="15" offset-y="10" color="error" content="10">
-                        <v-btn v-bind="attrs" v-on="on" plain text x-small v-on:click="clickLike, clickDislike ,commentLike(commentaire.id, clickLike, clickDislike)"
+                    <v-badge overlap offset-x="15" offset-y="10" color="error">
+                        <span slot="badge">{{commentaire.nbre_likes}}</span>
+                        <v-btn v-bind="attrs" v-on="on" plain text x-small v-on:click="clickLike, clickDislike ,commentLike(commentaire.post_id, commentaire.id, clickLike, clickDislike)"
                         ><v-icon size="15">mdi-thumb-up</v-icon>
                         </v-btn>
                     </v-badge>
@@ -72,8 +73,9 @@
 
             <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
-                    <v-badge overlap offset-x="15" offset-y="10" color="error" content="8">
-                        <v-btn v-bind="attrs" v-on="on" plain text x-small v-on:click="clickLike, clickDislike, commentDislike(commentaire.id,clickLike, clickDislike)"
+                    <v-badge overlap offset-x="15" offset-y="10" color="error">
+                        <span slot="badge">{{commentaire.nbre_dislikes}}</span>
+                        <v-btn v-bind="attrs" v-on="on" plain text x-small v-on:click="clickLike, clickDislike, commentDislike(commentaire.post_id, commentaire.id,clickLike, clickDislike)"
                         ><v-icon size="15">mdi-thumb-down</v-icon>
                         </v-btn>
                     </v-badge>
@@ -130,36 +132,42 @@ export default {
     moderationComment(commentId, uuid){
         this.$store.dispatch('moderation/moderationComment', {comment_id: commentId, uuid:uuid}) 
       },
-      commentLike(commentId, clickLike, clickDislike){
+      commentLike(postId, commentId, clickLike, clickDislike){
           //click déclaré false au début dans data
         if(clickLike == false && clickDislike == false){ //si clck false alors on envoit un like et on déclare a true
-            this.$store.dispatch('likesDislikes/commentLikesDislikes', {commentId: commentId, likes: 1})
+            this.$store.dispatch('getPosts/commentLikesDislikes', {postid: postId, commentId: commentId, likes: 1})
+            this.$store.dispatch('getPosts/getAllPostsAct')
             this.clickLike = true
             this.clickDislike = false
 
         }if(clickLike == false && clickDislike == true){ //si clck false alors on envoit un like et on déclare a true
-            this.$store.dispatch('likesDislikes/commentLikesDislikes', {commentId: commentId, likes: 1})
+            this.$store.dispatch('getPosts/commentLikesDislikes', {postid: postId, commentId: commentId, likes: 1})
+            this.$store.dispatch('getPosts/getAllPostsAct')
             this.clickLike = true
             this.clickDislike = false
 
         }if(clickLike == true){//si click true on evoit 0 like et on déclare click false
               
-              this.$store.dispatch('likesDislikes/commentLikesDislikes', {commentId: commentId, likes: 0})
+              this.$store.dispatch('getPosts/commentLikesDislikes', {postid: postId, commentId: commentId, likes: 0})
+              this.$store.dispatch('getPosts/getAllPostsAct')
               this.clickLike = false
               this.clickDislike = false
           }
       },
-      commentDislike(commentId, clickLike, clickDislike){
+      commentDislike(postId, commentId, clickLike, clickDislike){
         if(clickDislike == false && clickLike== false){
-            this.$store.dispatch('likesDislikes/commentLikesDislikes', {commentId: commentId, likes: -1})
+            this.$store.dispatch('getPosts/commentLikesDislikes', {postid: postId, commentId: commentId, likes: -1})
+            this.$store.dispatch('getPosts/getAllPostsAct')
             this.clickDislike = true
             this.clickLike = false
           }if(clickDislike == false && clickLike== true){
-            this.$store.dispatch('likesDislikes/commentLikesDislikes', {commentId: commentId, likes: -1})
+            this.$store.dispatch('getPosts/commentLikesDislikes', {postid: postId, commentId: commentId, likes: -1})
+            this.$store.dispatch('getPosts/getAllPostsAct')
             this.clickDislike = true
             this.clickLike = false
           }if(clickDislike == true && clickLike== false){
-            this.$store.dispatch('likesDislikes/commentLikesDislikes', {commentId: commentId, likes: 0})
+            this.$store.dispatch('getPosts/commentLikesDislikes', {postid: postId, commentId: commentId, likes: 0})
+            this.$store.dispatch('getPosts/getAllPostsAct')
             this.clickDislike = false
             this.clickLike = false
           }

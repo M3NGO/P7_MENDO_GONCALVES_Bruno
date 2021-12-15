@@ -1,8 +1,9 @@
 <template>
 <v-container fluid>
     <v-card class="mb-15" v-for="post in profile.post" :key="post.id"> <!-- carte contenant le Post + commentaires -->
-        <v-img v-if="post.upload_url !== null" :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' + post.upload_url" max-height="400"><!-- section image back du profil qui englobe l'avatar -->
-        </v-img> <!-- FIN section image back du profil qui englobe l'avatar -->
+ <video controls width="100%" hegth="auto" v-if="post.upload_url !== null && post.upload_url.includes('videos') " :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' + post.upload_url" max-height="400">section image back du profil qui englobe l'avatar
+        </video> <!-- FIN section image back du profil qui englobe l'avatar -->
+        <v-img v-if="post.upload_url !== null && post.upload_url.includes('images')" :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' + post.upload_url" max-height="400"></v-img><!-- section image back du profil qui englobe l'avatar -->
         <v-divider></v-divider>
 
         <!-- Section message du user -->

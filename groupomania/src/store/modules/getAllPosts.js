@@ -11,18 +11,27 @@ const getAllPosts = {
         GET_POSTS(state, data) {
             // console.log(data)
             state.allPosts = data
+            // window.location.reload
         },
         CREATE_POSTS(state, data){
-            state.allPosts = data
+            state.allPosts = [data, ...state.allPosts] // on ajoute data devant tout contenu allPosts
+            // state.allPosts.push(data)
         },
         UPDATE_POSTS(state, data){
-            state.allPosts = data
-        },
 
+        const index = state.allPosts.map(post => post.id).indexOf(data.id);
+        state.allPosts.splice(index, 1, data);
+        },
+        // UPDATE_POSTSLIKES(state, data){
+
+        //     const index = state.allPosts.map(post => post.id).indexOf(data.id);
+        //     state.allPosts.splice(index, 1, data);
+        //     },
 
 
 
     },
+   
     actions: {
        async getAllPostsAct ({commit}){
         
@@ -75,7 +84,7 @@ const getAllPosts = {
         },
 
 
-        async updatePosts ({commit}, payload){
+async updatePosts ({commit}, payload){
             // alert(payload.contentUpdate)
             let post = payload.postid
 // console.log('payload le voici: '+ payload)
@@ -117,7 +126,12 @@ const getAllPosts = {
             
             )
             .then(response => {
+                // splice(0, )
                 commit('UPDATE_POSTS', response.data)
+                console.log(response.data)
+                // window.location.href ="/wall"
+                
+
             })
             .catch(error => {console.log(error)})
         },
@@ -138,10 +152,85 @@ const getAllPosts = {
             //   },
             )
             .then(response => {
-                commit('UPDATE_POSTS', response.data)
+                commit('GET_POSTS', response.data)
+               
             })
             .catch(error => {console.log(error)})
-        }
+        },
+//test-cidessous:
+async getAllPostLikesDislikes ({commit}){
+        
+    await axios
+        .get('http://localhost:3000/api/v1/get/post/likesdislikes')
+        
+        .then(response => {
+            // console.log(response.data.comment)
+            commit('GET_POSTS', response.data)
+            
+        })
+        .catch(error => {console.log(error)})
+},//fin getAllPostsAct
+
+async postLikesDislikes ({commit},payload){
+    let postId= payload.postId
+        console.log("je like ou pas? "+ payload.likes)
+    await axios
+
+        .post('http://localhost:3000/api/v1/post/'+postId+'/like',
+        //body axios
+        {
+            "likes": payload.likes,
+            "uuid": localStorage.getItem('uuid')
+        },
+           //header axios
+        {'Authorization': 'Bearer'+' '+ localStorage.getItem('token'), 
+        'Content-Type': 'application/json'
+        },
+        
+          )//fin post HTTP
+          
+
+          .then(response => {
+              console.log(response.data.comment)
+              commit('UPDATE_POSTS', response.data)
+              
+              
+          })
+
+        .catch(error => {console.log(error)})
+        },
+        
+        async commentLikesDislikes ({commit},payload){
+            let commentId= payload.commentId
+            let post_id= payload.postid
+                console.log("je like le commentaire ou pas? "+ payload.likes)
+            await axios
+    
+                .post('http://localhost:3000/api/v1/comment/'+commentId+'/like',
+                //body axios
+                {
+                    "likes": payload.likes,
+                    "uuid": localStorage.getItem('uuid'),
+                    "post_id": post_id
+                },
+                   //header axios
+                {'Authorization': 'Bearer'+' '+ localStorage.getItem('token'), 
+                'Content-Type': 'application/json'
+                },
+                
+                  )//fin post HTTP
+                  
+        
+                  .then(response => {
+                      // console.log(response.data.comment)
+                      commit('UPDATE_POSTS', response.data)
+                      
+                      
+                  })
+        
+                .catch(error => {console.log(error)})
+                },
+
 
 
     },//fin actions

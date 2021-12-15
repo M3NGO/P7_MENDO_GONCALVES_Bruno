@@ -51,6 +51,14 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true,
       allowEmpty: true
     },
+    nbre_likes:{
+      type: DataTypes.INTEGER,
+      defaultValue:0
+    },
+    nbre_dislikes:{
+      type: DataTypes.INTEGER,
+      defaultValue:0
+    },
   }, {
     sequelize,
     underscored: true,

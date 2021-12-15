@@ -1,5 +1,5 @@
 <template>
-  <div><!-- header -->
+  <div class="mb-10"><!-- header -->
     <v-app-bar fixed clipped-left v-if="this.$route.path !== '/'&& this.$route.path !== '/inscription'" app color="white" flat dense>
       <v-spacer></v-spacer><!-- v-spacer avant le logo pour le positionner automatiquement à droite -->
       <div class=" pe-10"><!-- import Logo Groupomania -->

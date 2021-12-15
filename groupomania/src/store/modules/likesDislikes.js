@@ -8,8 +8,13 @@ const likesDislikes = {
         
     },
     mutations: {
-        CREATE_POST_LIKESDISLIKES(state, data){
+        GET_POST_LIKESDISLIKES(state, data){
             state.postLikesDislikes = data
+        },
+        CREATE_POST_LIKESDISLIKES(state, data){
+            state.postLikesDislikes = [data, ...state.postLikesDislikes]
+        //     const index = state.allPosts.map(post => post.id).indexOf(data.id);
+        // state.allPosts.splice(index, 1, data);
         },
         CREATE_COMMENT_LIKESDISLIKES(state, data){
             state.commentLikesDislikes = data
@@ -19,6 +24,18 @@ const likesDislikes = {
 
     },
     actions: {
+        async getAllPostLikesDislikes ({commit}){
+        
+            await axios
+                .get('http://localhost:3000/api/v1/get/post/likesdislikes')
+                
+                .then(response => {
+                    // console.log(response.data.comment)
+                    commit('GET_POST_LIKESDISLIKES', response.data)
+                    
+                })
+                .catch(error => {console.log(error)})
+        },//fin getAllPostsAct
 
         async postLikesDislikes ({commit},payload){
             let postId= payload.postId
