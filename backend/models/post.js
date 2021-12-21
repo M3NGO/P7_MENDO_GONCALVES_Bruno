@@ -59,6 +59,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       defaultValue:0
     },
+    nbre_comments:{
+      type: DataTypes.INTEGER,
+      defaultValue:0
+    },
   }, {
     sequelize,
     underscored: true,

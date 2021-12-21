@@ -28,19 +28,19 @@
                     <v-btn icon class="rounded-xl" ><!-- Delete user ne doit apparaitre que dans utilisateurs désinscrits et pour moderateurs -->
                         <v-icon v-on:click="deleteUser(user.uuid, user.email)" color="error">mdi-close-circle</v-icon><!-- a présenter que quand user est désactivé et uniquement pour les moderateurs-->
                     </v-btn>
-                    <span class="mr-1" color="primary" v-if="profile.role == 2">·</span>
+                    <span class="mr-1" color="primary" v-show="profile.role == 2">·</span>
 
-                    <v-btn icon class="rounded-xl" v-if="profile.role == 2"><!-- Lock user doit apparaitre que dans Liste tous les utilisateurs et uniquement pour moderateurs -->
-                        <v-icon class="mr-1" v-on:click="unblockUser(user.uuid, profile.uuid, user.email)" color="error">mdi-lock</v-icon><!-- bouton moderation user pour les moderateurs uniquement -->
+                    <v-btn icon class="rounded-xl" v-show="profile.role == 2"><!-- Lock user doit apparaitre que dans Liste tous les utilisateurs et uniquement pour moderateurs -->
+                        <v-icon class="mr-1" v-on:click="unblockUser(user.uuid, profile.uuid, user.email)" color="green">mdi-lock-check</v-icon><!-- bouton moderation user pour les moderateurs uniquement -->
                     </v-btn>
-                    <span class="mr-1" color="primary" v-if="profile.role == 2">·</span>
+                    <span class="mr-1" color="primary" v-show="profile.role == 2">·</span>
 
                     <v-icon class="mr-1" color="primary">mdi-email</v-icon>
-                    <span class="subheading mr-2">256</span> <!-- Nombre de Posts faits par le user-->
+                    <span class="subheading mr-2">{{user.nbre_posts}}</span> <!-- Nombre de Posts faits par le user-->
                     
                     <span class="mr-1" color="primary">·</span>
                     <v-icon class="mr-1" color="primary">mdi-comment-text</v-icon>
-                    <span class="subheading">45</span><!-- Nombre de Commentaires faits par le user-->
+                    <span class="subheading">{{user.nbre_comments}}</span><!-- Nombre de Commentaires faits sur les posts du user-->
                 </v-row>
                 </v-list-item>
             </v-card-actions>
@@ -63,7 +63,7 @@ computed: {
     ...mapState('getProfile', ['profile']), //('nom du module dans index.js', ['nomstate dans fichier dossier module'])
     
   },
-  beforeMount(){
+  mounted(){
     this.$store.dispatch('moderation/getModeratedUsers') //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
     this.$store.dispatch('getProfile/getProfile') //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
   },

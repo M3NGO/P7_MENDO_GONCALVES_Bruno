@@ -40,9 +40,9 @@ computed:{
   ...mapState('getProfile', ['profile']), //('nom du module dans index.js', ['nomstate dans fichier dossier module'])
 },
     methods: {
-      publier(email){
-        this.$store.dispatch('getPosts/createPosts', {content: this.content, email:email, upload: this.upload}) //('nom module dans index.js/nom action liée'), payload
-        this.$refs.monNewPost.reset(); // reset le formulaire un fois envoyé le post
+      async publier(email){
+        await this.$store.dispatch('getPosts/createPosts', {content: this.content, email:email, upload: this.upload}) //('nom module dans index.js/nom action liée'), payload
+        await this.$refs.monNewPost.reset(); // reset le formulaire un fois envoyé le post
         
       },
  

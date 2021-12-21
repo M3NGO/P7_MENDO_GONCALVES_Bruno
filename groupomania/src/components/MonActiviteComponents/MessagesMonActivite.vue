@@ -1,9 +1,23 @@
 <template>
 <v-container fluid>
     <v-card class="mb-15" v-for="post in profile.post" :key="post.id"> <!-- carte contenant le Post + commentaires -->
- <video controls width="100%" hegth="auto" v-if="post.upload_url !== null && post.upload_url.includes('videos') " :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' + post.upload_url" max-height="400">section image back du profil qui englobe l'avatar
+        <video controls width="100%" heigth="auto" v-if="post.upload_url !== null && post.upload_url.includes('videos') " :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' + post.upload_url" max-height="400" @click="dialog=false"><!--section image back du profil qui englobe l'avatar-->
         </video> <!-- FIN section image back du profil qui englobe l'avatar -->
-        <v-img v-if="post.upload_url !== null && post.upload_url.includes('images')" :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' + post.upload_url" max-height="400"></v-img><!-- section image back du profil qui englobe l'avatar -->
+        <v-dialog v-model="dialog"  width="1000" >
+            <template v-slot:activator="{ on, attrs }">
+                <v-img class="rounded-t" v-bind="attrs" v-on="on" v-if="post.upload_url !== null && post.upload_url.includes('images')" :aspect-ratio="16/9" v-bind:href="'http://localhost:3000/' + post.upload_url" v-bind:src="'http://localhost:3000/' + post.upload_url" max-height="400" @click="dialog=true"><!-- section image back du profil qui englobe l'avatar -->
+                </v-img> <!-- FIN section image back du profil qui englobe l'avatar --> <!--post.upload_url.includes('images') car les images sont stockées dans dossier images et le lien contiendra tjrs images -->
+                <!-- <v-divider></v-divider> -->
+            </template>
+
+            <v-card class="d-flex align-center" >
+                <v-img v-if="post.upload_url !== null && post.upload_url.includes('images')" contain :aspect-ratio="16/9" v-bind:href="'http://localhost:3000/' + post.upload_url" v-bind:src="'http://localhost:3000/' + post.upload_url" @click="dialog=false" ><!-- section image back du profil qui englobe l'avatar -->
+                    </v-img> <!-- FIN section image back du profil qui englobe l'avatar --> <!--post.upload_url.includes('images') car les images sont stockées dans dossier images et le lien contiendra tjrs images -->
+                <!-- <v-divider></v-divider> -->
+            </v-card>
+        </v-dialog>
+
+        
         <v-divider></v-divider>
 
         <!-- Section message du user -->
@@ -25,7 +39,7 @@
             <v-col cols="10" class="d-flex-column flex-wrap">
         <v-card-title class="body-1"> {{post.email}}</v-card-title>
         <v-card-text class="text-justify body-2" >{{post.content}}</v-card-text>
-        <v-card-subtitle align="end" class="caption font-italic">Publié le: {{post.updatedAt}}</v-card-subtitle><!-- insert date à laquelle le user aura créé le commentaire -->
+        <v-card-subtitle align="end" class="caption font-italic">Posté le : {{ post.createdAt | moment('LL')}} </v-card-subtitle><!-- insert date à laquelle le user aura créé le commentaire -->
             </v-col>
 
         </v-row>
@@ -33,6 +47,16 @@
         <v-divider></v-divider>
 
         <v-card-actions class="d-flex justify-end"  ><!-- section boutons card messages -->
+            <v-tooltip bottom v-if="profile.role === 2"><!-- rendre visible que quand le role user est 2 -->
+                <template v-slot:activator="{ on, attrs }">
+                    <v-btn v-bind="attrs" v-on="on" plain text x-small v-on:click="moderationPost(post.id, profile.uuid)"
+                    ><v-icon size="20" color="error">mdi-alert-circle</v-icon>
+                    </v-btn>
+                </template>
+                    <span>Modération</span>
+            </v-tooltip>
+
+            <v-divider v-show="profile.uuid == post.uuid" vertical></v-divider>
 
             <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
@@ -47,7 +71,7 @@
 
             <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
-                    <v-btn v-bind="attrs" v-on="on" plain text x-small @click="updatePost=true"
+                    <v-btn v-bind="attrs" v-on="on" plain text x-small @click="updatePost=!updatePost"
                     ><v-icon size="20">mdi-cog</v-icon>
                     </v-btn>
                 </template>
@@ -58,7 +82,7 @@
 
             <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
-                    <v-btn v-bind="attrs" v-on="on" plain text x-small @click="reveal=true" 
+                    <v-btn v-bind="attrs" v-on="on" plain text x-small @click="!reveal" 
                     ><v-icon size="20">mdi-comment-text</v-icon>
                     </v-btn>
                 </template>
@@ -70,8 +94,9 @@
 
             <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
-                    <v-badge overlap offset-x="15" offset-y="10" color="error" content="10">
-                        <v-btn v-bind="attrs" v-on="on" plain text x-small 
+                    <v-badge overlap offset-x="15" offset-y="10" color="error">
+                        <span slot="badge" >{{post.nbre_likes}}</span>
+                        <v-btn v-bind="attrs" v-on="on" plain text x-small v-on:click="!clickLike, clickDislike, postLike(post.id, clickLike, clickDislike)"
                         ><v-icon size="20">mdi-thumb-up</v-icon>
                         </v-btn>
                     </v-badge>
@@ -88,13 +113,14 @@
 
             <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
-                    <v-badge overlap offset-x="15" offset-y="10" color="error" content="8">
-                        <v-btn v-bind="attrs" v-on="on" plain text x-small 
+                    <v-badge overlap offset-x="15" offset-y="10" color="error">
+                        <span slot="badge">{{post.nbre_dislikes}}</span>
+                        <v-btn v-bind="attrs" v-on="on" plain text x-small v-on:click="clickLike, clickDislike, postDislike(post.id,clickLike, clickDislike)"
                         ><v-icon size="20">mdi-thumb-down</v-icon>
                         </v-btn>
                     </v-badge>
                 </template>
-                    <span>J'aime</span>
+                    <span>J'aime pas</span>
             </v-tooltip>
             <!-- FIN - bouton disike avec badge rouge compte les nombre de dislikes -->
         </v-card-actions><!-- FIN - section boutons card messages -->
@@ -102,7 +128,7 @@
     <!-- Bloc création commentaire -->
         <v-divider></v-divider>
         <v-expand-transition><!-- transition fait apparaitre section écrire commentaire sous la section boutons card-->
-            <v-card-title v-if="reveal" class="transition-fast-in-fast-out v-card-text--reveal" ref="monNewComment">
+            <v-card-title v-show="reveal" class="transition-fast-in-fast-out v-card-text--reveal" ref="monNewComment">
                 <v-row class="d-flex align-center">
                     <v-col cols="10" class="me-5"><!-- section création Post (message + upload multimedia) -->
                         <v-text-field class=" body-2" label="Votre commentaire ici" :rules="rules" hide-details="auto" clearable v-model="contentCom"></v-text-field> 
@@ -117,7 +143,7 @@
         </v-expand-transition><!-- FIN - transition fait apparaitre section écrire commentaire sous la section boutons card-->
 
         <v-expand-transition><!-- transition fait apparaitre section update Post sous la section boutons card-->
-            <v-card-title v-if="updatePost" class="transition-fast-in-fast-out">
+            <v-card-title v-show="updatePost" class="transition-fast-in-fast-out">
                 <v-row class="d-flex align-center">
                     <v-col cols="10" class="me-5"><!-- section création Post (message + upload multimedia) -->
                         <v-text-field class=" body-2" label="Votre nouveau Message" :rules="rules" hide-details="auto" v-model="contentUpdate"></v-text-field> 
@@ -158,6 +184,11 @@ export default {
 
     contentUpdate:'',
     uploadUpdate:'',
+    dialog: false,
+    clickLike: '',
+    clickDislike : '',
+    nbre_dislikes:'',
+    nbre_likes:'',
 
   reveal: false, // reveal false pour faire disparaitre section écrire commentaire au dessus de timeline commentaires
   updatePost: false, //pour faire disparaitre section update post au click sur bouton updater
@@ -170,13 +201,15 @@ export default {
 
 //debut gestion axios + vuex
   computed: {
+   ...mapState('getPosts', ['allPosts']), //('nom du module dans index.js', ['nomstate dans fichier dossier module'])
     ...mapState('getProfile', ['profile']), //('nom du module dans index.js', ['nomstate dans fichier dossier module'])
-    
+    ...mapState('likesDislikes', ['postLikesDislikes']),
   },
-  beforeMount(){
+  mounted(){
    
+    this.$store.dispatch('getPosts/getAllPostsAct') //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
     this.$store.dispatch('getProfile/getProfile') //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
-    
+    this.$store.dispatch('likesDislikes/getAllPostLikesDislikes')
     // this.role = localStorage.getItem('role')// déclare role au montage = localstorage on s'en sert ensuite dans v-if pour cacher aux role 1
   },
 //     updated(){
@@ -204,6 +237,66 @@ export default {
       moderationPost(postId, uuid){
         this.$store.dispatch('moderation/moderationPost', {post_id: postId, uuid:uuid}) 
       },
+
+    async postLike(postId){
+
+        let post_like = await this.postLikesDislikes.filter(likes => likes.uuid ==this.profile.uuid && likes.post_id == postId)
+        // console.log(post_like)
+
+            if(!post_like[0]){
+                // console.log('test 1 premier')
+                await this.$store.dispatch('likesDislikes/postLikesDislikes', {postId: postId, likes: 1})
+                await this.$store.dispatch('likesDislikes/getAllPostLikesDislikes')
+                await this.$store.dispatch('getPosts/getAllPostsAct')
+                await this.$store.dispatch('getProfile/getProfile') 
+            }
+            else if(post_like[0].likes == 1){
+                // console.log('test 1')
+                await this.$store.dispatch('likesDislikes/postLikesDislikes', {postId: postId, likes: 0})
+                await this.$store.dispatch('likesDislikes/getAllPostLikesDislikes')
+                await this.$store.dispatch('getPosts/getAllPostsAct')
+                await this.$store.dispatch('getProfile/getProfile') 
+
+            }else if(post_like[0].likes == 0){
+                // console.log('test 1')
+                await this.$store.dispatch('likesDislikes/postLikesDislikes', {postId: postId, likes: 1})
+                await this.$store.dispatch('likesDislikes/getAllPostLikesDislikes')
+                await this.$store.dispatch('getPosts/getAllPostsAct')
+                await this.$store.dispatch('getProfile/getProfile') 
+
+            }
+      },
+
+    async postDislike(postId){
+        let post_dislike = await this.postLikesDislikes.filter(dislikes => dislikes.uuid ==this.profile.uuid && dislikes.post_id == postId)
+        // console.log(post_dislike)
+
+            if(!post_dislike[0]){
+                // console.log('test dislike 1 premier')
+                await this.$store.dispatch('likesDislikes/postLikesDislikes', {postId: postId, likes: -1})
+                await this.$store.dispatch('likesDislikes/getAllPostLikesDislikes')
+                await this.$store.dispatch('getPosts/getAllPostsAct')
+                await this.$store.dispatch('getProfile/getProfile') 
+            }
+            else if(post_dislike[0].dislikes == 1 && post_dislike[0].likes == 0){
+                // console.log('test 1 dislike')
+                await this.$store.dispatch('likesDislikes/postLikesDislikes', {postId: postId, likes: 0})
+                await this.$store.dispatch('likesDislikes/getAllPostLikesDislikes')
+                await this.$store.dispatch('getPosts/getAllPostsAct')
+                await this.$store.dispatch('getProfile/getProfile') 
+
+            }else if(post_dislike[0].dislikes == 0){
+                // console.log('test 1 dislike')
+                await this.$store.dispatch('likesDislikes/postLikesDislikes', {postId: postId, likes: -1})
+                await this.$store.dispatch('likesDislikes/getAllPostLikesDislikes')
+                await this.$store.dispatch('getPosts/getAllPostsAct')
+                await this.$store.dispatch('getProfile/getProfile') 
+
+            }
+            
+        }
+
+
 
 
   },

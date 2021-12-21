@@ -13,17 +13,25 @@
           </template><!-- FIN - icone sur la timeline a gauche du commentaire ajouter l'avatar de la personne qui commente-->
 
           <v-card class="d-flex flex-column elevation-2"><!-- créé carte commentaire accolée a la timeline -->
-            <video controls width="100%" hegth="auto" v-if="commentaire.upload_url !== null && commentaire.upload_url.includes('videos') " :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' + commentaire.upload_url" max-height="300"></video> <!-- FIN section image back du profil qui englobe l'avatar -->
-            <v-img v-if="commentaire.upload_url !== null && commentaire.upload_url.includes('images')" :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' + commentaire.upload_url" max-height="300"></v-img><!-- section image back du profil qui englobe l'avatar -->
+        <video controls width="100%" hegth="auto" v-if="commentaire.upload_url !== null && commentaire.upload_url.includes('videos') " :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' + commentaire.upload_url" max-height="300"></video> <!-- FIN section image back du profil qui englobe l'avatar -->
+        <v-dialog v-model="dialog" persistent fullscreen width="500" >
+            <template v-slot:activator="{ on, attrs }">
+              <v-img class="rounded-t" v-bind="attrs" v-on="on" v-if="commentaire.upload_url !== null && commentaire.upload_url.includes('images')" :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' + commentaire.upload_url" max-height="300" @click="dialog=true"></v-img><!-- section image back du profil qui englobe l'avatar -->
+            </template>
+
+            <v-card class="d-flex align-center" >
+              <v-img v-if="commentaire.upload_url !== null && commentaire.upload_url.includes('images')" :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' + commentaire.upload_url" @click="dialog=false"></v-img><!-- section image back du profil qui englobe l'avatar -->
+            </v-card>
+        </v-dialog>
             <v-card-title class="body-2">{{commentaire.email}}</v-card-title><!-- insert l'email user qui commente en tant que titre commentaire-->
             <v-card-text class="caption text-justify">{{ commentaire.content }}</v-card-text>
-            <v-card-subtitle align="end" class="caption font-italic">Publié {{ commentaire.updatedAt}}</v-card-subtitle><!-- insert date à laquelle le user aura créé le commentaire -->
+            <v-card-subtitle align="end" class="caption font-italic">Publié le: {{ commentaire.createdAt | moment('LL')}} </v-card-subtitle><!-- insert date à laquelle le user aura créé le commentaire -->
             
             <v-card-actions class="d-flex justify-end flex-wrap" ><!-- section boutons card messages -->
                 <v-tooltip bottom v-if="profile.role == 2"><!-- rendre visible que quand le role user est 2 -->
                     <template v-slot:activator="{ on, attrs }">
                         <v-btn v-bind="attrs" v-on="on" plain text x-small v-on:click="unModerateComment(commentaire.id, profile.uuid)"
-                        ><v-icon size="15">mdi-alert-circle</v-icon>
+                        ><v-icon size="15" color="error">mdi-alert-circle</v-icon>
                         </v-btn>
                     </template>
                         <span>Modération</span>
@@ -40,7 +48,7 @@
 
                 <v-tooltip bottom><!-- rendre visible que quand le user est celui qui a créé le commentaire -->
                   <template v-slot:activator="{ on, attrs }">
-                      <v-btn v-bind="attrs" v-on="on" plain text x-small @click="updateComment=true"
+                      <v-btn v-bind="attrs" v-on="on" plain text x-small @click="updateComment=!updateComment"
                       ><v-icon size="15">mdi-cog</v-icon>
                       </v-btn>
                   </template>
@@ -51,8 +59,9 @@
 
                 <v-tooltip bottom>
                     <template v-slot:activator="{ on, attrs }">
-                        <v-badge overlap offset-x="15" offset-y="10" color="error" content="10">
-                            <v-btn v-bind="attrs" v-on="on" plain text x-small
+                        <v-badge overlap offset-x="15" offset-y="10" color="error">
+                            <span slot="badge">{{commentaire.nbre_likes}}</span>
+                            <v-btn v-bind="attrs" v-on="on" plain text x-small v-on:click="clickLike, clickDislike ,commentLike(commentaire.post_id, commentaire.id, clickLike, clickDislike)"
                             ><v-icon size="15">mdi-thumb-up</v-icon>
                             </v-btn>
                         </v-badge>
@@ -66,19 +75,20 @@
 
                 <v-tooltip bottom>
                     <template v-slot:activator="{ on, attrs }">
-                        <v-badge overlap offset-x="15" offset-y="10" color="error" content="8">
-                            <v-btn v-bind="attrs" v-on="on" plain text x-small 
+                        <v-badge overlap offset-x="15" offset-y="10" color="error">
+                            <span slot="badge">{{commentaire.nbre_dislikes}}</span>
+                            <v-btn v-bind="attrs" v-on="on" plain text x-small v-on:click="clickLike, clickDislike, commentDislike(commentaire.post_id, commentaire.id,clickLike, clickDislike)"
                             ><v-icon size="15">mdi-thumb-down</v-icon>
                             </v-btn>
                         </v-badge>
                     </template>
-                        <span>J'aime</span>
+                        <span>J'aime pas</span>
                 </v-tooltip>
                 <!-- FIN - bouton disike avec badge rouge compte les nombre de dislikes -->
             </v-card-actions><!-- FIN - section boutons card messages -->
 
         <v-expand-transition><!-- transition fait apparaitre section update commentaire sous la section boutons card-->
-            <v-card-title v-if="updateComment" class="transition-fast-in-fast-out">
+            <v-card-title v-show="updateComment" class="transition-fast-in-fast-out">
                 <v-row class="d-flex align-center">
                     <v-col cols="10" class="me-5"><!-- section création Post (message + upload multimedia) -->
                         <v-text-field class=" body-2" label="Votre nouveau commentaire ici" :rules="rules" hide-details="auto" v-model="contentUpdate" clearable></v-text-field> 
@@ -110,11 +120,13 @@ export default {
   computed: {
     ...mapState('moderation', ['allCommentsModeration']), //('nom du module dans index.js', ['nomstate dans fichier dossier module'])
     ...mapState('getProfile', ['profile']), //('nom du module dans index.js', ['nomstate dans fichier dossier module'])
+    ...mapState('likesDislikes', ['commentLikesDislikes']),
     
   },
-  beforeMount(){
+  mounted(){
     this.$store.dispatch('moderation/getModeratedComments') //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
     this.$store.dispatch('getProfile/getProfile') //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
+    this.$store.dispatch('likesDislikes/getAllCommentLikesDislikes')
     
     // this.role = localStorage.getItem('role')// déclare role au montage = localstorage on s'en sert ensuite dans v-if pour cacher aux role 1
   },
@@ -131,11 +143,64 @@ export default {
     unModerateComment(commentId, uuid){
         this.$store.dispatch('moderation/unModerateComment', {comment_id: commentId, uuid:uuid}) 
       },
+async commentLike(postId, commentId){
+        let comment_like = await this.commentLikesDislikes.filter(likes => likes.uuid ==this.profile.uuid && likes.comment_id == commentId)
+  
+          //click déclaré false au début dans data
+        if(!comment_like[0]){ //si clck false alors on envoit un like et on déclare a true
+        console.log("j'envoie 1")
+            await this.$store.dispatch('likesDislikes/commentLikesDislikes', {postid: postId, commentId: commentId, likes: 1})
+            await this.$store.dispatch('likesDislikes/getAllCommentLikesDislikes')
+            await this.$store.dispatch('getPosts/getAllPostsAct')
+            window.location.reload() //reload pour mettre a jour le like ou dislike dans le rendu
+
+        }else if(comment_like[0].likes == 1){ //si clck false alors on envoit un like et on déclare a true
+        console.log("j'envoie 0")
+            await this.$store.dispatch('likesDislikes/commentLikesDislikes', {postid: postId, commentId: commentId, likes: 0})
+            await this.$store.dispatch('likesDislikes/getAllCommentLikesDislikes')
+            await this.$store.dispatch('getPosts/getAllPostsAct')
+            window.location.reload() //reload pour mettre a jour le like ou dislike dans le rendu
+
+        }else if(comment_like[0].likes == 0){//si click true on evoit 0 like et on déclare click false
+              console.log("j'envoie 1n le like existe mais est à 0")
+              await this.$store.dispatch('likesDislikes/commentLikesDislikes', {postid: postId, commentId: commentId, likes: 1})
+              await this.$store.dispatch('likesDislikes/getAllCommentLikesDislikes')
+              await this.$store.dispatch('getPosts/getAllPostsAct')
+              window.location.reload() //reload pour mettre a jour le like ou dislike dans le rendu
+          }
+      },
+      async commentDislike(postId, commentId){
+        let comment_dislike = await this.commentLikesDislikes.filter(likes => likes.uuid ==this.profile.uuid && likes.comment_id == commentId)
+
+        if(!comment_dislike[0]){
+            await this.$store.dispatch('likesDislikes/commentLikesDislikes', {postid: postId, commentId: commentId, likes: -1})
+            await this.$store.dispatch('likesDislikes/getAllCommentLikesDislikes')
+            await this.$store.dispatch('getPosts/getAllPostsAct')
+            window.location.reload() //reload pour mettre a jour le like ou dislike dans le rendu
+
+          }else if(comment_dislike[0].dislikes == 1 && comment_dislike[0].likes == 0){
+            await this.$store.dispatch('likesDislikes/commentLikesDislikes', {postid: postId, commentId: commentId, likes: 0})
+            await this.$store.dispatch('likesDislikes/getAllCommentLikesDislikes')
+            await this.$store.dispatch('getPosts/getAllPostsAct')
+            window.location.reload() //reload pour mettre a jour le like ou dislike dans le rendu
+ 
+          }else if(comment_dislike[0].dislikes == 0){
+              await this.$store.dispatch('likesDislikes/commentLikesDislikes', {postid: postId, commentId: commentId, likes: -1})
+              await this.$store.dispatch('likesDislikes/getAllCommentLikesDislikes')
+              await this.$store.dispatch('getPosts/getAllPostsAct')
+              window.location.reload() //reload pour mettre a jour le like ou dislike dans le rendu
+       
+          }
+        
+      }
   },
 
     data: () => ({
     contentUpdate:'',
-    uploadUpdate:'',
+    uploadUpdate:[],
+    clickLike: false,
+    clickDislike: false,
+    dialog: false,
     
   updateComment: false, //pour faire disparaitre section update commentaire au click sur bouton updater
   // controle le nombre de caractères inscrits dans partie Votre nouveau commentaire

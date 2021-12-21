@@ -13,17 +13,25 @@
           </template><!-- FIN - icone sur la timeline a gauche du commentaire ajouter l'avatar de la personne qui commente-->
 
           <v-card class="d-flex flex-column elevation-2"><!-- créé carte commentaire accolée a la timeline -->
-            <video controls width="100%" hegth="auto" v-if="commentaire.upload_url !== null && commentaire.upload_url.includes('videos') " :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' + commentaire.upload_url" max-height="300"></video> <!-- FIN section image back du profil qui englobe l'avatar -->
-            <v-img v-if="commentaire.upload_url !== null && commentaire.upload_url.includes('images')" :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' + commentaire.upload_url" max-height="300"></v-img><!-- section image back du profil qui englobe l'avatar -->
+        <video controls width="100%" hegth="auto" v-if="commentaire.upload_url !== null && commentaire.upload_url.includes('videos') " :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' + commentaire.upload_url" max-height="300"></video> <!-- FIN section image back du profil qui englobe l'avatar -->
+        <v-dialog v-model="dialog" persistent fullscreen width="500" >
+            <template v-slot:activator="{ on, attrs }">
+              <v-img class="rounded-t" v-bind="attrs" v-on="on" v-if="commentaire.upload_url !== null && commentaire.upload_url.includes('images')" :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' + commentaire.upload_url" max-height="300" @click="dialog=true"></v-img><!-- section image back du profil qui englobe l'avatar -->
+            </template>
+
+            <v-card class="d-flex align-center" >
+              <v-img v-if="commentaire.upload_url !== null && commentaire.upload_url.includes('images')" :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' + commentaire.upload_url" @click="dialog=false"></v-img><!-- section image back du profil qui englobe l'avatar -->
+            </v-card>
+        </v-dialog>
             <v-card-title class="body-2">{{commentaire.email}}</v-card-title><!-- insert l'email user qui commente en tant que titre commentaire-->
             <v-card-text class="caption text-justify">{{ commentaire.content }}</v-card-text>
-            <v-card-subtitle align="end" class="caption font-italic">Publié {{ commentaire.updatedAt}}</v-card-subtitle><!-- insert date à laquelle le user aura créé le commentaire -->
+            <v-card-subtitle align="end" class="caption font-italic">Publié le : {{ commentaire.createdAt | moment('LL')}} </v-card-subtitle><!-- insert date à laquelle le user aura créé le commentaire -->
             
             <v-card-actions class="d-flex justify-end flex-wrap" ><!-- section boutons card messages -->
-                <v-tooltip bottom v-if="profile.role == 2"><!-- rendre visible que quand le role user est 2 -->
+                <v-tooltip bottom v-show="profile.role == 2"><!-- rendre visible que quand le role user est 2 -->
                     <template v-slot:activator="{ on, attrs }">
                         <v-btn v-bind="attrs" v-on="on" plain text x-small v-on:click="unModerateComment(commentaire.id, profile.uuid)"
-                        ><v-icon size="15">mdi-alert-circle</v-icon>
+                        ><v-icon size="15" color="green">mdi-alert-circle</v-icon>
                         </v-btn>
                     </template>
                         <span>Modération</span>
@@ -42,7 +50,8 @@
 
                 <v-tooltip bottom>
                     <template v-slot:activator="{ on, attrs }">
-                        <v-badge overlap offset-x="15" offset-y="10" color="error" content="10">
+                        <v-badge overlap offset-x="15" offset-y="10" color="error">
+                            <span slot="badge">{{commentaire.nbre_likes}}</span>
                             <v-btn v-bind="attrs" v-on="on" plain text x-small
                             ><v-icon size="15">mdi-thumb-up</v-icon>
                             </v-btn>
@@ -57,13 +66,14 @@
 
                 <v-tooltip bottom>
                     <template v-slot:activator="{ on, attrs }">
-                        <v-badge overlap offset-x="15" offset-y="10" color="error" content="8">
+                        <v-badge overlap offset-x="15" offset-y="10" color="error">
+                            <span slot="badge">{{commentaire.nbre_dislikes}}</span>
                             <v-btn v-bind="attrs" v-on="on" plain text x-small 
                             ><v-icon size="15">mdi-thumb-down</v-icon>
                             </v-btn>
                         </v-badge>
                     </template>
-                        <span>J'aime</span>
+                        <span>J'aime pas</span>
                 </v-tooltip>
                 <!-- FIN - bouton disike avec badge rouge compte les nombre de dislikes -->
             </v-card-actions><!-- FIN - section boutons card messages -->
@@ -87,7 +97,7 @@ export default {
     ...mapState('getProfile', ['profile']), //('nom du module dans index.js', ['nomstate dans fichier dossier module'])
     
   },
-  beforeMount(){
+  mounted(){
     this.$store.dispatch('moderation/getModeratedComments') //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
     this.$store.dispatch('getProfile/getProfile') //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
     

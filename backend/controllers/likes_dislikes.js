@@ -11,16 +11,17 @@ exports.postLikesDislikes = async (req, res)=>{
             await Post.increment('nbre_likes',{ by: 1, where:{id: post_id}})
             await Post_likes_dislikes.create({ likes: req.body.likes,uuid: uuid, post_id: post_id})
             // let postlikesupdated = await Post_likes_dislikes.findOne({where:{ uuid: uuid, post_id: post_id}})
-            let postupdated = await Post.findOne({where:{ id: post_id}, include:['comment', 'postlikes', 'commentlikes']})
+            // let postlikesupdated = await Post_likes_dislikes.findOne({ where: {uuid: uuid, post_id: post_id} })
+            let postupdated = await Post.findOne({ where: {uuid: uuid, id: post_id} })
             console.log('consolelog=1'+postupdated)
-            return res.status(200).json(postupdated)
+            return res.status(200).json(postupdated) 
 
         } if(!reponse && postLikes === -1){
             await Post.increment('nbre_dislikes',{ by: 1, where:{id: post_id}})
            
             await Post_likes_dislikes.create({ dislikes: -(req.body.likes),uuid: uuid, post_id: post_id})
             // let postupdated = await Post.findOne({where:{ id: post_id}})
-            let postupdated = await Post.findOne({where:{ id: post_id}, include:['comment', 'postlikes', 'commentlikes']})
+            let postupdated = await Post_likes_dislikes.findOne({ where: {uuid: uuid, post_id: post_id} })
             console.log('consolelog=4'+postupdated)
             return res.status(200).json(postupdated)
 
@@ -30,12 +31,12 @@ exports.postLikesDislikes = async (req, res)=>{
             await Post_likes_dislikes.destroy({where:{ uuid: uuid, post_id: post_id}})
             await Post_likes_dislikes.create({ likes: req.body.likes,uuid: uuid, post_id: post_id})
             // let postupdated = await Post.findOne({where:{ id: post_id}})
-            let postupdated = await Post.findOne({where:{id: post_id}, include:['comment', 'postlikes', 'commentlikes']})
+            let postupdated = await Post_likes_dislikes.findOne({ where: {uuid: uuid, post_id: post_id} })
             console.log('consolelog=2'+postupdated)
             return res.status(200).json(postupdated)
         }else if(reponse.likes === 1 && postLikes === 1){
             // let postupdated = await Post.findOne({where:{ id: post_id}})
-            let postupdated = await Post.findOne({where:{ id: post_id}, include:['comment', 'postlikes', 'commentlikes']})
+            let postupdated = await Post_likes_dislikes.findOne({ where: {uuid: uuid, post_id: post_id} })
             console.log('consolelog=3'+postupdated)
             return res.status(200).json(postupdated)
         }else if(reponse.likes === 1 && postLikes === -1){
@@ -43,27 +44,27 @@ exports.postLikesDislikes = async (req, res)=>{
             await Post.increment('nbre_dislikes',{ by: 1, where:{id: post_id}})
             await Post_likes_dislikes.destroy({where:{ uuid: uuid, post_id: post_id}})
             await Post_likes_dislikes.create({ dislikes: -(req.body.likes),uuid: uuid, post_id: post_id})
-            let postupdated = await Post.findOne({where:{ id: post_id}, include:['comment', 'postlikes', 'commentlikes']})
+            let postupdated = await Post_likes_dislikes.findOne({ where: {uuid: uuid, post_id: post_id} })
             // let postupdated = await Post.findOne({where:{ id: post_id}})
             console.log('consolelog=5'+postupdated)
             return res.status(200).json(postupdated)
         }else if(reponse.dislikes === 1 && postLikes === -1){
             // let postupdated = await Post.findOne({where:{ id: post_id}})
-            let postupdated = await Post.findOne({where:{ id: post_id}, include:['comment', 'postlikes', 'commentlikes']})
+            let postupdated = await Post_likes_dislikes.findOne({ where: {uuid: uuid, post_id: post_id} })
             console.log('consolelog=6'+postupdated)
             return res.status(200).json(postupdated)
         }else if(reponse.likes === 1 && postLikes === 0){
             await Post.decrement('nbre_likes',{ by: 1, where:{id: post_id}})
             await Post_likes_dislikes.destroy({where:{ uuid: uuid, post_id: post_id}})
             // let postupdated = await Post.findOne({where:{ id: post_id}})
-            let postupdated = await Post.findOne({where:{ id: post_id}, include:['comment', 'postlikes', 'commentlikes']})
+            let postupdated = await Post_likes_dislikes.findAll({where: {active: true}})
             console.log('consolelog=7'+postupdated)
             return res.status(200).json(postupdated)
         }else if(reponse.dislikes === 1 && postLikes === 0){
             await Post.decrement('nbre_dislikes',{ by: 1, where:{id: post_id}})
             await Post_likes_dislikes.destroy({where:{ uuid: uuid, post_id: post_id}})
             // let postupdated = await Post.findOne({where:{ id: post_id}})
-            let postupdated = await Post.findOne({where:{ id: post_id}, include:['comment', 'postlikes', 'commentlikes']})
+            let postupdated = await Post_likes_dislikes.findOne({ where: {uuid: uuid, post_id: post_id} })
             console.log('consolelog=8'+postupdated)
             return res.status(200).json(postupdated)
         }

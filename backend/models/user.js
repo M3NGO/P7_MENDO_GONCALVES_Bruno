@@ -78,6 +78,14 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: 1,
       allowNull: false
     },
+    nbre_posts:{
+      type: DataTypes.INTEGER,
+      defaultValue:0
+    },
+    nbre_comments:{
+      type: DataTypes.INTEGER,
+      defaultValue:0
+    },
   }, {
     sequelize,
     underscored: true, // pour dire a sequelize que les noms des colonnes MYSQL sont écrites avec unserscore

@@ -34,11 +34,11 @@
                     <span class="mr-1" color="primary">·</span>
 
                     <v-icon class="mr-1" color="primary">mdi-email</v-icon>
-                    <span class="subheading mr-2">256</span> <!-- Nombre de Posts faits par le user-->
+                    <span class="subheading mr-2">{{user.nbre_posts}}</span> <!-- Nombre de Posts faits par le user-->
                     
                     <span class="mr-1" color="primary">·</span>
                     <v-icon class="mr-1" color="primary">mdi-comment-text</v-icon>
-                    <span class="subheading">45</span><!-- Nombre de Commentaires faits par le user-->
+                    <span class="subheading">{{user.nbre_comments}}</span><!-- Nombre de Commentaires faits sur les posts du user-->
                 </v-row>
                 </v-list-item>
             </v-card-actions>

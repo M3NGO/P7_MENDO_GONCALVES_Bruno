@@ -16,8 +16,16 @@ const likesDislikes = {
         //     const index = state.allPosts.map(post => post.id).indexOf(data.id);
         // state.allPosts.splice(index, 1, data);
         },
-        CREATE_COMMENT_LIKESDISLIKES(state, data){
+        // UPDATE_POST_LIKESDISLIKES(state, data){
+
+        //     const index = state.postLikesDislikes.map(post => post.id).indexOf(data.id);
+        //     state.postLikesDislikes.splice(index, 1, data);
+        //     },
+        GET_COMMENT_LIKESDISLIKES(state, data){
             state.commentLikesDislikes = data
+        },
+        CREATE_COMMENT_LIKESDISLIKES(state, data){
+            state.commentLikesDislikes = [data, ...state.postLikesDislikes]
         },
 
 
@@ -65,9 +73,23 @@ const likesDislikes = {
         
                 .catch(error => {console.log(error)})
                 },
+
+                async getAllCommentLikesDislikes ({commit}){
+        
+                    await axios
+                        .get('http://localhost:3000/api/v1/get/comment/likesdislikes')
+                        
+                        .then(response => {
+                            // console.log(response.data.comment)
+                            commit('GET_COMMENT_LIKESDISLIKES', response.data)
+                            
+                        })
+                        .catch(error => {console.log(error)})
+                },
                 
                 async commentLikesDislikes ({commit},payload){
                     let commentId= payload.commentId
+                    
                         console.log("je like le commentaire ou pas? "+ payload.likes)
                     await axios
             
@@ -75,7 +97,9 @@ const likesDislikes = {
                         //body axios
                         {
                             "likes": payload.likes,
-                            "uuid": localStorage.getItem('uuid')
+                            "uuid": localStorage.getItem('uuid'),
+                            "post_id": payload.postid
+
                         },
                            //header axios
                         {'Authorization': 'Bearer'+' '+ localStorage.getItem('token'), 

@@ -12,10 +12,18 @@
 
       <v-card class="d-flex flex-column elevation-2"><!-- créé carte commentaire accolée a la timeline -->
         <video controls width="100%" hegth="auto" v-if="commentaire.upload_url !== null && commentaire.upload_url.includes('videos') " :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' + commentaire.upload_url" max-height="300"></video> <!-- FIN section image back du profil qui englobe l'avatar -->
-        <v-img v-if="commentaire.upload_url !== null && commentaire.upload_url.includes('images')" :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' + commentaire.upload_url" max-height="300"></v-img><!-- section image back du profil qui englobe l'avatar -->
+        <v-dialog v-model="dialog" persistent fullscreen width="500" >
+            <template v-slot:activator="{ on, attrs }">
+              <v-img class="rounded-t" v-bind="attrs" v-on="on" v-if="commentaire.upload_url !== null && commentaire.upload_url.includes('images')" :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' + commentaire.upload_url" max-height="300" @click="dialog=true"></v-img><!-- section image back du profil qui englobe l'avatar -->
+            </template>
+
+            <v-card class="d-flex align-center" >
+              <v-img v-if="commentaire.upload_url !== null && commentaire.upload_url.includes('images')" :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' + commentaire.upload_url" @click="dialog=false"></v-img><!-- section image back du profil qui englobe l'avatar -->
+            </v-card>
+        </v-dialog>
         <v-card-title class="body-2">{{commentaire.email}}</v-card-title><!-- insert l'email user qui commente en tant que titre commentaire-->
         <v-card-text class="caption text-justify">{{ commentaire.content }}</v-card-text>
-        <v-card-subtitle align="end" class="caption font-italic">Publié {{ commentaire.updatedAt}}</v-card-subtitle><!-- insert date à laquelle le user aura créé le commentaire -->
+        <v-card-subtitle align="end" class="caption font-italic">Publié le : {{ commentaire.createdAt | moment('LL')}} </v-card-subtitle><!-- insert date à laquelle le user aura créé le commentaire -->
         
         <v-card-actions class="d-flex justify-end flex-wrap" ><!-- section boutons card messages -->
 
@@ -23,7 +31,8 @@
 
             <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
-                    <v-badge overlap offset-x="15" offset-y="10" color="error" content="10">
+                    <v-badge overlap offset-x="15" offset-y="10" color="error">
+                        <span slot="badge">{{commentaire.nbre_likes}}</span>
                         <v-btn v-bind="attrs" v-on="on" plain text x-small
                         ><v-icon size="15">mdi-thumb-up</v-icon>
                         </v-btn>
@@ -40,13 +49,14 @@
 
             <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
-                    <v-badge overlap offset-x="15" offset-y="10" color="error" content="8">
+                    <v-badge overlap offset-x="15" offset-y="10" color="error">
+                        <span slot="badge">{{commentaire.nbre_dislikes}}</span>
                         <v-btn v-bind="attrs" v-on="on" plain text x-small 
                         ><v-icon size="15">mdi-thumb-down</v-icon>
                         </v-btn>
                     </v-badge>
                 </template>
-                    <span>J'aime</span>
+                    <span>J'aime pas</span>
             </v-tooltip>
             <!-- FIN - bouton disike avec badge rouge compte les nombre de dislikes -->
         </v-card-actions><!-- FIN - section boutons card messages -->

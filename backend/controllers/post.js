@@ -3,7 +3,7 @@ let fs = require('fs'); //Systeme Filesystem de node.JS
 
 exports.getallPosts = async (req,res) => {
     try{
-        let posts = await Post.findAll({where: {active: true}, order: [['updatedAt', 'DESC']], include:['comment', 'postlikes', 'commentlikes']}) //let posts = await Post.findAll({include:[{model:User, as:'user'}]}) + ajouter alias  as 'user' dans model user section associations, si on veut retourner l'objet Post et User qui a créé le post en une seule requete
+        let posts = await Post.findAll({where: {active: true}, order: [['createdAt', 'DESC']], include:['comment', 'postlikes', 'commentlikes']}) //let posts = await Post.findAll({include:[{model:User, as:'user'}]}) + ajouter alias  as 'user' dans model user section associations, si on veut retourner l'objet Post et User qui a créé le post en une seule requete
         return res.json(posts)
     }catch(err){
         console.log(err)
@@ -36,10 +36,14 @@ exports.createPost = async (req,res) => {
         }
         if (req.file == null) { //si upload_url est présent pour le uuid dans mysql ET pas de fichier dans la requete, alors on efface le fichier et on met la valeur upload_url a null dans mysql
             let newpost = await Post.create({ content: content, uuid: uuid, avatar: user.upload_url ,email:email, upload_url:null})
+            let nbrePosts = await User.findOne({ where: {uuid} })
+            await User.update({ nbre_posts: nbrePosts.nbre_posts +1},{ where: {uuid} })
             return res.status(200).json(newpost)
           //file exists
         }else{ //si le fichier de requete est présent et que upload_url est vide dans mysql alors on extrait le path du fichier requete et on l'enregistre dans mysql
             let newpost = await Post.create({ content: content, uuid: uuid, avatar: user.upload_url, email:email, upload_url:req.file.path})
+            let nbrePosts = await User.findOne({ where: {uuid} })
+            await User.update({ nbre_posts: nbrePosts.nbre_posts +1},{ where: {uuid} })
             return res.status(200).json(newpost)
         }
     }catch(err) {
@@ -104,6 +108,7 @@ exports.createPost = async (req,res) => {
 exports.deletePost = async(req, res) =>{
     // let uuid = req.body.uuid;
     let post_id = req.params.id;
+    let uuid = await Post.findOne({where:{id: post_id}})
     try{
         // await Comment.findOne({ where: { post_id: post_id} })
         // .then(async userdelete =>{
@@ -132,20 +137,39 @@ exports.deletePost = async(req, res) =>{
             }if(userdelete){
                 let filename = userdelete.upload_url; //delete l'image avatar du user
                 if(fs.existsSync(!filename)){
+                    let nbrePosts = await User.findOne({ where: {uuid:uuid.uuid} })
+                    await User.update({ nbre_posts: nbrePosts.nbre_posts -1},{ where: {uuid:uuid.uuid} })
+                    let CommentToDelete = await Post.findOne({ where: {id: post_id}})
+                    if(CommentToDelete){
+                        await User.update({ nbre_comments: CommentToDelete.nbre_comments-CommentToDelete.nbre_comments },{ where: {uuid:uuid.uuid} })
+
+                    }
                     await Post_likes_dislikes.destroy({ where: {post_id: post_id}})
                    await Post.destroy({ where: { id: post_id} })
                 }if(fs.existsSync(filename)){
                     fs.unlinkSync(filename, async (err)=>{
                         if (err) console.log(err); console.log('Fichier du Post a été effacé du back')})//delete l'image avatar du user
+                        let nbrePosts = await User.findOne({ where: {uuid:uuid.uuid} })
+                        await User.update({ nbre_posts: nbrePosts.nbre_posts -1},{ where: {uuid:uuid.uuid} })
+                        let CommentToDelete = await Post.findOne({ where: {id: post_id}})
+                        if(CommentToDelete){
+                            await User.update({ nbre_comments: CommentToDelete.nbre_comments-CommentToDelete.nbre_comments },{ where: {uuid:uuid.uuid} })
+    
+                        }
                         await Post_likes_dislikes.destroy({ where: {post_id: post_id}})
                         await Post.destroy({ where: { id: post_id}})
+                }
+                let nbrePosts = await User.findOne({ where: {uuid:uuid.uuid} })
+                await User.update({ nbre_posts: nbrePosts.nbre_posts -1},{ where: {uuid:uuid.uuid} })
+                let CommentToDelete = await Post.findOne({ where: {id: post_id}})
+                if(CommentToDelete){
+                    await User.update({ nbre_comments: CommentToDelete.nbre_comments-CommentToDelete.nbre_comments },{ where: {uuid:uuid.uuid} })
+
                 }
                 await Post_likes_dislikes.destroy({ where: {post_id: post_id}})
                 await Post.destroy({ where: { id: post_id} })
             }
         })
-
-
         let posts = await Post.findAll({where: {active: true}, include:['comment', 'postlikes', 'commentlikes']})
         return res.status(200).json(posts)
     }catch(err){

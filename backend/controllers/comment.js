@@ -1,4 +1,4 @@
-let { User,Comment } = require('../models')
+let { User,Comment, Post } = require('../models')
 let fs = require('fs'); //Systeme Filesystem de node.JS
 
 exports.createComment = async (req,res) => {
@@ -9,11 +9,23 @@ exports.createComment = async (req,res) => {
              return res.status(401).json({error: 'Utilisateur non trouvé'})
          }
          if(req.file == null){
+
+            let nbreCommentsPosts = await Post.findOne({ where: {id:post_id} })
+            
+            await Post.update({ nbre_comments: nbreCommentsPosts.nbre_comments +1},{ where: {id:post_id} })
+            // let nbreComments = await User.findOne({ where: {uuid:uuid} })
+            let uuidPost = await Post.findOne({ where: {id:post_id} })
+            await User.update({ nbre_comments: nbreCommentsPosts.nbre_comments +1},{ where: {uuid:uuidPost.uuid} })
             let comment = await Comment.create({content: content, uuid: uuid, avatar: user.upload_url, email:email, post_id: post_id, upload_url:null, active: true})
-            return res.json(comment) // renvoit la réponse
+            return res.json(nbreCommentsPosts) // renvoit la réponse
          }else{
-            let comment = await Comment.create({content: content, uuid: uuid, avatar: user.upload_url, email:email, post_id: post_id, upload_url:`${req.protocol}://${req.get('host')}/${req.file.path}`, active: true})
-            return res.json(comment) // renvoit la réponse
+            let nbreComments = await User.findOne({ where: {uuid:uuid} })
+            await User.update({ nbre_comments: nbreComments.nbre_comments +1},{ where: {uuid:uuid} })
+            let nbreCommentsPosts = await Post.findOne({ where: {id:post_id} })
+            let uuidPost = await Post.findOne({ where: {id:post_id} })
+            await User.update({ nbre_comments: nbreCommentsPosts.nbre_comments +1},{ where: {uuid:uuidPost.uuid} })
+            let comment = await Comment.create({content: content, uuid: uuid, avatar: user.upload_url, email:email, post_id: post_id, upload_url:req.file.path, active: true})
+            return res.json(nbreCommentsPosts) // renvoit la réponse
          }
      }catch(err) {
          console.log(err)
@@ -43,6 +55,7 @@ exports.createComment = async (req,res) => {
     let uuid = req.body.uuid;
     let comment_id = req.params.id;
 await Comment.findOne({where:{ id: comment_id}})
+    let post_id = await Comment.findOne({where:{ id: comment_id}})
 .then( async commentUpdated =>{
     //si find0ne ne trouve pas le post alors:
     if(!commentUpdated){
@@ -55,7 +68,7 @@ await Comment.findOne({where:{ id: comment_id}})
     if (fs.existsSync(filename)&&req.file == null) { //si upload_url est présent pour le uuid dans mysql ET pas de fichier dans la requete, alors on efface le fichier et on met la valeur upload_url a null dans mysql
         // fs.unlinkSync(filename)
         await Comment.update({ content: req.body.content, avatar: user.upload_url}, {where:{ id: comment_id}})
-        let commentupdated = await Comment.findOne({where:{ id: comment_id}})
+        let commentupdated = await Post.findOne({where:{ id: post_id}})
         return res.status(200).json(commentupdated)
       //file exists
     }
@@ -63,8 +76,8 @@ await Comment.findOne({where:{ id: comment_id}})
     if(fs.existsSync(filename)&&req.file !== null) { //si upload_url est rempli dans mysql alors on efface le fichier et on renseigne le nouveau link vers le fichier uploadé dans upload_url de mysql (via req.file.path)
         fs.unlinkSync(filename)
         await Comment.update({ content: req.body.content, avatar: user.upload_url, upload_url:req.file.path}, {where: {id: comment_id}})
-        let commentupdated = await Comment.findOne({where:{ id: comment_id}})
-        return res.status(200).json(commentUpdated)
+        let commentupdated = await Post.findOne({where:{ id: post_id}})
+        return res.status(200).json(commentupdated)
     }
     //si dans la requete body le content est vide && pas de fichier requete alors:
     if(req.body.content == ''&&req.file == null){ // pour effacer les comment avec du content vide et pas d'images lors d'une mise a jour
@@ -74,13 +87,13 @@ await Comment.findOne({where:{ id: comment_id}})
     //si dans la requete body content n'est pas vide && pas de fichier requete alors:
     if(req.body.content !== ''&&req.file == null) { //si le fichier de requete est null ou undefined alors on renseigne null dans upload_url mysql
         await Comment.update({ content: req.body.content, avatar: user.upload_url, upload_url:null}, {where:{id: comment_id}})
-        let commentupdated = await Comment.findOne({where:{ id: comment_id}})
+        let commentupdated = await Post.findOne({where:{ id: post_id}})
         return res.status(200).json(commentupdated)
     }       
     // si la requete body content && fichier requete alors :
     else{ //si le fichier de requete est présent et que upload_url est vide dans mysql alors on extrait le path du fichier requete et on l'enregistre dans mysql
         await Comment.update({ content: req.body.content, avatar: user.upload_url, upload_url:req.file.path}, {where:{id: comment_id}})
-        let commentupdated = await Comment.findOne({where:{ id: comment_id}})
+        let commentupdated = await Post.findOne({where:{ id: post_id}})
         return res.status(200).json(commentupdated)
     }
 })
@@ -90,6 +103,8 @@ await Comment.findOne({where:{ id: comment_id}})
 exports.deleteComment = async(req, res) =>{
     // let uuid = req.body.uuid;
     let comment_id = req.params.id
+    let uuid = await Comment.findOne({where:{id: comment_id}})
+    let post_id = await Comment.findOne({where:{ id: comment_id}})
     await Comment.findOne({ where: { id: comment_id} })
         .then(async userdelete =>{
             if(!userdelete){
@@ -97,15 +112,30 @@ exports.deleteComment = async(req, res) =>{
             }if(userdelete){
                 let filename = userdelete.upload_url; //delete l'image avatar du user
                 if(fs.existsSync(!filename)){
+                    let nbreComments = await User.findOne({ where: {uuid:uuid.uuid} })
+                    await User.update({ nbre_comments: nbreComments.nbre_comments -1},{ where: {uuid:uuid.uuid} })
+                    let nbreCommentsPosts = await Post.findOne({ where: {id:post_id.post_id} })
+                    await Post.update({ nbre_comments: nbreCommentsPosts.nbre_comments -1},{ where: {id:post_id.post_id} })
                    await Comment.destroy({ where: { id: comment_id} })
-                    return res.status(200).json({message: 'Le post a été éffacé'})
+                   let posts = await Post.findAll({where: {active: true}, include:['comment', 'postlikes', 'commentlikes']})
+                    return res.status(200).json(posts)
                 }if(fs.existsSync(filename)){
                     fs.unlinkSync(filename)//delete l'image avatar du user
+                    let nbreComments = await User.findOne({ where: {uuid:uuid.uuid} })
+                    await User.update({ nbre_comments: nbreComments.nbre_comments -1},{ where: {uuid:uuid.uuid} })
+                    let nbreCommentsPosts = await Post.findOne({ where: {id:post_id.post_id} })
+                    await Post.update({ nbre_comments: nbreCommentsPosts.nbre_comments -1},{ where: {id:post_id.post_id} })
                     await Comment.destroy({ where: { id: comment_id}})
-                    return res.status(200).json({message: 'Le post a été éffacé'})
+                    let posts = await Post.findAll({where: {active: true}, include:['comment', 'postlikes', 'commentlikes']})
+                    return res.status(200).json(posts)
                 }
+                let nbreComments = await User.findOne({ where: {uuid:uuid.uuid} })
+                await User.update({ nbre_comments: nbreComments.nbre_comments -1},{ where: {uuid:uuid.uuid} })
+                let nbreCommentsPosts = await Post.findOne({ where: {id:post_id.post_id} })
+                await Post.update({ nbre_comments: nbreCommentsPosts.nbre_comments -1},{ where: {id:post_id.post_id} })
                 await Comment.destroy({ where: { id: comment_id} })
-                return res.status(200).json({message: 'Le post a été éffacé'})
+                let posts = await Post.findAll({where: {active: true}, include:['comment', 'postlikes', 'commentlikes']})
+                return res.status(200).json(posts)
             }
 
         })

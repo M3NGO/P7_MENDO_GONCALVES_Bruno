@@ -56,6 +56,14 @@ module.exports = {
         defaultValue: 1,
         allowNull: false
       },
+      nbre_posts:{
+        type: DataTypes.INTEGER,
+        defaultValue:0
+      },
+      nbre_comments:{
+        type: DataTypes.INTEGER,
+        defaultValue:0
+      },
       created_at: {//ce champs doit etre renomé à la main pour mettre les underscore car underscore : true des models a été mis manuellement
         allowNull: false,
         type: DataTypes.DATE,

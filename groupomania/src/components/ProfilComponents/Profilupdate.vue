@@ -97,8 +97,9 @@ export default {
     ...mapState('getProfile', ['profile']), //('nom du module dans index.js', ['nomstate dans fichier dossier module'])
   },
   
-  created(){ //monte profil a la creation de page
+  mounted(){ //monte profil a la creation de page
     this.$store.dispatch('getProfile/getProfile') //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
+
   },
   //   updated(){//update profil a la mise a jour par le user de page
   //   this.$store.dispatch('getProfile/getProfile') //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
