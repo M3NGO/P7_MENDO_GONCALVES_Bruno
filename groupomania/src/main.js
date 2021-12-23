@@ -15,6 +15,14 @@ moment.locale('fr');
 Vue.use(VueMoment, {moment});
 
 Vue.config.productionTip = false
+// Vue.config.errorHandler = function (err, vm, info) {
+//   console.log(err)
+//   console.log(info)
+//   console.log(vm)
+//   // gérer le cas d'erreur `info` est une information spécifique
+//   // à Vue sur l'erreur, par exemple dans quel hook du cycle de vie
+//   // l'erreur a été trouvée. Disponible uniquement en 2.2.0+
+// }
 
 new Vue({
   router,

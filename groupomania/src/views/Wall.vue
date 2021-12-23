@@ -1,8 +1,8 @@
 <template>
-  <v-main>
+  <div>
     <Newpostform/>
     <Posts/>
-  </v-main>
+  </div>
 </template>
 
 <script>

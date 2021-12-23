@@ -12,7 +12,7 @@
 
       <v-card class="d-flex flex-column elevation-2"><!-- créé carte commentaire accolée a la timeline -->
         <video controls width="100%" hegth="auto" v-if="commentaire.upload_url !== null && commentaire.upload_url.includes('videos') " :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' + commentaire.upload_url" max-height="300"></video> <!-- FIN section image back du profil qui englobe l'avatar -->
-        <v-dialog v-model="dialog" persistent fullscreen width="500" >
+        <v-dialog v-model="dialog" width="100%" >
             <template v-slot:activator="{ on, attrs }">
               <v-img class="rounded-t" v-bind="attrs" v-on="on" v-if="commentaire.upload_url !== null && commentaire.upload_url.includes('images')" :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' + commentaire.upload_url" max-height="300" @click="dialog=true"></v-img><!-- section image back du profil qui englobe l'avatar -->
             </template>
@@ -66,7 +66,7 @@
                 <template v-slot:activator="{ on, attrs }">
                     <v-badge overlap offset-x="15" offset-y="10" color="error">
                         <span slot="badge">{{commentaire.nbre_likes}}</span>
-                        <v-btn v-bind="attrs" v-on="on" plain text x-small v-on:click="clickLike, clickDislike ,commentLike(commentaire.post_id, commentaire.id, clickLike, clickDislike)"
+                        <v-btn v-bind="attrs" v-on="on" plain text x-small v-on:click="commentLike(commentaire.post_id, commentaire.id)"
                         ><v-icon size="15">mdi-thumb-up</v-icon>
                         </v-btn>
                     </v-badge>
@@ -206,14 +206,12 @@ export default {
     contentUpdate:'',
     uploadUpdate:[],
 
-    clickLike: false,
-    clickDislike: false,
     dialog: false,
     
   updateComment: false, //pour faire disparaitre section update commentaire au click sur bouton updater
   // controle le nombre de caractères inscrits dans partie Votre nouveau commentaire
   rules: [
-    value => (value && value.length >= 10 ) || 'Votre commentaire doit faire au moins 10 caractères',
+    v => ( v && v.length >=10) || 'Votre commentaire doit faire au moins 10 caractères',
     ],  // FIN - controle le nombre de caractères inscrits dans partie Votre nouveau commentaire
   }),
 }

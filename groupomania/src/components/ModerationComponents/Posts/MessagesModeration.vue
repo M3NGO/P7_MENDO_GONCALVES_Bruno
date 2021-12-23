@@ -133,7 +133,7 @@ export default {
     uploadCom:[],
     
     contentUpdate:'',
-    uploadUpdate:'',
+    uploadUpdate:[],
     
     
   reveal: false, // reveal false pour faire disparaitre section écrire commentaire au dessus de timeline commentaires

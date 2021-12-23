@@ -35,7 +35,13 @@ const likesDislikes = {
         async getAllPostLikesDislikes ({commit}){
         
             await axios
-                .get('http://localhost:3000/api/v1/get/post/likesdislikes')
+                .get('http://localhost:3000/api/v1/get/post/likesdislikes',
+                {headers:{Authorization: 'Bearer '+ localStorage.getItem('token'), 
+                'Content-Type': 'application/json'
+              //   'Content-Type': 'multipart/form-data'
+                    }
+                }
+                )
                 
                 .then(response => {
                     // console.log(response.data.comment)
@@ -57,9 +63,11 @@ const likesDislikes = {
                     "uuid": localStorage.getItem('uuid')
                 },
                    //header axios
-                {'Authorization': 'Bearer'+' '+ localStorage.getItem('token'), 
-                'Content-Type': 'application/json'
-                },
+                   {headers:{Authorization: 'Bearer '+ localStorage.getItem('token'), 
+                   'Content-Type': 'application/json'
+                 //   'Content-Type': 'multipart/form-data'
+                       }
+                   }
                 
                   )//fin post HTTP
                   
@@ -77,7 +85,12 @@ const likesDislikes = {
                 async getAllCommentLikesDislikes ({commit}){
         
                     await axios
-                        .get('http://localhost:3000/api/v1/get/comment/likesdislikes')
+                        .get('http://localhost:3000/api/v1/get/comment/likesdislikes',
+                        {headers:{Authorization: 'Bearer '+ localStorage.getItem('token'), 
+                        'Content-Type': 'application/json'
+                      //   'Content-Type': 'multipart/form-data'
+                            }
+                        })
                         
                         .then(response => {
                             // console.log(response.data.comment)
@@ -102,9 +115,11 @@ const likesDislikes = {
 
                         },
                            //header axios
-                        {'Authorization': 'Bearer'+' '+ localStorage.getItem('token'), 
-                        'Content-Type': 'application/json'
-                        },
+                           {headers:{Authorization: 'Bearer '+ localStorage.getItem('token'), 
+                           'Content-Type': 'application/json'
+                         //   'Content-Type': 'multipart/form-data'
+                               }
+                           }
                         
                           )//fin post HTTP
                           

@@ -21,7 +21,13 @@ const getAllUsers = {
        async getAllUsersAct ({commit}){
         
             await axios
-                .get('http://localhost:3000/api/v1/allusers')
+                .get('http://localhost:3000/api/v1/allusers',
+                {headers:{Authorization: 'Bearer '+ localStorage.getItem('token'), 
+                'Content-Type': 'application/json'
+              //   'Content-Type': 'multipart/form-data'
+                    }
+                }
+                )
                 
                 .then(response => {
                     // console.log(response.data.comment)
@@ -33,7 +39,12 @@ const getAllUsers = {
         async getAllInactiveUsersAct ({commit}){
         
             await axios
-                .get('http://localhost:3000/api/v1/moderation/get/users/deleted')
+                .get('http://localhost:3000/api/v1/moderation/get/users/deleted',
+                {headers:{Authorization: 'Bearer '+ localStorage.getItem('token'), 
+                'Content-Type': 'application/json'
+              //   'Content-Type': 'multipart/form-data'
+                    }
+                })
                 
                 .then(response => {
                     // if(response.data.email)

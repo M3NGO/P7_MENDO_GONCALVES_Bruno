@@ -35,16 +35,18 @@ exports.createPost = async (req,res) => {
             return res.status(401).json({error: 'Utilisateur non trouvé!'})
         }
         if (req.file == null) { //si upload_url est présent pour le uuid dans mysql ET pas de fichier dans la requete, alors on efface le fichier et on met la valeur upload_url a null dans mysql
-            let newpost = await Post.create({ content: content, uuid: uuid, avatar: user.upload_url ,email:email, upload_url:null})
+            await Post.create({ content: content, uuid: uuid, avatar: user.upload_url ,email:email, upload_url:null})
             let nbrePosts = await User.findOne({ where: {uuid} })
             await User.update({ nbre_posts: nbrePosts.nbre_posts +1},{ where: {uuid} })
-            return res.status(200).json(newpost)
+            let postupdated = await Post.findAll({where:{active: true}, include:['comment', 'postlikes', 'commentlikes']})
+            return res.status(200).json(postupdated)
           //file exists
         }else{ //si le fichier de requete est présent et que upload_url est vide dans mysql alors on extrait le path du fichier requete et on l'enregistre dans mysql
-            let newpost = await Post.create({ content: content, uuid: uuid, avatar: user.upload_url, email:email, upload_url:req.file.path})
+            await Post.create({ content: content, uuid: uuid, avatar: user.upload_url, email:email, upload_url:req.file.path})
             let nbrePosts = await User.findOne({ where: {uuid} })
             await User.update({ nbre_posts: nbrePosts.nbre_posts +1},{ where: {uuid} })
-            return res.status(200).json(newpost)
+            let postupdated = await Post.findAll({where:{active: true}, include:['comment', 'postlikes', 'commentlikes']})
+            return res.status(200).json(postupdated)
         }
     }catch(err) {
     console.log(err)
@@ -140,20 +142,20 @@ exports.deletePost = async(req, res) =>{
                     let nbrePosts = await User.findOne({ where: {uuid:uuid.uuid} })
                     await User.update({ nbre_posts: nbrePosts.nbre_posts -1},{ where: {uuid:uuid.uuid} })
                     let CommentToDelete = await Post.findOne({ where: {id: post_id}})
-                    if(CommentToDelete){
-                        await User.update({ nbre_comments: CommentToDelete.nbre_comments-CommentToDelete.nbre_comments },{ where: {uuid:uuid.uuid} })
+                    if(CommentToDelete.nbre_comments !=0){
+                        await User.update({ nbre_comments: nbrePosts.nbre_comments-CommentToDelete.nbre_comments },{ where: {uuid:uuid.uuid} })
 
                     }
                     await Post_likes_dislikes.destroy({ where: {post_id: post_id}})
                    await Post.destroy({ where: { id: post_id} })
-                }if(fs.existsSync(filename)){
+                }else if(fs.existsSync(filename)){
                     fs.unlinkSync(filename, async (err)=>{
                         if (err) console.log(err); console.log('Fichier du Post a été effacé du back')})//delete l'image avatar du user
                         let nbrePosts = await User.findOne({ where: {uuid:uuid.uuid} })
                         await User.update({ nbre_posts: nbrePosts.nbre_posts -1},{ where: {uuid:uuid.uuid} })
                         let CommentToDelete = await Post.findOne({ where: {id: post_id}})
                         if(CommentToDelete){
-                            await User.update({ nbre_comments: CommentToDelete.nbre_comments-CommentToDelete.nbre_comments },{ where: {uuid:uuid.uuid} })
+                            await User.update({ nbre_comments: nbrePosts.nbre_comments-CommentToDelete.nbre_comments },{ where: {uuid:uuid.uuid} })
     
                         }
                         await Post_likes_dislikes.destroy({ where: {post_id: post_id}})
@@ -163,7 +165,7 @@ exports.deletePost = async(req, res) =>{
                 await User.update({ nbre_posts: nbrePosts.nbre_posts -1},{ where: {uuid:uuid.uuid} })
                 let CommentToDelete = await Post.findOne({ where: {id: post_id}})
                 if(CommentToDelete){
-                    await User.update({ nbre_comments: CommentToDelete.nbre_comments-CommentToDelete.nbre_comments },{ where: {uuid:uuid.uuid} })
+                    await User.update({ nbre_comments: nbrePosts.nbre_comments-CommentToDelete.nbre_comments },{ where: {uuid:uuid.uuid} })
 
                 }
                 await Post_likes_dislikes.destroy({ where: {post_id: post_id}})

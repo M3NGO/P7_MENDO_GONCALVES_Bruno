@@ -43,14 +43,16 @@ const comments = {
                 // "upload": payload.uploadCom,
                 // },
                 //header axios
-                {'Authorization': 'Bearer '+localStorage.getItem('token'), 
+                {headers:{Authorization: 'Bearer '+ localStorage.getItem('token'), 
+                // 'Content-Type': 'application/json'
                 'Content-Type': 'multipart/form-data'
-              },
+                    }
+                }
             
             )
             .then(response => {
                 console.log(response.data)
-                commit('CREATE_COMMENTS', response.data)
+                commit('UPDATE_POST', response.data)
             })
             .catch(error => {console.log(error)})
         },
@@ -95,9 +97,11 @@ const comments = {
                 // "upload": payload.uploadUpdate,
                 // },
                 //header axios
-                {'Authorization': 'Bearer '+ localStorage.getItem('token'), 
+                {headers:{Authorization: 'Bearer '+ localStorage.getItem('token'), 
+                // 'Content-Type': 'application/json'
                 'Content-Type': 'multipart/form-data'
-              },
+                    }
+                }
             
             )
             .then(response => {
@@ -111,7 +115,13 @@ const comments = {
             // alert(payload.commentId)
             let commentId = payload.commentId
             await axios
-            .delete('http://localhost:3000/api/v1/comment/'+commentId
+            .delete('http://localhost:3000/api/v1/comment/'+commentId,
+
+            {headers:{Authorization: 'Bearer '+ localStorage.getItem('token'), 
+            'Content-Type': 'application/json'
+          //   'Content-Type': 'multipart/form-data'
+                }
+            }
                 //body axios
                 
                 // {

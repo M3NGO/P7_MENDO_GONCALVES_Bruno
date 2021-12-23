@@ -37,9 +37,12 @@ const login = {
                     "password": payload.password
                   },
                    //header axios
-//     {'Authorization': 'Bearer'+' '+ localStorage.getItem('token'), 
-//     'Content-Type': 'application/json'
-//   },
+    {headers:{
+        // 'Authorization': 'Bearer'+' '+ localStorage.getItem('token'), 
+        'Content-Type': 'application/json'
+    }
+
+  },
                 
                   )//fin post HTTP
                 

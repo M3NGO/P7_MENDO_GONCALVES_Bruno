@@ -7,7 +7,7 @@
       <v-col cols="12" class="text-center">
         <img width="200" src="../assets/Logo_Groupomania.png" alt="logo Groupomania">
         <v-form ref="form" class="mb-5 me-5 ms-5" v-model="valid" lazy-validation><!-- Formulaire login -->
-          <v-text-field v-model="email" :rules="emailRules" label="E-mail" id="email" hint="E-mail obligatoire" outlined dense required></v-text-field>
+          <v-text-field v-model="email" :rules="[emailRules.required, emailRules.email]" label="E-mail" id="email" hint="E-mail obligatoire" outlined dense required></v-text-field>
           <v-text-field v-model="password"
             name="password"
             :rules="passwordRules"
@@ -94,16 +94,16 @@ export default {
     //verif si email entré correspond a un email
     valid: true,
     email: '',
-    emailRules: [
-      v => !!v || 'E-mail obligatoire',
-      v => /.+@.+\..+/.test(v) || 'Veuillez renseigner un email valide',
-    ],
+    emailRules: {
+      required : v => !!v || 'E-mail obligatoire',
+      email: v => /.+@.+\..+/.test(v) || 'Veuillez renseigner un email valide',
+    },
     //FIN - verif si email entré correspond a un email
     //verif si MDP entré correspond contient au moins 8 caractères
     password: '',
     passwordRules: [
       v => !!v || 'Mot de passe obligatoire',
-      v => v.length >= 8 || 'Au moins 8 caractères',
+      v => ( v && v.length >=8) || 'Au moins 8 caractères',
      ],
      //FIN - verif si MDP entré correspond contient au moins 8 caractères
      //verif la checkbox du dialog est cliquée (demande user de verif email entré a l'inscription)

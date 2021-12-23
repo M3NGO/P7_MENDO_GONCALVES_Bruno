@@ -12,9 +12,9 @@ import moderation from './modules/moderation'
 import likesDislikes from './modules/likesDislikes.js'
 
 
-
-Vue.use(Vuex)
 Vue.use(axios) //ajout axios a vuex pour call API
+Vue.use(Vuex)
+
 
 export default new Vuex.Store({
   modules: {

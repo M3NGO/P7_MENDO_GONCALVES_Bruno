@@ -1,22 +1,23 @@
 <template>
 <v-container  fluid>
-    <v-card  class="mb-15" v-for="post in allPosts" :key="post.id" > <!-- carte contenant le Post + commentaires -->
-        <video controls width="100%" heigth="auto" v-if="post.upload_url !== null && post.upload_url.includes('videos') " :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' + post.upload_url" max-height="400" @click="dialog=false"><!--section image back du profil qui englobe l'avatar-->
+    <v-card  class="mb-10" v-for="(post, index) in allPosts" :key="index" > <!-- carte contenant le Post + commentaires -->
+        <video controls width="100%" heigth="auto" v-if="post.upload_url !== null && post.upload_url.includes('videos') " :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' + post.upload_url" max-height="400"><!--section image back du profil qui englobe l'avatar-->
         </video> <!-- FIN section image back du profil qui englobe l'avatar -->
-        <v-dialog fullscreen width="1000" >
-            <template v-slot:activator="{ on, attrs }">
-                <v-img class="rounded-t" v-bind="attrs" v-on="on" v-if="post.upload_url !== null && post.upload_url.includes('images')" :aspect-ratio="16/9" v-bind:href="'http://localhost:3000/' + post.upload_url" v-bind:src="'http://localhost:3000/' + post.upload_url" max-height="400" v-on:click="dialog=!dialog"><!-- section image back du profil qui englobe l'avatar -->
+        
+        <v-dialog v-model="dialogPost.post[index]" width="100%" >
+            <template v-slot:activator="{ on, image }">
+                <v-img class="rounded-t" v-bind="image" v-on="on" v-show="post.upload_url !== null && post.upload_url.includes('images')" :aspect-ratio="16/9"  v-bind:src="'http://localhost:3000/' + post.upload_url"  ><!-- section image back du profil qui englobe l'avatar -->
                 </v-img> <!-- FIN section image back du profil qui englobe l'avatar --> <!--post.upload_url.includes('images') car les images sont stockées dans dossier images et le lien contiendra tjrs images -->
                 <!-- <v-divider></v-divider> -->
             </template>
-                <v-btn @click="dialog=!dialog"><v-icon>mdi-close</v-icon></v-btn>
-            <v-card v-model="dialog" class="d-flex align-center" >
+            <v-card  class="d-flex align-center" >
                 
-                <v-img v-if="post.upload_url !== null && post.upload_url.includes('images')" contain :aspect-ratio="16/9" v-bind:href="'http://localhost:3000/' + post.upload_url" v-bind:src="'http://localhost:3000/' + post.upload_url"  ><!-- section image back du profil qui englobe l'avatar -->
+                <v-img v-show="post.upload_url !== null && post.upload_url.includes('images')"  :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' + post.upload_url" @click="dialogPost={post:[]}"><!-- section image back du profil qui englobe l'avatar -->
                     </v-img> <!-- FIN section image back du profil qui englobe l'avatar --> <!--post.upload_url.includes('images') car les images sont stockées dans dossier images et le lien contiendra tjrs images -->
                 <!-- <v-divider></v-divider> -->
             </v-card>
         </v-dialog>
+        
         
 
         <!-- Section message du user -->
@@ -37,7 +38,7 @@
             </v-col>
             <v-col cols="10" class="d-flex-column flex-wrap">
         <v-card-title class="body-1"> {{post.email}}</v-card-title>
-        <v-card-text class="text-justify body-2" >{{post.content}}</v-card-text>
+        <v-card-text class="text-justify body-2" v-if="post.content != 'null' ">{{post.content}}</v-card-text> <!-- v-if="post.content != 'null' " au cas où un user upload image sans contenu -->
         <v-card-subtitle align="end" class="caption font-italic" > Posté le: {{ post.createdAt | moment('LL')}} </v-card-subtitle><!-- insert date à laquelle le user aura créé le commentaire -->
             </v-col>
 
@@ -69,8 +70,8 @@
             <v-divider v-show="profile.uuid === post.uuid" vertical></v-divider><!-- rendre visible que quand le user est celui qui a créé le commentaire -->
 
             <v-tooltip bottom>
-                <template v-slot:activator="{ on, attrs }">
-                    <v-btn v-show="profile.uuid === post.uuid" v-bind="attrs" v-on="on" plain text x-small @click="updatePost=!updatePost"
+                <template v-slot:activator="{ attrs }">
+                    <v-btn v-show="profile.uuid === post.uuid" v-bind="attrs"  plain text x-small @click="setActiveUpdate(index)" 
                     ><v-icon size="20">mdi-cog</v-icon>
                     </v-btn>
                 </template>
@@ -80,8 +81,8 @@
             <v-divider v-show="profile.uuid === post.uuid" vertical></v-divider><!-- rendre visible que quand le user est celui qui a créé le commentaire -->
 
             <v-tooltip bottom >
-                <template v-slot:activator="{ on, attrs }">
-                    <v-btn v-bind="attrs" v-on="on" plain text x-small  @click="reveal=!reveal" 
+                <template v-slot:activator="{ comment }">
+                    <v-btn  v-bind="comment"  plain text x-small  @click="setActiveComment(index)"
                     ><v-icon size="20">mdi-comment-text</v-icon>
                     </v-btn>
                 </template>
@@ -93,11 +94,11 @@
             <!-- bouton Like avec badge rouge compte les nombre de likes -->
 
             <v-tooltip bottom >
-                <template v-slot:activator="{ on }" >
+                <template v-slot:activator="{ on, like }" >
                     <v-badge  overlap offset-x="15" offset-y="10" color="error" >
                         <span slot="badge" >{{post.nbre_likes}}</span>
                         <!-- v-for="likes in postLikesDislikes" :key="likes.id" -->
-                        <v-btn  v-model="clickLike" v-on="on" plain text x-small v-on:click="clickLike, clickDislike, postLike(post.id, clickLike, clickDislike)"
+                        <v-btn  v-bind="like" v-on="on" plain text x-small v-on:click="postLike(post.id)"
                         ><v-icon size="20">mdi-thumb-up</v-icon>
                         </v-btn>
                     </v-badge>
@@ -117,7 +118,7 @@
                 <template v-slot:activator="{ on, attrs }">
                     <v-badge overlap offset-x="15" offset-y="10" color="error">
                         <span slot="badge">{{post.nbre_dislikes}}</span>
-                        <v-btn v-bind="attrs" v-on="on" plain text x-small v-on:click="clickLike, clickDislike, postDislike(post.id,clickLike, clickDislike)"
+                        <v-btn v-bind="attrs" v-on="on" plain text x-small v-on:click="postDislike(post.id)"
                         ><v-icon size="20">mdi-thumb-down</v-icon>
                         </v-btn>
                         
@@ -130,35 +131,37 @@
 
     <!-- Bloc création commentaire -->
         <v-divider></v-divider>
-        <v-expand-transition ><!-- transition fait apparaitre section écrire commentaire sous la section boutons card-->
-            <v-card-title  v-show="reveal" class="transition-fast-in-fast-out v-card-text--reveal" ref="monNewComment">
+        
+        <v-expand-transition v-model="isActive" v-if="isClicked === index"><!-- transition fait apparaitre section écrire commentaire sous la section boutons card-->
+            <v-card-title class="transition-fast-in-fast-out v-card-text--reveal" ref="monNewComment">
                 <v-row class="d-flex align-center">
                     <v-col cols="10" class="me-5"><!-- section création Post (message + upload multimedia) -->
                         <v-text-field class=" body-2" label="Votre commentaire ici" :rules="rules" hide-details="auto" clearable v-model="contentCom"></v-text-field> 
                         <v-file-input class=" body-2" label="Upload Photo/Vidéo" v-model="uploadCom"></v-file-input>
                     </v-col><!-- FIN - section création Post (message + upload multimedia) -->
                 </v-row>
-                <v-btn color="error" height="40" class="me-4" text x-small v-on:click="publierCommentaire(post.id, profile.email)" @click="reveal = false">
+                <v-btn color="error" height="40" class="me-4" text x-small v-on:click="publierCommentaire(post.id, profile.email)">
                     <v-icon>mdi-send</v-icon>
                     Publier
                 </v-btn>
             </v-card-title>
         </v-expand-transition><!-- FIN - transition fait apparaitre section écrire commentaire sous la section boutons card-->
 
-        <v-expand-transition><!-- transition fait apparaitre section update Post sous la section boutons card-->
-            <v-card-title v-if="updatePost" class="transition-fast-in-fast-out">
+        <v-expand-transition v-model="isActiveUpdate" v-if="isClickedUpdate === index"><!-- transition fait apparaitre section update Post sous la section boutons card-->
+            <v-card-title class="transition-fast-in-fast-out">
                 <v-row class="d-flex align-center">
                     <v-col cols="10" class="me-5"><!-- section création Post (message + upload multimedia) -->
-                        <v-text-field class=" body-2" label="Votre nouveau Message" :rules="rules" hide-details="auto" v-model="contentUpdate"></v-text-field> 
+                        <v-text-field class=" body-2" label="Votre nouveau Message" :rules="rules" hide-details="auto" v-model="contentUpdate" clearable></v-text-field> 
                         <v-file-input class=" body-2" label="Upload Photo/Vidéo" v-model="uploadUpdate">></v-file-input>
                     </v-col><!-- FIN - section création Post (message + upload multimedia) -->
                 </v-row>
-                <v-btn color="error" height="40" class="me-4" text x-small @click="updatePost = false" v-on:click="updaterPost(post.id)">
+                <v-btn color="error" height="40" class="me-4" text x-small v-on:click="updaterPost(post.id)">
                     <v-icon>mdi-send</v-icon>
                     Updater
                 </v-btn>
             </v-card-title>
         </v-expand-transition><!-- FIN - transition fait apparaitre section update Post sous la section boutons card-->
+        
     <v-divider></v-divider>
         <!-- FIN - Bloc création commentaire -->
     <!-- Section timeline avec commentaires -->
@@ -181,43 +184,55 @@ export default {
       Commentaires,
       
   },
-  data: () => ({
-    contentCom:'',
-    postid: '',
-    uuid:'',
-    role: '',
-    uploadCom:[],
 
-    contentUpdate:'',
-    uploadUpdate:'',
-
-    clickLike: '',
-    clickDislike : '',
-    
-    post:'',
-   nbre_dislikes:'',
-   
-   nbre_likes:'',
-
-    dialog:false,
-    commenter:false,
-  
-
-  reveal: false, // reveal false pour faire disparaitre section écrire commentaire au dessus de timeline commentaires
-  updatePost: false, //pour faire disparaitre section update post au click sur bouton updater
-  // controle le nombre de caractères inscrits dans partie Votre nouveau message UPDATEPOST
-  
-  rules: [
-    value => (value && value.length >= 10 ) || 'Votre message doit faire au moins 10 caractères',
-    ],  // FIN - controle le nombre de caractères inscrits dans partie Votre nouveau message UPDATEPOST
-  }),
 
 //debut gestion axios + vuex
 
 
   methods:{
+      
+    setActiveComment(index) {
+        // console.log(this.isActive)
+        // console.log(index)
+        this.isClicked = index
+        
+        // console.log('count avant'+this.count)
+        
+        if(this.isActive==false){
+            this.isClicked = index
+            this.isActive = !this.isActive
+            // this.count +=1
+            // console.log('count apres '+this.count)
+            // console.log('active inversé ? '+this.isActive)
+        }else{
+            this.isClicked = ''
+            this.isActive = !this.isActive
+            // this.count -=1
+            // console.log('count apres '+this.count)
+            // console.log(' active true + count 0: '+this.isActive)
+        }
+        
+        // if(this.isClicked == index) {
+        //     this.count +=1
+        // }if(this.count>1){
+        //     this.isClicked = ''
+        //     this.count=0
+        // }
+},
+   setActiveUpdate(index) {
+     
+        this.isClickedUpdate = index
+        
+        if(this.isActiveUpdate==false){
+            this.isClickedUpdate = index
+            this.isActiveUpdate = !this.isActiveUpdate
 
-
+        }else{
+            this.isClickedUpdate = ''
+            this.isActiveUpdate = !this.isActiveUpdate
+   
+        }
+},
     async publierCommentaire(postId, email){
         // let PostId = document.getElementById("postich").innerHTML
         // this.postid = this.$refs.pich.innerHTML
@@ -225,18 +240,26 @@ export default {
        await this.$store.dispatch('getPosts/createComments', {contentCom: this.contentCom, postid: postId, email: email, uploadCom: this.uploadCom}) //('nom module dans index.js/nom action liée'), payload
         // window.location.reload()
         await this.$store.dispatch('getPosts/getAllPostsAct')
-        
-        await this.$refs.monNewComment.reset(); // reset le formulaire un fois envoyé le post
+        this.isClicked='' // on remet le statut du click a zero
+        this.isActive = !this.isActive // on set la zone commentaire comme active = false
+        this.uploadCom='' // reset le formulaire un fois envoyé le post
+        this.contentCom=''// reset le formulaire un fois envoyé le post
         
       },
       async updaterPost(postId){
         
         await this.$store.dispatch('getPosts/updatePosts', {contentUpdate: this.contentUpdate, postid: postId, uploadUpdate: this.uploadUpdate})
         await this.$store.dispatch('getPosts/getAllPostsAct')
+        this.isClickedUpdate=''
+        this.isActiveUpdate = !this.isActiveUpdate
+        this.contentUpdate = ''
+        this.uploadUpdate=''
+        
+
       },
       async deletePosts(postId){
         await this.$store.dispatch('getPosts/deletePosts', { postid: postId})
-       await this.$store.dispatch('getPosts/getAllPostsAct')
+       this.$store.dispatch('getPosts/getAllPostsAct')
 
       },
       async moderationPost(postId, uuid){
@@ -293,7 +316,9 @@ export default {
 
             }
             
-        }
+        },
+
+
   },//fin methods
 
     computed: {
@@ -324,19 +349,51 @@ export default {
 
 //FIN gestion axios + vuex
 
+  data: () => ({
+    contentCom:'',
+    postid: '',
+    uuid:'',
+    role: '',
+    uploadCom:[],
+
+    contentUpdate:'', //pour updater le post
+    uploadUpdate:[], //pour updater le post
+
+    isClicked: '', //definit si bouton commentaire a été clické en lui assignant l'index du post pour le rendre unique au click et ne pas dévoiler toutes les zones commentaire de toutes les cartes
+    isClickedUpdate:'',
+    // count: 0,
+    isActive: false, // définit si la zone de publication commentaire est visible ou non
+    isActiveUpdate: false,
+    
+    post:'',
+    nbre_dislikes:'',
+    nbre_likes:'',
+
+    dialogPost: {post:[]},
+ 
+
+
+  // controle le nombre de caractères inscrits dans partie Votre nouveau message UPDATEPOST
+  
+  rules: [
+    v => ( v && v.length >=10) || 'Votre message doit faire au moins 10 caractères',
+    ],  // FIN - controle le nombre de caractères inscrits dans partie Votre nouveau message UPDATEPOST
+  }),
+
+
 
 }
 </script>
 
 <style>
-.image{
+/* .image{
     height: 10em;
     width: 10em;
 }
 .v-btn__content {
     display:flex;
     flex-direction:column;
-}
+} */
 
 
 

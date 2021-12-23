@@ -39,9 +39,11 @@ const moderationFunction = {
             //body axios
 
                //header axios
-            {'Authorization': 'Bearer'+' '+ localStorage.getItem('token'), 
-            'Content-Type': 'application/json'
-            },
+               {headers:{Authorization: 'Bearer '+ localStorage.getItem('token'), 
+               'Content-Type': 'application/json'
+             //   'Content-Type': 'multipart/form-data'
+                   }
+               }
             
               )//fin post HTTP
               
@@ -68,9 +70,11 @@ const moderationFunction = {
 
                 },
                 //header axios
-                {'Authorization': 'Bearer'+' '+ localStorage.getItem('token'), 
+                {headers:{Authorization: 'Bearer '+ localStorage.getItem('token'), 
                 'Content-Type': 'application/json'
-                },
+              //   'Content-Type': 'multipart/form-data'
+                    }
+                }
                     
                 )//fin post HTTP
 
@@ -96,9 +100,11 @@ const moderationFunction = {
         
                     },
                     //header axios
-                    {'Authorization': 'Bearer'+' '+ localStorage.getItem('token'), 
+                    {headers:{Authorization: 'Bearer '+ localStorage.getItem('token'), 
                     'Content-Type': 'application/json'
-                    },
+                  //   'Content-Type': 'multipart/form-data'
+                        }
+                    }
                     )//fin post HTTP
                     
                     .then(response => {
@@ -118,9 +124,11 @@ const moderationFunction = {
                 //body axios
 
                 //header axios
-                {'Authorization': 'Bearer'+' '+ localStorage.getItem('token'), 
+                {headers:{Authorization: 'Bearer '+ localStorage.getItem('token'), 
                 'Content-Type': 'application/json'
-                },
+              //   'Content-Type': 'multipart/form-data'
+                    }
+                }
                                     
                 )//fin post HTTP
                                       
@@ -147,9 +155,11 @@ const moderationFunction = {
                 
                 },
                 //header axios
-                {'Authorization': 'Bearer'+' '+ localStorage.getItem('token'), 
+                {headers:{Authorization: 'Bearer '+ localStorage.getItem('token'), 
                 'Content-Type': 'application/json'
-                },
+              //   'Content-Type': 'multipart/form-data'
+                    }
+                }
                                     
                 )//fin post HTTP
                                       
@@ -176,9 +186,11 @@ const moderationFunction = {
                 
                 },
                 //header axios
-                {'Authorization': 'Bearer'+' '+ localStorage.getItem('token'), 
+                {headers:{Authorization: 'Bearer '+ localStorage.getItem('token'), 
                 'Content-Type': 'application/json'
-                },
+              //   'Content-Type': 'multipart/form-data'
+                    }
+                }
                                     
                 )//fin post HTTP
                                       
@@ -199,9 +211,11 @@ const moderationFunction = {
                 //body axios
 
                 //header axios
-                {'Authorization': 'Bearer'+' '+ localStorage.getItem('token'), 
+                {headers:{Authorization: 'Bearer '+ localStorage.getItem('token'), 
                 'Content-Type': 'application/json'
-                },
+              //   'Content-Type': 'multipart/form-data'
+                    }
+                }
                                     
                 )//fin post HTTP
                                       
@@ -226,9 +240,11 @@ const moderationFunction = {
                 
                 },
                 //header axios
-                {'Authorization': 'Bearer'+' '+ localStorage.getItem('token'), 
+                {headers:{Authorization: 'Bearer '+ localStorage.getItem('token'), 
                 'Content-Type': 'application/json'
-                },
+              //   'Content-Type': 'multipart/form-data'
+                    }
+                }
                                     
                 )//fin post HTTP            
                             
@@ -255,9 +271,11 @@ const moderationFunction = {
                 
                 },
                 //header axios
-                {'Authorization': 'Bearer'+' '+ localStorage.getItem('token'), 
+                {headers:{Authorization: 'Bearer '+ localStorage.getItem('token'), 
                 'Content-Type': 'application/json'
-                },
+              //   'Content-Type': 'multipart/form-data'
+                    }
+                }
                                     
                 )//fin post HTTP            
                             
@@ -277,9 +295,11 @@ const moderationFunction = {
                 //body axios
 
                 //header axios
-                {'Authorization': 'Bearer'+' '+ localStorage.getItem('token'), 
+                {headers:{Authorization: 'Bearer '+ localStorage.getItem('token'), 
                 'Content-Type': 'application/json'
-                },
+              //   'Content-Type': 'multipart/form-data'
+                    }
+                }
                                     
                 )//fin post HTTP                  
                             

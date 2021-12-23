@@ -4,27 +4,32 @@ let fs = require('fs'); //Systeme Filesystem de node.JS
 exports.createComment = async (req,res) => {
     let {uuid, content, post_id, email} = req.body
      try {
-         let user = await User.findOne({where: { uuid : uuid, active: true}})
+         let post = await Post.findOne({ where: {id:post_id} })
+         let user = await User.findOne({where: { uuid : post.uuid}})
+         let avatar = await User.findOne({where: { uuid : uuid}})
+         console.log(user)
          if(!user){
              return res.status(401).json({error: 'Utilisateur non trouvé'})
          }
          if(req.file == null){
 
-            let nbreCommentsPosts = await Post.findOne({ where: {id:post_id} })
+            // let nbreCommentsPosts = await Post.findOne({ where: {id:post_id} })
             
-            await Post.update({ nbre_comments: nbreCommentsPosts.nbre_comments +1},{ where: {id:post_id} })
+            await Post.update({ nbre_comments: post.nbre_comments +1},{ where: {id:post_id} })
             // let nbreComments = await User.findOne({ where: {uuid:uuid} })
-            let uuidPost = await Post.findOne({ where: {id:post_id} })
-            await User.update({ nbre_comments: nbreCommentsPosts.nbre_comments +1},{ where: {uuid:uuidPost.uuid} })
-            let comment = await Comment.create({content: content, uuid: uuid, avatar: user.upload_url, email:email, post_id: post_id, upload_url:null, active: true})
+            // let uuidPost = await Post.findOne({ where: {id:post_id} })
+            await User.update({ nbre_comments: user.nbre_comments +1},{ where: {uuid:user.uuid} })
+            let comment = await Comment.create({content: content, uuid: uuid, avatar: avatar.upload_url, email:email, post_id: post_id, upload_url:null, active: true})
+            let nbreCommentsPosts = await Post.findAll({where:{active: true}, include:['comment', 'postlikes', 'commentlikes']})
             return res.json(nbreCommentsPosts) // renvoit la réponse
          }else{
-            let nbreComments = await User.findOne({ where: {uuid:uuid} })
-            await User.update({ nbre_comments: nbreComments.nbre_comments +1},{ where: {uuid:uuid} })
-            let nbreCommentsPosts = await Post.findOne({ where: {id:post_id} })
-            let uuidPost = await Post.findOne({ where: {id:post_id} })
-            await User.update({ nbre_comments: nbreCommentsPosts.nbre_comments +1},{ where: {uuid:uuidPost.uuid} })
-            let comment = await Comment.create({content: content, uuid: uuid, avatar: user.upload_url, email:email, post_id: post_id, upload_url:req.file.path, active: true})
+            // let nbreComments = await User.findOne({ where: {uuid:uuid} })
+            await Post.update({ nbre_comments: post.nbre_comments +1},{ where: {id:post_id} })
+            // let nbreCommentsPosts = await Post.findOne({ where: {id:post_id} })
+            // let uuidPost = await Post.findOne({ where: {id:post_id} })
+            await User.update({ nbre_comments: user.nbre_comments +1},{ where: {uuid:user.uuid} })
+            let comment = await Comment.create({content: content, uuid: uuid, avatar: avatar.upload_url, email:email, post_id: post_id, upload_url:req.file.path, active: true})
+            let nbreCommentsPosts = await Post.findAll({where:{active: true}, include:['comment', 'postlikes', 'commentlikes']})
             return res.json(nbreCommentsPosts) // renvoit la réponse
          }
      }catch(err) {
@@ -54,8 +59,9 @@ exports.createComment = async (req,res) => {
     // console.log(uuid)
     let uuid = req.body.uuid;
     let comment_id = req.params.id;
+    let post_id = req.body.post_id
 await Comment.findOne({where:{ id: comment_id}})
-    let post_id = await Comment.findOne({where:{ id: comment_id}})
+    
 .then( async commentUpdated =>{
     //si find0ne ne trouve pas le post alors:
     if(!commentUpdated){
@@ -103,39 +109,42 @@ await Comment.findOne({where:{ id: comment_id}})
 exports.deleteComment = async(req, res) =>{
     // let uuid = req.body.uuid;
     let comment_id = req.params.id
-    let uuid = await Comment.findOne({where:{id: comment_id}})
-    let post_id = await Comment.findOne({where:{ id: comment_id}})
+    // let uuid = await Comment.findOne({where:{id: comment_id}})
+    let comment = await Comment.findOne({where:{ id: comment_id}})
+    let post = await Post.findOne({ where: {id: comment.post_id} })
+    let user = await User.findOne({where: { uuid : post.uuid}})
     await Comment.findOne({ where: { id: comment_id} })
-        .then(async userdelete =>{
-            if(!userdelete){
-                return res.status(401).json({error: 'Utilisateur non trouvé!'})
-            }if(userdelete){
-                let filename = userdelete.upload_url; //delete l'image avatar du user
+        .then(async commentDelete =>{
+            if(!commentDelete){
+                return res.status(401).json({error: 'Comment non trouvé!'})
+            }if(commentDelete){
+                let filename = commentDelete.upload_url; //delete l'image avatar du user
                 if(fs.existsSync(!filename)){
-                    let nbreComments = await User.findOne({ where: {uuid:uuid.uuid} })
-                    await User.update({ nbre_comments: nbreComments.nbre_comments -1},{ where: {uuid:uuid.uuid} })
-                    let nbreCommentsPosts = await Post.findOne({ where: {id:post_id.post_id} })
-                    await Post.update({ nbre_comments: nbreCommentsPosts.nbre_comments -1},{ where: {id:post_id.post_id} })
+                    // let nbreComments = await User.findOne({ where: {uuid:uuid.uuid} })
+                    await User.update({ nbre_comments: user.nbre_comments -1},{ where: {uuid:user.uuid} })
+                    // let nbreCommentsPosts = await Post.findOne({ where: {id:post_id.post_id} })
+                    await Post.update({ nbre_comments: post.nbre_comments -1},{ where: {id: comment.post_id} })
                    await Comment.destroy({ where: { id: comment_id} })
                    let posts = await Post.findAll({where: {active: true}, include:['comment', 'postlikes', 'commentlikes']})
                     return res.status(200).json(posts)
-                }if(fs.existsSync(filename)){
+                }else if(fs.existsSync(filename)){
                     fs.unlinkSync(filename)//delete l'image avatar du user
-                    let nbreComments = await User.findOne({ where: {uuid:uuid.uuid} })
-                    await User.update({ nbre_comments: nbreComments.nbre_comments -1},{ where: {uuid:uuid.uuid} })
-                    let nbreCommentsPosts = await Post.findOne({ where: {id:post_id.post_id} })
-                    await Post.update({ nbre_comments: nbreCommentsPosts.nbre_comments -1},{ where: {id:post_id.post_id} })
+                    // let nbreComments = await User.findOne({ where: {uuid:uuid.uuid} })
+                    await User.update({ nbre_comments: user.nbre_comments -1},{ where: {uuid:user.uuid} })
+                    // let nbreCommentsPosts = await Post.findOne({ where: {id:post_id.post_id} })
+                    await Post.update({ nbre_comments: post.nbre_comments -1},{ where: {id: comment.post_id} })
                     await Comment.destroy({ where: { id: comment_id}})
                     let posts = await Post.findAll({where: {active: true}, include:['comment', 'postlikes', 'commentlikes']})
                     return res.status(200).json(posts)
-                }
-                let nbreComments = await User.findOne({ where: {uuid:uuid.uuid} })
-                await User.update({ nbre_comments: nbreComments.nbre_comments -1},{ where: {uuid:uuid.uuid} })
-                let nbreCommentsPosts = await Post.findOne({ where: {id:post_id.post_id} })
-                await Post.update({ nbre_comments: nbreCommentsPosts.nbre_comments -1},{ where: {id:post_id.post_id} })
+                }else{
+                // let nbreComments = await User.findOne({ where: {uuid:uuid.uuid} })
+                await User.update({ nbre_comments: user.nbre_comments -1},{ where: {uuid:user.uuid} })
+                // let nbreCommentsPosts = await Post.findOne({ where: {id:post_id.post_id} })
+                await Post.update({ nbre_comments: post.nbre_comments -1},{ where: {id: comment.post_id} })
                 await Comment.destroy({ where: { id: comment_id} })
                 let posts = await Post.findAll({where: {active: true}, include:['comment', 'postlikes', 'commentlikes']})
                 return res.status(200).json(posts)
+                }
             }
 
         })

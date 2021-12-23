@@ -28,7 +28,13 @@ const getProfile = {
         let uuid= localStorage.getItem('uuid')
         // alert(uuid)
            await axios
-                .get('http://localhost:3000/api/v1/profil/'+uuid)
+                .get('http://localhost:3000/api/v1/profil/'+uuid,
+                
+                {headers:{Authorization: 'Bearer '+ localStorage.getItem('token'), 
+                'Content-Type': 'application/json'
+                    }
+                }
+                )
             
                 .then(response => {
                     // console.log(response.data.comment)
@@ -74,8 +80,10 @@ const getProfile = {
                     //     "upload": payload.upload,
                     //   },
                        //header axios
-        {'Authorization': 'Bearer'+' '+ localStorage.getItem('token'), 
+        {headers:{
+            Authorization: 'Bearer '+ localStorage.getItem('token'), 
         'Content-Type': 'multipart/form-data'
+        }
       },
                     
                       )//fin post HTTP
@@ -103,9 +111,10 @@ const getProfile = {
                             "password": payload.password,
                           },
                            //header axios
-            {'Authorization': 'Bearer'+' '+ localStorage.getItem('token'), 
-            'Content-Type': 'application/json'
-          },
+                           {headers:{Authorization: 'Bearer '+ localStorage.getItem('token'), 
+                           'Content-Type': 'application/json'
+                               }
+                           }
                         
                           )//fin post HTTP
                           
@@ -132,9 +141,10 @@ const getProfile = {
                                 "upload_url": payload.avatar,
                             },
                                //header axios
-                {'Authorization': 'Bearer'+' '+ localStorage.getItem('token'), 
-                'Content-Type': 'application/json'
-              },
+                               {headers:{Authorization: 'Bearer '+ localStorage.getItem('token'), 
+                               'Content-Type': 'application/json'
+                                   }
+                               }
                             
                               )//fin post HTTP
                               .then(response => {
@@ -154,9 +164,10 @@ const getProfile = {
                             //body axios
             
                                //header axios
-                {'Authorization': 'Bearer'+' '+ localStorage.getItem('token'), 
-                'Content-Type': 'application/json'
-              },
+                               {headers:{Authorization: 'Bearer '+ localStorage.getItem('token'), 
+                               'Content-Type': 'application/json'
+                                   }
+                               }
                             
                               )//fin post HTTP
                               

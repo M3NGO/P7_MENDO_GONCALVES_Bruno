@@ -30,6 +30,11 @@ const getAllPosts = {
         // CREATE_COMMENTS(state, data){
         //     state.allPosts = data
         // },
+        CREATE_COMMENTS(state, data){
+            state.allPosts = data
+            // state.allPosts = [data, ...state.allPosts] // on ajoute data devant tout contenu allPosts
+            // state.allPosts.push(data)
+        },
         UPDATE_COMMENTS(state, data){
             const index = state.allPosts.comments.map(comment => comment.id).indexOf(data.id);
             state.allPosts.comments.splice(index, 1, data);
@@ -42,7 +47,13 @@ const getAllPosts = {
        async getAllPostsAct ({commit}){
         
             await axios
-                .get('http://localhost:3000/api/v1/')
+                .get('http://localhost:3000/api/v1/',
+                
+                {headers:{Authorization: 'Bearer '+ localStorage.getItem('token'), 
+                'Content-Type': 'application/json'
+                    }
+                },
+                )
                 
                 .then(response => {
                     // console.log(response.data.comment)
@@ -73,10 +84,12 @@ const getAllPosts = {
                     // "upload": payload.upload,
                     // },
                     // //header axios
-                    {'Authorization': 'Bearer'+' '+ localStorage.getItem('token'), 
+    
+                    {headers:{Authorization: 'Bearer'+' '+ localStorage.getItem('token'), 
                     // 'Content-Type': 'application/json'
                     'Content-Type': 'multipart/form-data'
-                  },
+                        }
+                    }  
                 
                 )
 
@@ -125,11 +138,12 @@ async updatePosts ({commit}, payload){
                 // "upload": payload.uploadUpdate,
                 // },
                 //header axios
-                {'Authorization': 'Bearer '+ localStorage.getItem('token'), 
-                // 'Content-Type': 'application/json'
-                'Content-Type': 'multipart/form-data'
-              },
-            
+
+              {headers:{Authorization: 'Bearer '+ localStorage.getItem('token'), 
+            //   'Content-Type': 'application/json'
+              'Content-Type': 'multipart/form-data'
+                  }
+              }
             )
             .then(response => {
                 // splice(0, )
@@ -157,6 +171,11 @@ async updatePosts ({commit}, payload){
             //     {'Authorization': 'Bearer '+ localStorage.getItem('token'), 
             //     'Content-Type': 'application/json'
             //   },
+            {headers:{Authorization: 'Bearer '+ localStorage.getItem('token'), 
+              'Content-Type': 'application/json'
+            //   'Content-Type': 'multipart/form-data'
+                  }
+              }
             )
             .then(response => {
                 commit('GET_POSTS', response.data)
@@ -168,7 +187,14 @@ async updatePosts ({commit}, payload){
 async getAllPostLikesDislikes ({commit}){
         
     await axios
-        .get('http://localhost:3000/api/v1/get/post/likesdislikes')
+        .get('http://localhost:3000/api/v1/get/post/likesdislikes',
+        {headers:{Authorization: 'Bearer '+ localStorage.getItem('token'), 
+        'Content-Type': 'application/json'
+      //   'Content-Type': 'multipart/form-data'
+            }
+        }
+        
+        )
         
         .then(response => {
             // console.log(response.data.comment)
@@ -190,9 +216,11 @@ async postLikesDislikes ({commit},payload){
             "uuid": localStorage.getItem('uuid')
         },
            //header axios
-        {'Authorization': 'Bearer'+' '+ localStorage.getItem('token'), 
-        'Content-Type': 'application/json'
-        },
+           {headers:{Authorization: 'Bearer '+ localStorage.getItem('token'), 
+           'Content-Type': 'application/json'
+         //   'Content-Type': 'multipart/form-data'
+               }
+           }
         
           )//fin post HTTP
           
@@ -221,9 +249,11 @@ async postLikesDislikes ({commit},payload){
                     "post_id": post_id
                 },
                    //header axios
-                {'Authorization': 'Bearer'+' '+ localStorage.getItem('token'), 
-                'Content-Type': 'application/json'
-                },
+                   {headers:{Authorization: 'Bearer '+ localStorage.getItem('token'), 
+                   'Content-Type': 'application/json'
+                 //   'Content-Type': 'multipart/form-data'
+                       }
+                   }
                 
                   )//fin post HTTP
                   
@@ -263,14 +293,16 @@ async postLikesDislikes ({commit},payload){
                         // "upload": payload.uploadCom,
                         // },
                         //header axios
-                        {'Authorization': 'Bearer '+localStorage.getItem('token'), 
+                        {headers:{Authorization: 'Bearer '+ localStorage.getItem('token'), 
+                        // 'Content-Type': 'application/json'
                         'Content-Type': 'multipart/form-data'
-                      },
+                            }
+                        }
                     
                     )
                     .then(response => {
                         console.log(response.data)
-                        commit('UPDATE_COMMENTS', response.data)
+                        commit('CREATE_POSTS', response.data)
                     })
                     .catch(error => {console.log(error)})
                 },
@@ -315,13 +347,15 @@ async postLikesDislikes ({commit},payload){
                         // "upload": payload.uploadUpdate,
                         // },
                         //header axios
-                        {'Authorization': 'Bearer '+ localStorage.getItem('token'), 
+                        {headers:{Authorization: 'Bearer '+ localStorage.getItem('token'), 
+                        // 'Content-Type': 'application/json'
                         'Content-Type': 'multipart/form-data'
-                      },
+                            }
+                        }
                     
                     )
                     .then(response => {
-                        commit('UPDATE_COMMENTS', response.data)
+                        commit('_POSTS', response.data)
                     })
                     .catch(error => {console.log(error)})
                 },
@@ -331,7 +365,7 @@ async postLikesDislikes ({commit},payload){
                     // alert(payload.commentId)
                     let commentId = payload.commentId
                     await axios
-                    .delete('http://localhost:3000/api/v1/comment/'+commentId
+                    .delete('http://localhost:3000/api/v1/comment/'+commentId,
                         //body axios
                         
                         // {
@@ -339,9 +373,11 @@ async postLikesDislikes ({commit},payload){
                         
                         // },
                         //header axios
-                    //     {'Authorization': 'Bearer '+ localStorage.getItem('token'), 
-                    //     'Content-Type': 'application/json'
-                    //   },
+                        {headers:{Authorization: 'Bearer '+ localStorage.getItem('token'), 
+                        'Content-Type': 'application/json'
+                      //   'Content-Type': 'multipart/form-data'
+                            }
+                        }
                     )
                     .then(response => {
                         commit('UPDATE_POSTS', response.data)

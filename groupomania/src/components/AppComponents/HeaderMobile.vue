@@ -1,13 +1,13 @@
 <template>
   <div><!-- header -->
-    <v-app-bar fixed clipped-left v-if="this.$route.path !== '/'&& this.$route.path !== '/inscription'" app color="white" flat dense>
+    <v-app-bar fixed height="80" clipped-left v-if="this.$route.path !== '/'&& this.$route.path !== '/inscription'" app color="white" flat dense>
         <div class="mt-3">
-          <v-btn icon color="white" bordered @click.stop="drawer = !drawer">
+          <v-btn icon color="20" bordered @click.stop="drawer = !drawer">
             <v-avatar class="profile" color="grey"  rounded-pill border v-if="profile.upload_url != null">
               <v-img small v-bind:src="'http://localhost:3000/' + profile.upload_url"></v-img>
             </v-avatar>
             <v-avatar class="profile" color="grey"  rounded-pill border v-if="profile.upload_url == null" >
-              <v-icon center  >mdi-account-circle</v-icon>
+              <v-icon center color="white" >mdi-account-circle</v-icon>
             </v-avatar>
           </v-btn>
         </div>

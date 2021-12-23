@@ -1,5 +1,5 @@
 <template>
- <v-container fluid>
+ <v-container fluid class="mb-10">
   <v-card class="d-flex-column" >
     <v-form class="d-flex justify-center monPost"  no-gutters ref="monNewPost">
       <v-list-item-avatar class="ms-4" color="grey" > <!-- Avatar du user connecté-->
@@ -33,15 +33,18 @@ export default {
     content:'',
     upload:[],
     rules: [
-      value => (value && value.length >= 10 ) || 'Votre post doit faire au moins 10 caractères',
+      v => ( v && v.length >=10)  || 'Votre post doit faire au moins 10 caractères',
     ],
 }),//FIN - Data
 computed:{
+  ...mapState('getPosts', ['allPosts']),
   ...mapState('getProfile', ['profile']), //('nom du module dans index.js', ['nomstate dans fichier dossier module'])
 },
     methods: {
       async publier(email){
         await this.$store.dispatch('getPosts/createPosts', {content: this.content, email:email, upload: this.upload}) //('nom module dans index.js/nom action liée'), payload
+        await this.$store.dispatch('getPosts/getAllPostsAct')
+        // await window.location.reload()
         await this.$refs.monNewPost.reset(); // reset le formulaire un fois envoyé le post
         
       },
@@ -57,5 +60,6 @@ computed:{
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
+
 
 </style>
