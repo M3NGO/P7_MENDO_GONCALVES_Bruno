@@ -163,12 +163,13 @@ export default {
 //   },
 
   methods:{
-      deletePosts(postId){
-        this.$store.dispatch('getPosts/deletePosts', { postid: postId}) 
-
+      async deletePosts(postId){
+        await this.$store.dispatch('getPosts/deletePosts', { postid: postId}) 
+        await this.$store.dispatch('getPosts/getAllPostsAct')
       },
-      unModeratePost(postId, uuid){
-        this.$store.dispatch('moderation/unModeratePost', {post_id: postId, uuid:uuid}) 
+      async unModeratePost(postId, uuid){
+        await this.$store.dispatch('moderation/unModeratePost', {post_id: postId, uuid:uuid})
+        await this.$store.dispatch('getPosts/getAllPostsAct') 
       },
 
 

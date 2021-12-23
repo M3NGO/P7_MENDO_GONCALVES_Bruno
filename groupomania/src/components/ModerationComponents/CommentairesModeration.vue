@@ -106,11 +106,13 @@ export default {
 
 
   methods:{
-    deleteComments(commentId){
-        this.$store.dispatch('comments/deleteComments', { commentId: commentId}) 
+    async deleteComments(commentId){
+      await this.$store.dispatch('comments/deleteComments', { commentId: commentId})
+      await this.$store.dispatch('getPosts/getAllPostsAct') 
       },
-    unModerateComment(commentId, uuid){
-        this.$store.dispatch('moderation/unModerateComment', {comment_id: commentId, uuid:uuid}) 
+    async unModerateComment(commentId, uuid){
+        await this.$store.dispatch('moderation/unModerateComment', {comment_id: commentId, uuid:uuid})
+        await this.$store.dispatch('getPosts/getAllPostsAct') 
       },
   },
 

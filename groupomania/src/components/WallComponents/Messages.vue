@@ -263,7 +263,8 @@ export default {
 
       },
       async moderationPost(postId, uuid){
-        await this.$store.dispatch('moderation/moderationPost', {post_id: postId, uuid:uuid}) 
+        await this.$store.dispatch('moderation/moderationPost', {post_id: postId, uuid:uuid})
+        await this.$store.dispatch('getPosts/getAllPostsAct') 
       },
     
     async postLike(postId){

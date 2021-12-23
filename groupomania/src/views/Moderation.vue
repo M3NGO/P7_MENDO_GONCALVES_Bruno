@@ -41,7 +41,7 @@ export default {
     ...mapState('getProfile', ['profile']), //('nom du module dans index.js', ['nomstate dans fichier dossier module'])
     ...mapState('moderation', ['getModerates']),
   },
-    beforeMount(){
+    mounted(){
     // this.$store.dispatch('getUsers/getAllUsersAct') //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
     
     this.$store.dispatch('getProfile/getProfile') //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
