@@ -27,6 +27,7 @@
 
 <script>
 import {mapState} from 'vuex'
+
 export default {
   name: 'Newposts',
 
@@ -55,7 +56,7 @@ computed:{
       async publier(email){
         await this.$store.dispatch('getPosts/createPosts', {content: this.content, email:email, upload: this.upload}) //('nom module dans index.js/nom action liée'), payload
         
-          this.$store.dispatch('getPosts/getAllPostsAct')
+           this.$store.dispatch('getPosts/getAllPostsAct') // doit rester sans await car set timeout dans mutation sinon l'update photo a ecran ne se fait pas
     
         // await window.location.reload()
         await this.$refs.monNewPost.reset(); // reset le formulaire un fois envoyé le post

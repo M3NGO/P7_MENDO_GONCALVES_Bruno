@@ -7,7 +7,7 @@ import moment from 'moment'
 import VueMoment from 'vue-moment'
 import axios from 'axios'//ajout axios a vuex pour call API
 import VueAxios from 'vue-axios'
-import Vuelidate from 'vuelidate'
+
 
 
 // Load Locales ('en' comes loaded by default)
@@ -19,7 +19,7 @@ moment.locale('fr');
 Vue.use(VueMoment, {moment});
 // Vue.use(axios) //ajout axios a vuex pour call API
 Vue.use(VueAxios, axios)
-Vue.use(Vuelidate)
+
 
 Vue.config.productionTip = false
 // Vue.config.errorHandler = function (err, vm, info) {

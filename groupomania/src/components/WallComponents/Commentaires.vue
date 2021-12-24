@@ -85,7 +85,7 @@
                 <template v-slot:activator="{ on, attrs }">
                     <v-badge overlap offset-x="15" offset-y="10" color="error">
                         <span slot="badge">{{commentaire.nbre_dislikes}}</span>
-                        <v-btn v-bind="attrs" v-on="on" plain text x-small v-on:click="clickLike, clickDislike, commentDislike(commentaire.post_id, commentaire.id,clickLike, clickDislike)"
+                        <v-btn v-bind="attrs" v-on="on" plain text x-small v-on:click="commentDislike(commentaire.post_id, commentaire.id)"
                         ><v-icon size="15">mdi-thumb-down</v-icon>
                         </v-btn>
                     </v-badge>
@@ -134,6 +134,19 @@ export default {
         default: null
    }
   },
+    data: () => ({
+    contentUpdate:'',
+    uploadUpdate:[],
+
+    dialog: false,
+    
+  updateComment: false, //pour faire disparaitre section update commentaire au click sur bouton updater
+  // controle le nombre de caractères inscrits dans partie Votre nouveau commentaire
+  validUpdate: false,
+  rulesUpdate: [
+    v => ( v && v.length >=10) || 'Votre commentaire doit faire au moins 10 caractères',
+    ],  // FIN - controle le nombre de caractères inscrits dans partie Votre nouveau commentaire
+  }),
     computed: {
     ...mapState('likesDislikes', ['commentLikesDislikes']), //('nom du module dans index.js', ['nomstate dans fichier dossier module'])
     },
@@ -204,19 +217,7 @@ export default {
 
 
 
-  data: () => ({
-    contentUpdate:'',
-    uploadUpdate:[],
 
-    dialog: false,
-    
-  updateComment: false, //pour faire disparaitre section update commentaire au click sur bouton updater
-  // controle le nombre de caractères inscrits dans partie Votre nouveau commentaire
-  validUpdate: false,
-  rulesUpdate: [
-    v => ( v && v.length >=10) || 'Votre commentaire doit faire au moins 10 caractères',
-    ],  // FIN - controle le nombre de caractères inscrits dans partie Votre nouveau commentaire
-  }),
 }
 </script>
 

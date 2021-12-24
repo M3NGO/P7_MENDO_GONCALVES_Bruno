@@ -11,16 +11,22 @@ const getAllPosts = {
         GET_POSTS(state, data) {
             // console.log(data)
             state.allPosts = data
+            // state.allPosts.reverse()
             // window.location.reload
         },
-        CREATE_POSTS(state, data){
-            state.allPosts = [data, ...state.allPosts] // on ajoute data devant tout contenu allPosts
+        CREATE_POSTS(state, data){ //set timeout sinon probleme d'affichage images nouveaux posts
+            function delay(){
+                window.setTimeout(state.allPosts = [data, ...state.allPosts], 10)
+            }return delay
+            
             // state.allPosts.push(data)
         },
         UPDATE_POSTS(state, data){
 
-        const index = state.allPosts.map(post => post.id).indexOf(data.id);
-        state.allPosts.splice(index, 1, data);
+            function delayPost(){
+                const index = state.allPosts.map(post => post.id).indexOf(data.id)
+                window.setTimeout(state.allPosts.splice(index, 1, data), 10)
+            }return delayPost
         },
         // UPDATE_POSTSLIKES(state, data){
 
@@ -36,8 +42,11 @@ const getAllPosts = {
             // state.allPosts.push(data)
         },
         UPDATE_COMMENTS(state, data){
-            const index = state.allPosts.comments.map(comment => comment.id).indexOf(data.id);
-            state.allPosts.comments.splice(index, 1, data);
+            function delay(){
+                const index = state.allPosts.comments.map(comment => comment.id).indexOf(data.id)
+                window.setTimeout(state.allPosts.comments.splice(index, 1, data), 10)
+            }return delay
+
             },
 
 
@@ -110,9 +119,9 @@ async updatePosts ({commit}, payload){
 
             if(payload.contentUpdate != '' || null){
               formData.append('content', payload.contentUpdate);
-            }else if(payload.uploadUpdate != '' || null){
+            }if(payload.uploadUpdate != '' || null){
               formData.append('upload', payload.uploadUpdate);
-            }else if(payload.file != '' || null ){
+            }if(payload.file != '' || null ){
             formData.append('file', payload.file);
             }
             
@@ -172,7 +181,7 @@ async updatePosts ({commit}, payload){
               }
             )
             .then(response => {
-                commit('GET_POSTS', response.data)
+                commit('CREATE_POSTS', response.data)
                
             })
             .catch(error => {console.log(error)})
@@ -349,7 +358,7 @@ async postLikesDislikes ({commit},payload){
                     
                     )
                     .then(response => {
-                        commit('_POSTS', response.data)
+                        commit('UPDATE_COMMENTS', response.data)
                     })
                     .catch(error => {console.log(error)})
                 },

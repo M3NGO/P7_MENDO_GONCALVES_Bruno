@@ -160,14 +160,15 @@ exports.deletePost = async(req, res) =>{
                         }
                         await Post_likes_dislikes.destroy({ where: {post_id: post_id}})
                         await Post.destroy({ where: { id: post_id}})
-                }
+                }else{
                 let nbrePosts = await User.findOne({ where: {uuid:uuid.uuid} })
                 await User.update({ nbre_posts: nbrePosts.nbre_posts -1},{ where: {uuid:uuid.uuid} })
                 let CommentToDelete = await Post.findOne({ where: {id: post_id}})
                 if(CommentToDelete){
                     await User.update({ nbre_comments: nbrePosts.nbre_comments-CommentToDelete.nbre_comments },{ where: {uuid:uuid.uuid} })
-
                 }
+                
+            }
                 await Post_likes_dislikes.destroy({ where: {post_id: post_id}})
                 await Post.destroy({ where: { id: post_id} })
             }

@@ -2,12 +2,12 @@
 <v-container  fluid>
     <v-card  class="mb-10" v-for="(post, index) in allPosts" :key="index" > <!-- carte contenant le Post + commentaires -->
     
-        <video controls width="100%" v-if="post.upload_url !== null && post.upload_url.includes('videos') " :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' + post.upload_url" max-height="400"><!--section image back du profil qui englobe l'avatar-->
+        <video controls width="100%" v-if=" post.upload_url !== null && post.upload_url.includes('videos') " :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' + post.upload_url" max-height="400"><!--section image back du profil qui englobe l'avatar-->
         </video> <!-- FIN section image back du profil qui englobe l'avatar -->
         
         <v-dialog v-model="dialogPost.post[index]" width="100%" >
             <template v-slot:activator="{ on, image }">
-                <v-img class="rounded-t" v-bind="image" v-on="on" v-if="post.upload_url !== null && post.upload_url.includes('images')" :aspect-ratio="16/9"  v-bind:src="'http://localhost:3000/' + post.upload_url"  ><!-- section image back du profil qui englobe l'avatar -->
+                <v-img class="rounded-t" v-bind="image" v-on="on" v-if="post.upload_url !== null  && post.upload_url.includes('images')" :aspect-ratio="16/9"  v-bind:src="'http://localhost:3000/' + post.upload_url"  ><!-- section image back du profil qui englobe l'avatar -->
                 </v-img> <!-- FIN section image back du profil qui englobe l'avatar --> <!--post.upload_url.includes('images') car les images sont stockées dans dossier images et le lien contiendra tjrs images -->
                 <!-- <v-divider></v-divider> -->
             </template>
@@ -133,13 +133,13 @@
     <!-- Bloc création commentaire -->
         <v-divider></v-divider>
         
-        <v-expand-transition v-if="isClicked === index"><!-- transition fait apparaitre section écrire commentaire sous la section boutons card-->
+        <v-expand-transition v-model="isActive" v-if="isClicked === index"><!-- transition fait apparaitre section écrire commentaire sous la section boutons card-->
             <v-form v-model="validCom">
-            <v-card-title class="transition-fast-in-fast-out v-card-text--reveal" ref="monNewComment" >
-                <v-row class="d-flex align-center" v-model="isActive">
+            <v-card-title class="transition-fast-in-fast-out v-card-text--reveal">
+                <v-row class="d-flex align-center">
                     <v-col cols="10" class="me-5"  ><!-- section création Post (message + upload multimedia) -->
                         <v-text-field class=" body-2" label="Votre commentaire ici" :rules="rulesComment" clearable v-model="contentCom" hide-details></v-text-field> 
-                        <v-file-input class=" body-2" label="Upload Photo/Vidéo" v-model="uploadCom"></v-file-input>
+                        <v-file-input class=" body-2" label="Upload Photo/Vidéo" v-model="uploadCom" type="file"></v-file-input>
                     </v-col><!-- FIN - section création Post (message + upload multimedia) -->
                 </v-row>
                 <v-btn color="error" height="40" class="me-4" text x-small v-on:click="publierCommentaire(post.id, profile.email)" :enabled="uploadCom" :disabled="!validCom" >
@@ -156,7 +156,7 @@
                 <v-row class="d-flex align-center">
                     <v-col cols="10" class="me-5"><!-- section création Post (message + upload multimedia) -->
                         <v-text-field class=" body-2" label="Votre nouveau Message" :rules="rulesUpdate" v-model="contentUpdate" clearable hide-details></v-text-field> 
-                        <v-file-input class=" body-2" label="Upload Photo/Vidéo" v-model="uploadUpdate">></v-file-input>
+                        <v-file-input class=" body-2" label="Upload Photo/Vidéo" v-model="uploadUpdate" type="file"></v-file-input>
                     </v-col><!-- FIN - section création Post (message + upload multimedia) -->
                 </v-row>
                 <div>
@@ -300,8 +300,10 @@ rulesUpdate:[
         await this.$store.dispatch('getPosts/getAllPostsAct')
         this.isClicked='' // on remet le statut du click a zero
         this.isActive = !this.isActive // on set la zone commentaire comme active = false
-        this.uploadCom='' // reset le formulaire un fois envoyé le post
+        this.uploadCom=[] // reset le formulaire un fois envoyé le post
         this.contentCom=''// reset le formulaire un fois envoyé le post
+        
+        
         
       },
       async updaterPost(postId){
@@ -311,7 +313,8 @@ rulesUpdate:[
         this.isClickedUpdate=''
         this.isActiveUpdate = !this.isActiveUpdate
         this.contentUpdate = ''
-        this.uploadUpdate=''
+        this.uploadUpdate=[]
+    
         
 
       },

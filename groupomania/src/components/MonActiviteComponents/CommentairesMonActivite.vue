@@ -85,10 +85,10 @@
                 <v-row class="d-flex align-center">
                     <v-col cols="10" class="me-5"><!-- section création Post (message + upload multimedia) -->
                         <v-text-field class=" body-2" label="Votre nouveau commentaire ici" :rules="rulesUpdate" v-model="contentUpdate" clearable hide-details></v-text-field> 
-                        <v-file-input class=" body-2" label="Upload Photo/Vidéo" v-model="uploadUpdate"></v-file-input>
+                        <v-file-input class=" body-2" label="Upload Photo/Vidéo" v-model="uploadUpdate" type="file"></v-file-input>
                     </v-col><!-- FIN - section création Post (message + upload multimedia) -->
                 </v-row>
-                <v-btn color="error" height="40" class="me-4" text x-small @click="updateComment = false" v-on:click="updaterComments(commentaire.post_id, commentaire.id)" :disabled="!validUpdate" >
+                <v-btn color="error" height="40" class="me-4" text x-small v-on:click="updaterComments(commentaire.post_id, commentaire.id)" :disabled="!validUpdate" >
                     <v-icon>mdi-send</v-icon>
                     Updater
                 </v-btn>

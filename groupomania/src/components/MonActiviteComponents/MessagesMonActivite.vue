@@ -133,7 +133,7 @@
                 <v-row class="d-flex align-center">
                     <v-col cols="10" class="me-5"><!-- section création Post (message + upload multimedia) -->
                         <v-text-field class=" body-2" label="Votre commentaire ici" :rules="rulesCom" clearable v-model="contentCom" hide-details></v-text-field> 
-                        <v-file-input class=" body-2" label="Upload Photo/Vidéo" v-model="uploadCom"></v-file-input>
+                        <v-file-input class=" body-2" label="Upload Photo/Vidéo" v-model="uploadCom" type="file"></v-file-input>
                     </v-col><!-- FIN - section création Post (message + upload multimedia) -->
                 </v-row>
                 <v-btn color="error" height="40" class="me-4" text x-small v-on:click="publierCommentaire(post.id, profile.email)" :enabled="uploadCom" :disabled="!validCom">
@@ -150,7 +150,7 @@
                 <v-row class="d-flex align-center">
                     <v-col cols="10" class="me-5"><!-- section création Post (message + upload multimedia) -->
                         <v-text-field class=" body-2" label="Votre nouveau Message" :rules="rulesUpdate" v-model="contentUpdate" clearable hide-details></v-text-field> 
-                        <v-file-input class=" body-2" label="Upload Photo/Vidéo" v-model="uploadUpdate"></v-file-input>
+                        <v-file-input class=" body-2" label="Upload Photo/Vidéo" v-model="uploadUpdate" type="file"></v-file-input>
                     </v-col><!-- FIN - section création Post (message + upload multimedia) -->
                 </v-row>
                 <v-btn color="error" height="40" class="me-4" text x-small v-on:click="updaterPost(post.id)" :enabled="uploadCom" :disabled="!validUpdate">
@@ -284,7 +284,7 @@ export default {
         await this.$store.dispatch('getPosts/getAllPostsAct')
         this.isClicked='' // on remet le statut du click a zero
         this.isActive = !this.isActive // on set la zone commentaire comme active = false
-        this.uploadCom='' // reset le formulaire un fois envoyé le post
+        this.uploadCom=[] // reset le formulaire un fois envoyé le post
         this.contentCom=''// reset le formulaire un fois envoyé le post
         
       },
@@ -295,7 +295,7 @@ export default {
         this.isClickedUpdate=''
         this.isActiveUpdate = !this.isActiveUpdate
         this.contentUpdate = ''
-        this.uploadUpdate=''
+        this.uploadUpdate=[]
         
 
       },
