@@ -1,18 +1,19 @@
 <template>
 <v-container  fluid>
     <v-card  class="mb-10" v-for="(post, index) in allPosts" :key="index" > <!-- carte contenant le Post + commentaires -->
-        <video controls width="100%" heigth="auto" v-if="post.upload_url !== null && post.upload_url.includes('videos') " :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' + post.upload_url" max-height="400"><!--section image back du profil qui englobe l'avatar-->
+    
+        <video controls width="100%" v-if="post.upload_url !== null && post.upload_url.includes('videos') " :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' + post.upload_url" max-height="400"><!--section image back du profil qui englobe l'avatar-->
         </video> <!-- FIN section image back du profil qui englobe l'avatar -->
         
         <v-dialog v-model="dialogPost.post[index]" width="100%" >
             <template v-slot:activator="{ on, image }">
-                <v-img class="rounded-t" v-bind="image" v-on="on" v-show="post.upload_url !== null && post.upload_url.includes('images')" :aspect-ratio="16/9"  v-bind:src="'http://localhost:3000/' + post.upload_url"  ><!-- section image back du profil qui englobe l'avatar -->
+                <v-img class="rounded-t" v-bind="image" v-on="on" v-if="post.upload_url !== null && post.upload_url.includes('images')" :aspect-ratio="16/9"  v-bind:src="'http://localhost:3000/' + post.upload_url"  ><!-- section image back du profil qui englobe l'avatar -->
                 </v-img> <!-- FIN section image back du profil qui englobe l'avatar --> <!--post.upload_url.includes('images') car les images sont stockées dans dossier images et le lien contiendra tjrs images -->
                 <!-- <v-divider></v-divider> -->
             </template>
             <v-card  class="d-flex align-center" >
                 
-                <v-img v-show="post.upload_url !== null && post.upload_url.includes('images')"  :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' + post.upload_url" @click="dialogPost={post:[]}"><!-- section image back du profil qui englobe l'avatar -->
+                <v-img v-if="post.upload_url !== null && post.upload_url.includes('images')"  :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' + post.upload_url" @click="dialogPost={post:[]}"><!-- section image back du profil qui englobe l'avatar -->
                     </v-img> <!-- FIN section image back du profil qui englobe l'avatar --> <!--post.upload_url.includes('images') car les images sont stockées dans dossier images et le lien contiendra tjrs images -->
                 <!-- <v-divider></v-divider> -->
             </v-card>
@@ -78,7 +79,7 @@
                     <span>Mise à jour</span>
             </v-tooltip>
 
-            <v-divider v-show="profile.uuid === post.uuid" vertical></v-divider><!-- rendre visible que quand le user est celui qui a créé le commentaire -->
+            <v-divider v-if="profile.uuid === post.uuid" vertical></v-divider><!-- rendre visible que quand le user est celui qui a créé le commentaire -->
 
             <v-tooltip bottom >
                 <template v-slot:activator="{ comment }">
@@ -132,34 +133,40 @@
     <!-- Bloc création commentaire -->
         <v-divider></v-divider>
         
-        <v-expand-transition v-model="isActive" v-if="isClicked === index"><!-- transition fait apparaitre section écrire commentaire sous la section boutons card-->
-            <v-card-title class="transition-fast-in-fast-out v-card-text--reveal" ref="monNewComment">
-                <v-row class="d-flex align-center">
-                    <v-col cols="10" class="me-5"><!-- section création Post (message + upload multimedia) -->
-                        <v-text-field class=" body-2" label="Votre commentaire ici" :rules="rules" hide-details="auto" clearable v-model="contentCom"></v-text-field> 
+        <v-expand-transition v-if="isClicked === index"><!-- transition fait apparaitre section écrire commentaire sous la section boutons card-->
+            <v-form v-model="validCom">
+            <v-card-title class="transition-fast-in-fast-out v-card-text--reveal" ref="monNewComment" >
+                <v-row class="d-flex align-center" v-model="isActive">
+                    <v-col cols="10" class="me-5"  ><!-- section création Post (message + upload multimedia) -->
+                        <v-text-field class=" body-2" label="Votre commentaire ici" :rules="rulesComment" clearable v-model="contentCom" hide-details></v-text-field> 
                         <v-file-input class=" body-2" label="Upload Photo/Vidéo" v-model="uploadCom"></v-file-input>
                     </v-col><!-- FIN - section création Post (message + upload multimedia) -->
                 </v-row>
-                <v-btn color="error" height="40" class="me-4" text x-small v-on:click="publierCommentaire(post.id, profile.email)">
+                <v-btn color="error" height="40" class="me-4" text x-small v-on:click="publierCommentaire(post.id, profile.email)" :enabled="uploadCom" :disabled="!validCom" >
                     <v-icon>mdi-send</v-icon>
                     Publier
                 </v-btn>
             </v-card-title>
+            </v-form>
         </v-expand-transition><!-- FIN - transition fait apparaitre section écrire commentaire sous la section boutons card-->
 
         <v-expand-transition v-model="isActiveUpdate" v-if="isClickedUpdate === index"><!-- transition fait apparaitre section update Post sous la section boutons card-->
+            <v-form v-model="validUpdate">
             <v-card-title class="transition-fast-in-fast-out">
                 <v-row class="d-flex align-center">
                     <v-col cols="10" class="me-5"><!-- section création Post (message + upload multimedia) -->
-                        <v-text-field class=" body-2" label="Votre nouveau Message" :rules="rules" hide-details="auto" v-model="contentUpdate" clearable></v-text-field> 
+                        <v-text-field class=" body-2" label="Votre nouveau Message" :rules="rulesUpdate" v-model="contentUpdate" clearable hide-details></v-text-field> 
                         <v-file-input class=" body-2" label="Upload Photo/Vidéo" v-model="uploadUpdate">></v-file-input>
                     </v-col><!-- FIN - section création Post (message + upload multimedia) -->
                 </v-row>
-                <v-btn color="error" height="40" class="me-4" text x-small v-on:click="updaterPost(post.id)">
+                <div>
+                <v-btn color="error" height="40" class="me-4" text x-small v-on:click="updaterPost(post.id)" :disabled="!validUpdate">
                     <v-icon>mdi-send</v-icon>
                     Updater
                 </v-btn>
+                </div>
             </v-card-title>
+            </v-form>
         </v-expand-transition><!-- FIN - transition fait apparaitre section update Post sous la section boutons card-->
         
     <v-divider></v-divider>
@@ -183,6 +190,57 @@ export default {
   components:{
       Commentaires,
       
+  },
+    data: () => ({
+    contentCom:'',
+    postid: '',
+    uuid:'',
+    role: '',
+    uploadCom:[],
+
+    contentUpdate:'', //pour updater le post
+    uploadUpdate:[], //pour updater le post
+
+    isClicked: '', //definit si bouton commentaire a été clické en lui assignant l'index du post pour le rendre unique au click et ne pas dévoiler toutes les zones commentaire de toutes les cartes
+    isClickedUpdate:'',
+    // count: 0,
+    isActive: false, // définit si la zone de publication commentaire est visible ou non
+    isActiveUpdate: false,
+    
+    post:'',
+    nbre_dislikes:'',
+    nbre_likes:'',
+
+    dialogPost: {post:[]},
+ 
+
+  // controle le nombre de caractères inscrits dans partie Votre nouveau message UPDATEPOST
+  validCom: false,
+  rulesComment: [
+    v => ( v && v.length >=10) || 'Votre message doit faire au moins 10 caractères',
+    ],  // FIN - controle le nombre de caractères inscrits dans partie Votre nouveau message UPDATEPOST
+    validUpdate: false,
+rulesUpdate:[
+    v => ( v && v.length >=10) || 'Votre message doit faire au moins 10 caractères',
+    ], 
+
+  }),
+      computed: {
+    ...mapState('getPosts', ['allPosts']), //('nom du module dans index.js', ['nomstate dans fichier dossier module'])
+    ...mapState('getProfile', ['profile']), //('nom du module dans index.js', ['nomstate dans fichier dossier module'])
+    ...mapState('likesDislikes', ['postLikesDislikes']),
+    
+    // ...mapState({ touslesposts : state => state.allPosts})
+  
+    
+  },
+  mounted(){
+    this.$store.dispatch('getPosts/getAllPostsAct') //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
+    this.$store.dispatch('getProfile/getProfile') //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
+    this.$store.dispatch('likesDislikes/getAllPostLikesDislikes')
+    
+    // this.role = localStorage.getItem('role')// déclare role au montage = localstorage on s'en sert ensuite dans v-if pour cacher aux role 1
+
   },
 
 
@@ -322,23 +380,7 @@ export default {
 
   },//fin methods
 
-    computed: {
-    ...mapState('getPosts', ['allPosts']), //('nom du module dans index.js', ['nomstate dans fichier dossier module'])
-    ...mapState('getProfile', ['profile']), //('nom du module dans index.js', ['nomstate dans fichier dossier module'])
-    ...mapState('likesDislikes', ['postLikesDislikes']),
-    
-    // ...mapState({ touslesposts : state => state.allPosts})
-  
-    
-  },
-  mounted(){
-    this.$store.dispatch('getPosts/getAllPostsAct') //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
-    this.$store.dispatch('getProfile/getProfile') //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
-    this.$store.dispatch('likesDislikes/getAllPostLikesDislikes')
-    
-    // this.role = localStorage.getItem('role')// déclare role au montage = localstorage on s'en sert ensuite dans v-if pour cacher aux role 1
 
-  },
 //   updated(){
 //       this.$store.dispatch('getPosts/getAllPostsAct') 
 //   }
@@ -350,36 +392,8 @@ export default {
 
 //FIN gestion axios + vuex
 
-  data: () => ({
-    contentCom:'',
-    postid: '',
-    uuid:'',
-    role: '',
-    uploadCom:[],
 
-    contentUpdate:'', //pour updater le post
-    uploadUpdate:[], //pour updater le post
-
-    isClicked: '', //definit si bouton commentaire a été clické en lui assignant l'index du post pour le rendre unique au click et ne pas dévoiler toutes les zones commentaire de toutes les cartes
-    isClickedUpdate:'',
-    // count: 0,
-    isActive: false, // définit si la zone de publication commentaire est visible ou non
-    isActiveUpdate: false,
-    
-    post:'',
-    nbre_dislikes:'',
-    nbre_likes:'',
-
-    dialogPost: {post:[]},
- 
-
-
-  // controle le nombre de caractères inscrits dans partie Votre nouveau message UPDATEPOST
   
-  rules: [
-    v => ( v && v.length >=10) || 'Votre message doit faire au moins 10 caractères',
-    ],  // FIN - controle le nombre de caractères inscrits dans partie Votre nouveau message UPDATEPOST
-  }),
 
 
 

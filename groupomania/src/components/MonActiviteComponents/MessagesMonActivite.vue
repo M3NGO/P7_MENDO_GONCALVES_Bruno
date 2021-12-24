@@ -128,33 +128,37 @@
     <!-- Bloc création commentaire -->
         <v-divider></v-divider>
         <v-expand-transition v-model="isActive" v-if="isClicked === index"><!-- transition fait apparaitre section écrire commentaire sous la section boutons card-->
+            <v-form v-model="validCom">
             <v-card-title class="transition-fast-in-fast-out v-card-text--reveal" ref="monNewComment">
                 <v-row class="d-flex align-center">
                     <v-col cols="10" class="me-5"><!-- section création Post (message + upload multimedia) -->
-                        <v-text-field class=" body-2" label="Votre commentaire ici" :rules="rules" hide-details="auto" clearable v-model="contentCom"></v-text-field> 
+                        <v-text-field class=" body-2" label="Votre commentaire ici" :rules="rulesCom" clearable v-model="contentCom" hide-details></v-text-field> 
                         <v-file-input class=" body-2" label="Upload Photo/Vidéo" v-model="uploadCom"></v-file-input>
                     </v-col><!-- FIN - section création Post (message + upload multimedia) -->
                 </v-row>
-                <v-btn color="error" height="40" class="me-4" text x-small v-on:click="publierCommentaire(post.id, profile.email)">
+                <v-btn color="error" height="40" class="me-4" text x-small v-on:click="publierCommentaire(post.id, profile.email)" :enabled="uploadCom" :disabled="!validCom">
                     <v-icon>mdi-send</v-icon>
                     Publier
                 </v-btn>
             </v-card-title>
+            </v-form>
         </v-expand-transition><!-- FIN - transition fait apparaitre section écrire commentaire sous la section boutons card-->
 
         <v-expand-transition v-model="isActiveUpdate" v-if="isClickedUpdate === index"><!-- transition fait apparaitre section update Post sous la section boutons card-->
+            <v-form v-model="validUpdate">
             <v-card-title class="transition-fast-in-fast-out">
                 <v-row class="d-flex align-center">
                     <v-col cols="10" class="me-5"><!-- section création Post (message + upload multimedia) -->
-                        <v-text-field class=" body-2" label="Votre nouveau Message" :rules="rules" hide-details="auto" v-model="contentUpdate"></v-text-field> 
-                        <v-file-input class=" body-2" label="Upload Photo/Vidéo" v-model="uploadUpdate">></v-file-input>
+                        <v-text-field class=" body-2" label="Votre nouveau Message" :rules="rulesUpdate" v-model="contentUpdate" clearable hide-details></v-text-field> 
+                        <v-file-input class=" body-2" label="Upload Photo/Vidéo" v-model="uploadUpdate"></v-file-input>
                     </v-col><!-- FIN - section création Post (message + upload multimedia) -->
                 </v-row>
-                <v-btn color="error" height="40" class="me-4" text x-small v-on:click="updaterPost(post.id)">
+                <v-btn color="error" height="40" class="me-4" text x-small v-on:click="updaterPost(post.id)" :enabled="uploadCom" :disabled="!validUpdate">
                     <v-icon>mdi-send</v-icon>
                     Updater
                 </v-btn>
             </v-card-title>
+            </v-form>
         </v-expand-transition><!-- FIN - transition fait apparaitre section update Post sous la section boutons card-->
     <v-divider></v-divider>
         <!-- FIN - Bloc création commentaire -->
@@ -198,12 +202,18 @@ export default {
     dialogPost: {post:[]},
 
   // controle le nombre de caractères inscrits dans partie Votre nouveau message UPDATEPOST
-  
-  rules: [
+  validCom: false,
+  rulesCom: [
+    v => ( v && v.length >=10) || 'Votre message doit faire au moins 10 caractères',
+    ],  // FIN - controle le nombre de caractères inscrits dans partie Votre nouveau message UPDATEPOST
+    
+    validUpdate: false,
+  rulesUpdate: [
     v => ( v && v.length >=10) || 'Votre message doit faire au moins 10 caractères',
     ],  // FIN - controle le nombre de caractères inscrits dans partie Votre nouveau message UPDATEPOST
   }),
 
+  
 //debut gestion axios + vuex
   computed: {
     ...mapState('getPosts', ['allPosts']), //('nom du module dans index.js', ['nomstate dans fichier dossier module'])

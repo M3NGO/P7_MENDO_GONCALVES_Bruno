@@ -80,18 +80,20 @@
             </v-card-actions><!-- FIN - section boutons card messages -->
 
         <v-expand-transition v-model="isActiveUpdate" v-if="isClickedUpdate === index"><!-- transition fait apparaitre section update commentaire sous la section boutons card-->
+            <v-form v-model="validUpdate">
             <v-card-title class="transition-fast-in-fast-out">
                 <v-row class="d-flex align-center">
                     <v-col cols="10" class="me-5"><!-- section création Post (message + upload multimedia) -->
-                        <v-text-field class=" body-2" label="Votre nouveau commentaire ici" :rules="rules" hide-details="auto" v-model="contentUpdate" clearable></v-text-field> 
+                        <v-text-field class=" body-2" label="Votre nouveau commentaire ici" :rules="rulesUpdate" v-model="contentUpdate" clearable hide-details></v-text-field> 
                         <v-file-input class=" body-2" label="Upload Photo/Vidéo" v-model="uploadUpdate"></v-file-input>
                     </v-col><!-- FIN - section création Post (message + upload multimedia) -->
                 </v-row>
-                <v-btn color="error" height="40" class="me-4" text x-small @click="updateComment = false" v-on:click="updaterComments(commentaire.post_id, commentaire.id)">
+                <v-btn color="error" height="40" class="me-4" text x-small @click="updateComment = false" v-on:click="updaterComments(commentaire.post_id, commentaire.id)" :disabled="!validUpdate" >
                     <v-icon>mdi-send</v-icon>
                     Updater
                 </v-btn>
             </v-card-title>
+            </v-form>
         </v-expand-transition><!-- FIN - transition fait apparaitre section update commentaire sous la section boutons card-->
 
 
@@ -211,7 +213,8 @@ async commentLike(postId, commentId){
     
   updateComment: false, //pour faire disparaitre section update commentaire au click sur bouton updater
   // controle le nombre de caractères inscrits dans partie Votre nouveau commentaire
-  rules: [
+  validUpdate: false,
+  rulesUpdate: [
     v => ( v && v.length >=10) || 'Votre commentaire doit faire au moins 10 caractères',
     ],  // FIN - controle le nombre de caractères inscrits dans partie Votre nouveau commentaire
   }),

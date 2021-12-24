@@ -40,9 +40,5 @@ export default {
   mounted() { // au refresh de nimporte quelle page de l'app on scroll vers le haut automatiquement smoothly
     window.onload = window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
     },
-
-  data: () => ({
-    //
-  }),
 };
 </script>

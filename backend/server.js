@@ -16,7 +16,7 @@ let normalizePort = val => {
             return false;
 };
                     
-let port = normalizePort(process.env.PORT || '3000');// ici on change le port où le backend est présent (on peut changer 3000 par nimporte quoi)
+let port = normalizePort(process.env.PORT || '3000');// ici on change le port où le backend est présent (on peut changer 3000 par nimporte quoi)
                         
 app.set('port', port);
 // fonction errorHandler recherche les différentes erreurs et les gère de maniere appropriée

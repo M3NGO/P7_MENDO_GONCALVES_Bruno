@@ -56,7 +56,7 @@ const getAllPosts = {
                 )
                 
                 .then(response => {
-                    // console.log(response.data.comment)
+                    // console.log(response.data)
                     commit('GET_POSTS', response.data)
                     
                 })
@@ -77,12 +77,6 @@ const getAllPosts = {
                     
                 formData,
                 //body axios
-                    // {
-                    // "uuid": localStorage.getItem('uuid'),
-                    // "content": payload.content,
-                    // "email": payload.email,
-                    // "upload": payload.upload,
-                    // },
                     // //header axios
     
                     {headers:{Authorization: 'Bearer'+' '+ localStorage.getItem('token'), 
@@ -198,7 +192,7 @@ async getAllPostLikesDislikes ({commit}){
         
         .then(response => {
             // console.log(response.data.comment)
-            commit('GET_POSTS', response.data)
+            commit('POSTS', response.data)
             
         })
         .catch(error => {console.log(error)})

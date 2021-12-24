@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import axios from 'axios'//ajout axios a vuex pour call API
+
 
 //import store
 import getPosts from './modules/getAllPosts'
@@ -12,7 +12,7 @@ import moderation from './modules/moderation'
 import likesDislikes from './modules/likesDislikes.js'
 
 
-Vue.use(axios) //ajout axios a vuex pour call API
+
 Vue.use(Vuex)
 
 
