@@ -325,7 +325,8 @@ rulesUpdate:[
       },
       async moderationPost(postId, uuid){
         await this.$store.dispatch('moderation/moderationPost', {post_id: postId, uuid:uuid})
-        await this.$store.dispatch('getPosts/getAllPostsAct') 
+        await this.$store.dispatch('getPosts/getAllPostsAct')
+        await this.$store.dispatch('moderation/getModeratedPosts')
       },
     
     async postLike(postId){

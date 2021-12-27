@@ -66,26 +66,28 @@ computed: {
     ...mapState('getProfile', ['profile']), //('nom du module dans index.js', ['nomstate dans fichier dossier module'])
     
   },
-  beforeMount(){
-    this.$store.dispatch('getUsers/getAllInactiveUsersAct') //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
-    this.$store.dispatch('getProfile/getProfile') //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
+  async mounted(){
+    await this.$store.dispatch('getUsers/getAllInactiveUsersAct') //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
+    await this.$store.dispatch('getProfile/getProfile') //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
   },
       
     methods:{
-        deleteUser(user, email){
+       async deleteUser(user, email){
         let confirmation = confirm("Êtes-vous sûr(e) de vouloir supprimer définitivement l'utilisateur : "+email+ " ? tout son contenu sera irrécupérable")
 
             if(confirmation){
-                this.$store.dispatch('moderation/deleteUser',{user:user})
+                await this.$store.dispatch('moderation/deleteUser',{user:user})
+                await this.$store.dispatch('getUsers/getAllInactiveUsersAct')
             }else{
                 window.location.reload
             }
         },
 
-        unblockUser(user, moderator, email){
+        async unblockUser(user, moderator, email){
         let confirmation = confirm("Êtes-vous sûr(e) de vouloir débloquer l'utilisateur : "+email)
             if(confirmation){
-                this.$store.dispatch('moderation/unblockUser', {uuid:user, moderator:moderator, email:email})
+                await this.$store.dispatch('moderation/unblockUser', {uuid:user, moderator:moderator, email:email})
+                await this.$store.dispatch('getUsers/getAllInactiveUsersAct')
             }else{
                 window.location.reload
             }

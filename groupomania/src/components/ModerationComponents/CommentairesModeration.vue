@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <v-card v-for="(commentaire, index) in allCommentsModeration" :key="index">
+    <v-card class="mb-5" v-for="(commentaire, index) in allCommentsModeration" :key="index">
       <v-timeline align-top dense class="me-3"  ><!-- timeline des commentaires -->
         <v-timeline-item><!-- créé l'item commentaire et place sur timeline -->
           <template  v-slot:icon><!-- icone sur la timeline a gauche du commentaire ajouter l'avatar de la personne qui commente-->
@@ -115,6 +115,7 @@ export default {
   methods:{
     async deleteComments(commentId){
       await this.$store.dispatch('comments/deleteComments', { commentId: commentId})
+      await this.$store.dispatch('moderation/getModeratedComments')
       await this.$store.dispatch('getPosts/getAllPostsAct') 
       },
     async unModerateComment(commentId, uuid){

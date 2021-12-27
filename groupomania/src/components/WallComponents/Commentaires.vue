@@ -165,6 +165,7 @@ export default {
     async moderationComment(commentId, uuid){
         await this.$store.dispatch('moderation/moderationComment', {comment_id: commentId, uuid:uuid})
         await this.$store.dispatch('getPosts/getAllPostsAct')
+        await this.$store.dispatch('moderation/getModeratedComments')
       },
 
     

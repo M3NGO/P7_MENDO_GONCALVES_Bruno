@@ -166,7 +166,8 @@ export default {
 
   methods:{
       async deletePosts(postId){
-        await this.$store.dispatch('getPosts/deletePosts', { postid: postId}) 
+        await this.$store.dispatch('getPosts/deletePosts', { postid: postId})
+        await this.$store.dispatch('moderation/getModeratedPosts') 
         await this.$store.dispatch('getPosts/getAllPostsAct')
       },
       async unModeratePost(postId, uuid){
