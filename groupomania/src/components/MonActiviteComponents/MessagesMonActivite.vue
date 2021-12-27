@@ -47,16 +47,6 @@
         <v-divider></v-divider>
 
         <v-card-actions class="d-flex justify-end"  ><!-- section boutons card messages -->
-            <v-tooltip bottom v-if="profile.role === 2"><!-- rendre visible que quand le role user est 2 -->
-                <template v-slot:activator="{ on, attrs }">
-                    <v-btn v-bind="attrs" v-on="on" plain text x-small v-on:click="moderationPost(post.id, profile.uuid)"
-                    ><v-icon size="20" color="error">mdi-alert-circle</v-icon>
-                    </v-btn>
-                </template>
-                    <span>Modération</span>
-            </v-tooltip>
-
-            <v-divider v-show="profile.uuid == post.uuid" vertical></v-divider>
 
             <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">

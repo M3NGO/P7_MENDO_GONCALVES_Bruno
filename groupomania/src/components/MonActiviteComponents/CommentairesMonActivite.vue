@@ -111,6 +111,24 @@
 import { mapState} from 'vuex'
 export default {
   name: 'Commentaires',
+      data: () => ({
+    contentUpdate:'',
+    uploadUpdate:[],
+
+    isClickedUpdate:'',
+    isActiveUpdate: false,
+  commentaire:'',
+    dialog: {commentaire:[]},
+    
+  updateComment: false, //pour faire disparaitre section update commentaire au click sur bouton updater
+  // controle le nombre de caractères inscrits dans partie Votre nouveau commentaire
+  validUpdate: false,
+  rulesUpdate: [
+    v => ( v && v.length >=10) || 'Votre commentaire doit faire au moins 10 caractères',
+    ],  // FIN - controle le nombre de caractères inscrits dans partie Votre nouveau commentaire
+  }),
+
+
   computed: {
     ...mapState('moderation', ['allCommentsModeration']), //('nom du module dans index.js', ['nomstate dans fichier dossier module'])
     ...mapState('getProfile', ['profile']), //('nom du module dans index.js', ['nomstate dans fichier dossier module'])
@@ -202,22 +220,7 @@ async commentLike(postId, commentId){
       }
   },
 
-    data: () => ({
-    contentUpdate:'',
-    uploadUpdate:[],
 
-    isClickedUpdate:'',
-    isActiveUpdate: false,
- 
-    dialog: {commentaire:[]},
-    
-  updateComment: false, //pour faire disparaitre section update commentaire au click sur bouton updater
-  // controle le nombre de caractères inscrits dans partie Votre nouveau commentaire
-  validUpdate: false,
-  rulesUpdate: [
-    v => ( v && v.length >=10) || 'Votre commentaire doit faire au moins 10 caractères',
-    ],  // FIN - controle le nombre de caractères inscrits dans partie Votre nouveau commentaire
-  }),
 
 
 }

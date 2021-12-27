@@ -5,16 +5,16 @@
         <v-row align="end" class="fill-height">
           <v-col align-self="start" class="pa-0" cols="12" >
 
-            <v-avatar class="profile" color="grey" size="20%" rounded tile border v-if="profile.upload_url != null">
+            <v-avatar class="profile" color="grey" size="20vh" max-height="15vh" rounded tile border v-if="profile.upload_url != null">
               <v-img small v-bind:src="'http://localhost:3000/' + profile.upload_url"></v-img>
             </v-avatar>
 
-            <v-avatar class="profile" color="white" size="25%" rounded tile border v-if="profile.upload_url == null" >
+            <v-avatar class="profile" color="white" size="25vh" rounded tile border v-if="profile.upload_url == null" >
               <v-img small src="@/assets/Logo_Groupomania.png"></v-img>
             </v-avatar>
 
           </v-col>
-          <v-col class="py-0">
+          <v-col class="py-0 mt-5">
             <v-list-item color="grey">
               <v-list-item-content>
                 <v-list-item-title class="text-h6">{{profile.firstname}} {{profile.lastname}}</v-list-item-title>

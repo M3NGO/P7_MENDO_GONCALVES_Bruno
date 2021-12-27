@@ -22,10 +22,35 @@ const moderationFunction = {
             state.allUsersModeration = data
         },
         MODERATE_POST(state, data){
+            function delayPost(){
+                const index = state.allPostsModeration.map(post => post.id).indexOf(data.id)
+                window.setTimeout(state.allPostsModeration.splice(index, 1, data), 10)
+            }return delayPost
+        },
+        GET_MODERATE_POST(state, data){
             state.allPostsModeration = data
         },
+        UNMODERATE_POST(state, data){
+            function delayPost(){
+                const index = state.allPostsModeration.map(post => post.id).indexOf(data.id)
+                window.setTimeout(state.allPostsModeration.splice(index, 1, data), 10)
+            }return delayPost
+        },
         MODERATE_COMMENT(state, data){
+            function delayPost(){
+                const index = state.allCommentsModeration.map(comment => comment.id).indexOf(data.id)
+                window.setTimeout(state.allCommentsModeration.splice(index, 1, data), 10)
+            }return delayPost
+        },
+        GET_MODERATE_COMMENT(state, data){
             state.allCommentsModeration = data
+            
+        },
+        UNMODERATE_COMMENT(state, data){
+            function delayPost(){
+                const index = state.allCommentsModeration.map(comment => comment.id).indexOf(data.id)
+                window.setTimeout(state.allCommentsModeration.splice(index, 1, data), 10)
+            }return delayPost
         },
 
     },
@@ -197,7 +222,7 @@ const moderationFunction = {
                             
                 .then(response => {
                 // console.log(response.data.comment)
-                    commit('MODERATE_POST', response.data)
+                    commit('UNMODERATE_POST', response.data)
                                           
                 })
                             
@@ -222,7 +247,7 @@ const moderationFunction = {
                             
                 .then(response => {
                 // console.log(response.data.comment)
-                    commit('MODERATE_POST', response.data)
+                    commit('GET_MODERATE_POST', response.data)
                                           
                 })
                             
@@ -281,7 +306,7 @@ const moderationFunction = {
                             
                 .then(response => {
                 // console.log(response.data.comment)
-                    commit('MODERATE_COMMENT', response.data)
+                    commit('UNMODERATE_COMMENT', response.data)
                                           
                 })
                             
@@ -305,7 +330,7 @@ const moderationFunction = {
                             
                 .then(response => {
                 // console.log(response.data.comment)
-                    commit('MODERATE_COMMENT', response.data)
+                    commit('GET_MODERATE_COMMENT', response.data)
                                           
                 })
                             

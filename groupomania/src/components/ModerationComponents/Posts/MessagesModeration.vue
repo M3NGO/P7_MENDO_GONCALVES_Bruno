@@ -1,9 +1,9 @@
 <template>
 <v-container fluid>
-    <v-card class="mb-15" v-for="post in allPostsModeration" :key="post.id"> <!-- carte contenant le Post + commentaires -->
-        <video controls width="100%" heigth="auto" v-if="post.upload_url !== null && post.upload_url.includes('videos') " :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' + post.upload_url" max-height="400" @click="dialog=false"><!--section image back du profil qui englobe l'avatar-->
+    <v-card class="mb-15" v-for="(post, index) in allPostsModeration" :key="index"> <!-- carte contenant le Post + commentaires -->
+        <video controls width="100%" height="auto" v-if="post.upload_url !== null && post.upload_url.includes('videos') " :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' + post.upload_url" max-height="400" @click="dialog=false"><!--section image back du profil qui englobe l'avatar-->
         </video> <!-- FIN section image back du profil qui englobe l'avatar -->
-        <v-dialog v-model="dialog" persistent fullscreen width="500" >
+        <v-dialog v-model="dialogPostMod.post[index]" width="100%" >
             <template v-slot:activator="{ on, attrs }">
                 <v-img class="rounded-t" v-bind="attrs" v-on="on" v-if="post.upload_url !== null && post.upload_url.includes('images')" :aspect-ratio="16/9" v-bind:href="'http://localhost:3000/' + post.upload_url" v-bind:src="'http://localhost:3000/' + post.upload_url" max-height="400" @click="dialog=true"><!-- section image back du profil qui englobe l'avatar -->
                 </v-img> <!-- FIN section image back du profil qui englobe l'avatar --> <!--post.upload_url.includes('images') car les images sont stockées dans dossier images et le lien contiendra tjrs images -->
@@ -11,7 +11,7 @@
             </template>
 
             <v-card class="d-flex align-center" >
-                <v-img v-if="post.upload_url !== null && post.upload_url.includes('images')" contain :aspect-ratio="16/9" v-bind:href="'http://localhost:3000/' + post.upload_url" v-bind:src="'http://localhost:3000/' + post.upload_url" @click="dialog=false" ><!-- section image back du profil qui englobe l'avatar -->
+                <v-img v-if="post.upload_url !== null && post.upload_url.includes('images')" contain :aspect-ratio="16/9" v-bind:href="'http://localhost:3000/' + post.upload_url" v-bind:src="'http://localhost:3000/' + post.upload_url" @click="dialogPostMod={post:[]}" ><!-- section image back du profil qui englobe l'avatar -->
                     </v-img> <!-- FIN section image back du profil qui englobe l'avatar --> <!--post.upload_url.includes('images') car les images sont stockées dans dossier images et le lien contiendra tjrs images -->
                 <!-- <v-divider></v-divider> -->
 
@@ -75,7 +75,7 @@
                 <template v-slot:activator="{ on, attrs }">
                     <v-badge overlap offset-x="15" offset-y="10" color="error">
                         <span slot="badge">{{post.nbre_likes}}</span>
-                        <v-btn v-bind="attrs" v-on="on" plain text x-small 
+                        <v-btn v-bind="attrs" v-on="on" plain text x-small disabled
                         ><v-icon size="20">mdi-thumb-up</v-icon>
                         </v-btn>
                     </v-badge>
@@ -94,7 +94,7 @@
                 <template v-slot:activator="{ on, attrs }">
                     <v-badge overlap offset-x="15" offset-y="10" color="error">
                         <span slot="badge">{{post.nbre_dislikes}}</span>
-                        <v-btn v-bind="attrs" v-on="on" plain text x-small 
+                        <v-btn v-bind="attrs" v-on="on" plain text x-small disabled
                         ><v-icon size="20">mdi-thumb-down</v-icon>
                         </v-btn>
                     </v-badge>
@@ -134,6 +134,8 @@ export default {
     
     contentUpdate:'',
     uploadUpdate:[],
+
+    dialogPostMod: {post:[]},
     
     
   reveal: false, // reveal false pour faire disparaitre section écrire commentaire au dessus de timeline commentaires
@@ -151,8 +153,8 @@ export default {
     ...mapState('getProfile', ['profile']), //('nom du module dans index.js', ['nomstate dans fichier dossier module'])
     
   },
-  mounted(){
-    this.$store.dispatch('moderation/getModeratedPosts') //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
+  async mounted(){
+    await this.$store.dispatch('moderation/getModeratedPosts') //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
     this.$store.dispatch('getProfile/getProfile') //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
     
     // this.role = localStorage.getItem('role')// déclare role au montage = localstorage on s'en sert ensuite dans v-if pour cacher aux role 1
@@ -169,7 +171,7 @@ export default {
       },
       async unModeratePost(postId, uuid){
         await this.$store.dispatch('moderation/unModeratePost', {post_id: postId, uuid:uuid})
-        await this.$store.dispatch('getPosts/getAllPostsAct') 
+        await this.$store.dispatch('moderation/getModeratedPosts') 
       },
 
 

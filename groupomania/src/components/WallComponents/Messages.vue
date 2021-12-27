@@ -57,7 +57,7 @@
                     <span>Modération</span>
             </v-tooltip>
 
-            <v-divider v-show="profile.uuid == post.uuid" vertical></v-divider><!-- rendre visible que quand le role user est 2 -->
+            <v-divider v-show="profile.role == 2" vertical></v-divider><!-- rendre visible que quand le role user est 2 -->
 
             <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
@@ -235,8 +235,8 @@ rulesUpdate:[
     
   },
   mounted(){
-    this.$store.dispatch('getPosts/getAllPostsAct') //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
     this.$store.dispatch('getProfile/getProfile') //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
+    this.$store.dispatch('getPosts/getAllPostsAct') //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
     this.$store.dispatch('likesDislikes/getAllPostLikesDislikes')
     
     // this.role = localStorage.getItem('role')// déclare role au montage = localstorage on s'en sert ensuite dans v-if pour cacher aux role 1
