@@ -5,15 +5,15 @@
         <video controls width="100%" v-if=" post.upload_url !== null && post.upload_url.includes('videos') " :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' + post.upload_url" max-height="400"><!--section image back du profil qui englobe l'avatar-->
         </video> <!-- FIN section image back du profil qui englobe l'avatar -->
         
-        <v-dialog v-model="dialogPost.post[index]" width="100%" >
+        <v-dialog v-model="dialogPost.post[index]" width="100%" v-if="post.upload_url !== null  && post.upload_url.includes('images')">
             <template v-slot:activator="{ on, image }">
-                <v-img class="rounded-t" v-bind="image" v-on="on" v-if="post.upload_url !== null  && post.upload_url.includes('images')" :aspect-ratio="16/9"  v-bind:src="'http://localhost:3000/' + post.upload_url"  ><!-- section image back du profil qui englobe l'avatar -->
+                <v-img class="rounded-t" v-bind="image" v-on="on"  :aspect-ratio="16/9"  v-bind:src="'http://localhost:3000/' + post.upload_url"  ><!-- section image back du profil qui englobe l'avatar -->
                 </v-img> <!-- FIN section image back du profil qui englobe l'avatar --> <!--post.upload_url.includes('images') car les images sont stockées dans dossier images et le lien contiendra tjrs images -->
                 <!-- <v-divider></v-divider> -->
             </template>
             <v-card  class="d-flex align-center" >
                 
-                <v-img v-if="post.upload_url !== null && post.upload_url.includes('images')"  :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' + post.upload_url" @click="dialogPost={post:[]}"><!-- section image back du profil qui englobe l'avatar -->
+                <v-img  :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' + post.upload_url" @click="dialogPost={post:[]}"><!-- section image back du profil qui englobe l'avatar -->
                     </v-img> <!-- FIN section image back du profil qui englobe l'avatar --> <!--post.upload_url.includes('images') car les images sont stockées dans dossier images et le lien contiendra tjrs images -->
                 <!-- <v-divider></v-divider> -->
             </v-card>
@@ -225,7 +225,7 @@ rulesUpdate:[
     ], 
 
   }),
-      computed: {
+    computed: {
     ...mapState('getPosts', ['allPosts']), //('nom du module dans index.js', ['nomstate dans fichier dossier module'])
     ...mapState('getProfile', ['profile']), //('nom du module dans index.js', ['nomstate dans fichier dossier module'])
     ...mapState('likesDislikes', ['postLikesDislikes']),

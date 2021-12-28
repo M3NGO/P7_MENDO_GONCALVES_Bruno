@@ -161,11 +161,17 @@ export default {
       },
     async deleteComments(commentId){
         await this.$store.dispatch('getPosts/deleteComments', { commentId: commentId})
+        await this.$store.dispatch('getProfile/getProfile')
         await this.$store.dispatch('getPosts/getAllPostsAct')
       }, 
     async updaterComments(postId, commentId){
         await this.$store.dispatch('getPosts/updateComments', {contentUpdate: this.contentUpdate, postid: postId, commentId:commentId, uploadUpdate: this.uploadUpdate}) 
-        await this.$store.dispatch('getPosts/getAllPostsAct')
+       await this.$store.dispatch('getProfile/getProfile')
+       await this.$store.dispatch('getPosts/getAllPostsAct')
+        this.isClickedUpdate=''
+        this.isActiveUpdate = !this.isActiveUpdate
+        this.contentUpdate = ''
+        this.uploadUpdate=[]
       },
 
 async commentLike(postId, commentId){

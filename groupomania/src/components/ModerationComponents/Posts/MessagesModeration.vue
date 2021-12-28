@@ -3,15 +3,15 @@
     <v-card class="mb-15" v-for="(post, index) in allPostsModeration" :key="index"> <!-- carte contenant le Post + commentaires -->
         <video controls width="100%" height="auto" v-if="post.upload_url !== null && post.upload_url.includes('videos') " :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' + post.upload_url" max-height="400" @click="dialog=false"><!--section image back du profil qui englobe l'avatar-->
         </video> <!-- FIN section image back du profil qui englobe l'avatar -->
-        <v-dialog v-model="dialogPostMod.post[index]" width="100%" >
+        <v-dialog v-model="dialogPostMod.post[index]" width="100%" v-if="post.upload_url !== null && post.upload_url.includes('images')" >
             <template v-slot:activator="{ on, attrs }">
-                <v-img class="rounded-t" v-bind="attrs" v-on="on" v-if="post.upload_url !== null && post.upload_url.includes('images')" :aspect-ratio="16/9" v-bind:href="'http://localhost:3000/' + post.upload_url" v-bind:src="'http://localhost:3000/' + post.upload_url" max-height="400" @click="dialog=true"><!-- section image back du profil qui englobe l'avatar -->
+                <v-img class="rounded-t" v-bind="attrs" v-on="on" :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' + post.upload_url" max-height="400" @click="dialog=true"><!-- section image back du profil qui englobe l'avatar -->
                 </v-img> <!-- FIN section image back du profil qui englobe l'avatar --> <!--post.upload_url.includes('images') car les images sont stockées dans dossier images et le lien contiendra tjrs images -->
                 <!-- <v-divider></v-divider> -->
             </template>
 
             <v-card class="d-flex align-center" >
-                <v-img v-if="post.upload_url !== null && post.upload_url.includes('images')" contain :aspect-ratio="16/9" v-bind:href="'http://localhost:3000/' + post.upload_url" v-bind:src="'http://localhost:3000/' + post.upload_url" @click="dialogPostMod={post:[]}" ><!-- section image back du profil qui englobe l'avatar -->
+                <v-img  contain :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' + post.upload_url" @click="dialogPostMod={post:[]}" ><!-- section image back du profil qui englobe l'avatar -->
                     </v-img> <!-- FIN section image back du profil qui englobe l'avatar --> <!--post.upload_url.includes('images') car les images sont stockées dans dossier images et le lien contiendra tjrs images -->
                 <!-- <v-divider></v-divider> -->
 
@@ -101,9 +101,10 @@
                 </template>
                     <span>J'aime pas</span>
             </v-tooltip>
+            
             <!-- FIN - bouton disike avec badge rouge compte les nombre de dislikes -->
         </v-card-actions><!-- FIN - section boutons card messages -->
-
+        <v-divider></v-divider>
 
     <!-- Section timeline avec commentaires -->
         <div v-for="commentaire in post.comment" :key="commentaire.id" >

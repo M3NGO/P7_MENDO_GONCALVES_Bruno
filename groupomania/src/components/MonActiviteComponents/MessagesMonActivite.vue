@@ -3,15 +3,15 @@
     <v-card  class="mb-10" v-for="(post, index) in profile.post" :key="index" > <!-- carte contenant le Post + commentaires -->
         <video controls width="100%" heigth="auto" v-if="post.upload_url !== null && post.upload_url.includes('videos') " :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' + post.upload_url" max-height="400"><!--section image back du profil qui englobe l'avatar-->
         </video> <!-- FIN section image back du profil qui englobe l'avatar -->
-        <v-dialog v-model="dialogPost.post[index]"  width="1000" >
+        <v-dialog v-model="dialogPost.post[index]"  width="1000" v-if="post.upload_url !== null && post.upload_url.includes('images')">
             <template v-slot:activator="{ on, image }">
-                <v-img class="rounded-t" v-bind="image" v-on="on" v-if="post.upload_url !== null && post.upload_url.includes('images')" :aspect-ratio="16/9" v-bind:href="'http://localhost:3000/' + post.upload_url" v-bind:src="'http://localhost:3000/' + post.upload_url"><!-- section image back du profil qui englobe l'avatar -->
+                <v-img class="rounded-t" v-bind="image" v-on="on" :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' + post.upload_url"><!-- section image back du profil qui englobe l'avatar -->
                 </v-img> <!-- FIN section image back du profil qui englobe l'avatar --> <!--post.upload_url.includes('images') car les images sont stockées dans dossier images et le lien contiendra tjrs images -->
                 <!-- <v-divider></v-divider> -->
             </template>
 
             <v-card class="d-flex align-center" >
-                <v-img v-if="post.upload_url !== null && post.upload_url.includes('images')" contain :aspect-ratio="16/9" v-bind:href="'http://localhost:3000/' + post.upload_url" v-bind:src="'http://localhost:3000/' + post.upload_url" @click="dialogPost={post:[]}" ><!-- section image back du profil qui englobe l'avatar -->
+                <v-img  contain :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' + post.upload_url" @click="dialogPost={post:[]}" ><!-- section image back du profil qui englobe l'avatar -->
                     </v-img> <!-- FIN section image back du profil qui englobe l'avatar --> <!--post.upload_url.includes('images') car les images sont stockées dans dossier images et le lien contiendra tjrs images -->
                 <!-- <v-divider></v-divider> -->
             </v-card>
@@ -210,7 +210,7 @@ export default {
     ...mapState('getProfile', ['profile']), //('nom du module dans index.js', ['nomstate dans fichier dossier module'])
     ...mapState('likesDislikes', ['postLikesDislikes']),
   },
-  mounted(){
+mounted(){
    
     this.$store.dispatch('getPosts/getAllPostsAct') //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
     this.$store.dispatch('getProfile/getProfile') //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
@@ -270,7 +270,7 @@ export default {
         // this.postid = this.$refs.pich.innerHTML
         // alert('Post N°' + postid)
        await this.$store.dispatch('getPosts/createComments', {contentCom: this.contentCom, postid: postId, email: email, uploadCom: this.uploadCom}) //('nom module dans index.js/nom action liée'), payload
-        // window.location.reload()
+        await this.$store.dispatch('getProfile/getProfile')
         await this.$store.dispatch('getPosts/getAllPostsAct')
         this.isClicked='' // on remet le statut du click a zero
         this.isActive = !this.isActive // on set la zone commentaire comme active = false
@@ -281,16 +281,19 @@ export default {
       async updaterPost(postId){
         
         await this.$store.dispatch('getPosts/updatePosts', {contentUpdate: this.contentUpdate, postid: postId, uploadUpdate: this.uploadUpdate})
+        await this.$store.dispatch('getProfile/getProfile')
         await this.$store.dispatch('getPosts/getAllPostsAct')
         this.isClickedUpdate=''
         this.isActiveUpdate = !this.isActiveUpdate
         this.contentUpdate = ''
         this.uploadUpdate=[]
         
+        
 
       },
         async deletePosts(postId){
         await this.$store.dispatch('getPosts/deletePosts', { postid: postId})
+        await this.$store.dispatch('getProfile/getProfile')
        this.$store.dispatch('getPosts/getAllPostsAct')
 
       },
