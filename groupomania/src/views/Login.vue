@@ -6,7 +6,7 @@
     <v-card elevation="20" class="mx-auto rounded-xl"><!-- carte login -->
       <v-col cols="12" class="text-center">
         <img width="200" src="../assets/Logo_Groupomania.png" alt="logo Groupomania">
-        <v-form ref="form" class="mb-5 me-5 ms-5" v-model="valid" lazy-validation><!-- Formulaire login -->
+        <v-form ref="form" class="mb-5 me-5 ms-5"  lazy-validation><!-- Formulaire login -->
           <v-text-field class="mb-5" v-model="email" :rules="emailRules" label="E-mail"  hint="E-mail obligatoire" outlined dense clearable required hide-details></v-text-field>
           <v-text-field v-model="password"
             name="password"
@@ -23,16 +23,16 @@
             clearable
             class="mb-5"
           ></v-text-field>
-
-      
-            <!--Dialog inscription sur bouton pas encore inscrit de la page login -->
-            <v-dialog v-model="dialog" persistent><!-- Dialog inscription -->
-              <template v-slot:activator="{ on, attrs }">
+                       
                 <!-- bouton pas encore inscrit qui déclanche au clic le dialog inscription -->
-                <v-btn elevation="10" color="primary" dark class="rounded-xl" v-bind="attrs" v-on="on">
+                <v-btn elevation="10" color="primary" dark class="mt-5 rounded-xl" @click.stop="dialog = true">
                   Pas encore inscrit(e)?
                 </v-btn>
-              </template>
+              
+      
+            <!--Dialog inscription sur bouton pas encore inscrit de la page login -->
+            <v-dialog v-model="dialog"><!-- Dialog inscription -->
+
                   
               <v-card class="mx-auto rounded-xl" ><!-- Carte inscription dans le dialog -->
                 <v-col class="text-center">
@@ -69,15 +69,18 @@
                   <v-btn color="blue darken-1" text class="rounded-xl" @click="dialog = false">
                     Quitter
                   </v-btn>
-                  <v-btn :disabled="!valid" color="error darken-1" text class="rounded-xl" @click="dialog = false" v-on:click="Register()">
+                  <v-btn :disabled="!validReg" color="error darken-1" text class="rounded-xl" @click="dialog = false" v-on:click="Register()">
                     Valider
                   </v-btn>
                 </v-card-actions>
               </v-card><!-- FIN - Carte inscription dans le dialog -->
             </v-dialog><!-- FIN - Dialog inscription -->
 
-          <v-btn :disabled="!valid" color="error" class="ms-4 rounded-xl" v-on:click="LogIn()" elevation="10">
+          <v-btn :disabled="!valid" color="error" class="mt-5 ms-5 rounded-xl" width="100" v-on:click="LogIn(), isLoading=true" v-if="isLoading==false" elevation="10">
               Entrer
+          </v-btn>
+          <v-btn v-if="isLoading==true" color="error" class="mt-5 ms-5 rounded-xl" width="100">
+              <v-progress-circular indeterminate color="white"></v-progress-circular>
           </v-btn>
         </v-form><!-- FIN - Formulaire login -->
       </v-col>
@@ -95,11 +98,11 @@ export default {
   
     data: () => ({
     //verif si email entré correspond a un email
-    valid: true,
+    // valid: false,
     email: '',
     emailRules: [
       v => !!v || 'E-mail obligatoire',
-      v => /.+@.+\..+/.test(v) || 'Veuillez renseigner un email valide',
+      v => /.+@groupomania.com/.test(v) || 'Veuillez renseigner un email valide',
     ],
     //FIN - verif si email entré correspond a un email
     //verif si MDP entré correspond contient au moins 8 caractères
@@ -118,7 +121,7 @@ export default {
     dialog: false, //fonction dialog false pour quitter le dialog d'inscription
     
     show: false, // déclare false icon vision password par défaut
-    
+    isLoading:false
 
     
 
@@ -138,7 +141,16 @@ export default {
   //debut gestion axios + vuex
   computed: {
     ...mapState('Auth', ['login']), //('nom du module dans index.js', ['nomstate dans fichier dossier module'])
-    
+    valid(){
+      return(
+      this.email && this.password.length >=8
+      )
+    },
+    validReg(){
+      return(
+      this.email && this.password.length >=8 && this.checkbox == true
+      )
+    }
   },
 
 
