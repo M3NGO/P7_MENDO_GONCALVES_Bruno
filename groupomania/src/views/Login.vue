@@ -31,7 +31,7 @@
               
       
             <!--Dialog inscription sur bouton pas encore inscrit de la page login -->
-            <v-dialog v-model="dialog"><!-- Dialog inscription -->
+            <v-dialog v-model="dialog" v-if="dialog === true"><!-- Dialog inscription -->
 
                   
               <v-card class="mx-auto rounded-xl" ><!-- Carte inscription dans le dialog -->
@@ -128,11 +128,11 @@ export default {
   }), //fin de data
 
     methods: {
-      LogIn(){
-        this.$store.dispatch('Auth/postLogin', {email: this.email, password: this.password}) //('nom module dans index.js/nom action liée'), payload
+      async LogIn(){
+        await this.$store.dispatch('Auth/postLogin', {email: this.email, password: this.password}) //('nom module dans index.js/nom action liée'), payload
       },
-      Register(){
-        this.$store.dispatch('Auth/register', {email: this.email, password: this.password}) //('nom module dans index.js/nom action liée'), payload
+      async Register(){
+        await this.$store.dispatch('Auth/register', {email: this.email, password: this.password}) //('nom module dans index.js/nom action liée'), payload
       }
       
 
