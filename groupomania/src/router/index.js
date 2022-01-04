@@ -7,7 +7,8 @@ import MonActivite from '@/views/MonActivite.vue'
 import AllUsers from '@/views/AllUsers.vue'
 import Moderation from '@/views/Moderation.vue'
 import AllInactiveUsers from '@/views/AllInactiveUsers.vue'
-
+// import store from '@/store';
+// import { mapState } from 'vuex'
 
 Vue.use(VueRouter)
 
@@ -61,5 +62,47 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes
 })
+
+// protection des routes afin de ne laisser que les users authentifiés se connecter
+router.beforeEach((to, from, next) => {
+let token = localStorage.getItem('token')
+// let tokenStore = mapState('getProfile', ['profile'])
+  if (to.fullPath === '/wall') {
+    if (!token) {
+      next('/');
+    }
+  }
+  if (to.fullPath === '/activite') {
+    if (!token) {
+      next('/');
+    }
+  }
+  if (to.fullPath === '/profil') {
+    if (!token) {
+      next('/');
+    }
+  }
+  if (to.fullPath === '/utilisateurs') {
+    if (!token) {
+      next('/');
+    }
+  }
+  if (to.fullPath === '/utilisateurs-desinscrits') {
+    if (!token) {
+      next('/');
+    }
+  }
+  if (to.fullPath === '/moderation') {
+    if (!token) {
+      next('/');
+    }
+  }
+  if (to.fullPath === '*') {
+    if (token) {
+      next('*');
+    }
+  }
+  next();
+});
 
 export default router
