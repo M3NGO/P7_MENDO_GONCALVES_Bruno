@@ -1,4 +1,4 @@
-<template>
+<template> <!-- Composant unique commentaires moderation -->
   <v-container fluid>
     <v-card class="mb-5" v-for="(commentaire, index) in allCommentsModeration" :key="index">
       <v-timeline align-top dense class="me-3"  ><!-- timeline des commentaires -->
@@ -13,69 +13,70 @@
           </template><!-- FIN - icone sur la timeline a gauche du commentaire ajouter l'avatar de la personne qui commente-->
 
           <v-card class="d-flex flex-column elevation-2"><!-- créé carte commentaire accolée a la timeline -->
-        <video controls width="100%" height="auto" v-if="commentaire.upload_url !== null && commentaire.upload_url.includes('videos') " :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' + commentaire.upload_url" max-height="300"></video> <!-- FIN section image back du profil qui englobe l'avatar -->
-        <v-dialog v-model="dialogCommentaire.commentaire[index]" width="100%" >
-            <template v-slot:activator="{ on, attrs }">
-              <v-img class="rounded-t" v-bind="attrs" v-on="on" v-if="commentaire.upload_url !== null && commentaire.upload_url.includes('images')" :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' + commentaire.upload_url" max-height="300" @click="dialog=true"></v-img><!-- section image back du profil qui englobe l'avatar -->
-            </template>
+            <video controls width="100%" height="auto" v-if="commentaire.upload_url !== null && commentaire.upload_url.includes('videos') " :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' + commentaire.upload_url" max-height="300"></video> <!-- FIN section image back du profil qui englobe l'avatar -->
+            <v-dialog v-model="dialogCommentaire.commentaire[index]" width="100%" >
+              <template v-slot:activator="{ on, attrs }">
+                <v-img class="rounded-t" v-bind="attrs" v-on="on" v-if="commentaire.upload_url !== null && commentaire.upload_url.includes('images')" :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' + commentaire.upload_url" max-height="300" @click="dialog=true"></v-img><!-- section image back du profil qui englobe l'avatar -->
+              </template>
 
-            <v-card class="d-flex align-center" >
-              <v-img v-if="commentaire.upload_url !== null && commentaire.upload_url.includes('images')" :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' + commentaire.upload_url" @click="dialogCommentaire={commentaire:[]}"></v-img><!-- section image back du profil qui englobe l'avatar -->
-            </v-card>
-        </v-dialog>
+              <v-card class="d-flex align-center" >
+                <v-img v-if="commentaire.upload_url !== null && commentaire.upload_url.includes('images')" :aspect-ratio="16/9" v-bind:src="'http://localhost:3000/' + commentaire.upload_url" @click="dialogCommentaire={commentaire:[]}"></v-img><!-- section image back du profil qui englobe l'avatar -->
+              </v-card>
+            </v-dialog>
             <v-card-title class="body-2">{{commentaire.email}}</v-card-title><!-- insert l'email user qui commente en tant que titre commentaire-->
             <v-card-text class="caption text-justify">{{ commentaire.content }}</v-card-text>
             <v-card-subtitle align="end" class="caption font-italic">Publié le : {{ commentaire.createdAt | moment('LL')}} </v-card-subtitle><!-- insert date à laquelle le user aura créé le commentaire -->
             
             <v-card-actions class="d-flex justify-end flex-wrap" ><!-- section boutons card messages -->
-                <v-tooltip bottom v-show="profile.role == 2"><!-- rendre visible que quand le role user est 2 -->
-                    <template v-slot:activator="{ on, attrs }">
-                        <v-btn v-bind="attrs" v-on="on" plain text x-small v-on:click="unModerateComment(commentaire.id, profile.uuid)"
-                        ><v-icon size="15" color="green">mdi-alert-circle</v-icon>
-                        </v-btn>
-                    </template>
-                        <span>Modération</span>
-                </v-tooltip><!-- rendre visible que quand le role user est 2 -->
+              <!-- Bouton Moderation vert pour remettre en live le commentaire-->
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn v-bind="attrs" v-on="on" plain text x-small v-on:click="unModerateComment(commentaire.id, profile.uuid)">
+                    <v-icon size="15" color="green">mdi-alert-circle</v-icon>
+                  </v-btn>
+                </template>
+                <span>Modération</span>
+              </v-tooltip>
+              <!-- FIN - Bouton Moderation vert pour remettre en live le commentaire-->
 
-                <v-tooltip bottom>
-                    <template v-slot:activator="{ on, attrs }">
-                        <v-btn v-bind="attrs" v-on="on" plain text x-small v-on:click="deleteComments(commentaire.id)"
-                        ><v-icon size="15">mdi-close</v-icon>
-                        </v-btn>
-                    </template>
-                        <span>Effacer</span>
-                </v-tooltip>
+              <!-- Bouton effacer pour effacer définitivement le commentaire-->
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn v-bind="attrs" v-on="on" plain text x-small v-on:click="deleteComments(commentaire.id)">
+                    <v-icon size="15">mdi-close</v-icon>
+                  </v-btn>
+                </template>
+                <span>Effacer</span>
+              </v-tooltip>
+              <!-- FIN - Bouton effacer pour effacer définitivement le commentaire-->
 
-                <!-- bouton Like avec badge rouge compte les nombre de likes -->
-
-                <v-tooltip bottom>
-                    <template v-slot:activator="{ on, attrs }">
-                        <v-badge overlap offset-x="15" offset-y="10" color="error">
-                            <span slot="badge">{{commentaire.nbre_likes}}</span>
-                            <v-btn v-bind="attrs" v-on="on" plain text x-small disabled
-                            ><v-icon size="15">mdi-thumb-up</v-icon>
-                            </v-btn>
-                        </v-badge>
-                    </template>
-                        <span>J'aime</span>
-                </v-tooltip>
-
-                <!-- FIN - bouton Like avec badge rouge compte les nombre de likes -->
+              <!-- bouton Like avec badge rouge compte les nombre de likes désactivé -->
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-badge overlap offset-x="15" offset-y="10" color="error">
+                    <span slot="badge">{{commentaire.nbre_likes}}</span>
+                      <v-btn v-bind="attrs" v-on="on" plain text x-small disabled>
+                        <v-icon size="15">mdi-thumb-up</v-icon>
+                      </v-btn>
+                  </v-badge>
+                </template>
+                <span>J'aime</span>
+              </v-tooltip>
+              <!-- FIN - bouton Like avec badge rouge compte les nombre de likes désactivé -->
                 
-                <!-- bouton dislike avec badge rouge compte les nombre de dislikes -->
-
-                <v-tooltip bottom>
-                    <template v-slot:activator="{ on, attrs }">
-                        <v-badge overlap offset-x="15" offset-y="10" color="error">
-                            <span slot="badge">{{commentaire.nbre_dislikes}}</span>
-                            <v-btn v-bind="attrs" v-on="on" plain text x-small disabled
-                            ><v-icon size="15">mdi-thumb-down</v-icon>
-                            </v-btn>
-                        </v-badge>
-                    </template>
-                        <span>J'aime pas</span>
-                </v-tooltip>
-                <!-- FIN - bouton disike avec badge rouge compte les nombre de dislikes -->
+              <!-- bouton dislike avec badge rouge compte les nombre de dislikes désactivé -->
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-badge overlap offset-x="15" offset-y="10" color="error">
+                    <span slot="badge">{{commentaire.nbre_dislikes}}</span>
+                      <v-btn v-bind="attrs" v-on="on" plain text x-small disabled>
+                        <v-icon size="15">mdi-thumb-down</v-icon>
+                      </v-btn>
+                  </v-badge>
+                </template>
+                <span>J'aime pas</span>
+              </v-tooltip>
+              <!-- FIN - bouton dislike avec badge rouge compte les nombre de dislikes désactivé -->
             </v-card-actions><!-- FIN - section boutons card messages -->
 
           </v-card><!-- FIN - carte commentaire accolée a la timeline -->
@@ -84,60 +85,38 @@
       </v-card>
   </v-container>
 </template>
- 
-  
-
 
 <script>
 import { mapState} from 'vuex'
 export default {
   name: 'Commentaires',
   data:() => ({
-    commentaire:'',
-    nbre_dislikes:'',
-    nbre_likes:'',
-    dialogCommentaire: {commentaire:[]},
+    dialogCommentaire: {commentaire:[]},// dialogCommentaire pour donner id unique aux images des commentaire pour les dialogs
+  }),//FIN data
 
-  }),
   computed: {
     ...mapState('moderation', ['allCommentsModeration']), //('nom du module dans index.js', ['nomstate dans fichier dossier module'])
-    ...mapState('getProfile', ['profile']), //('nom du module dans index.js', ['nomstate dans fichier dossier module'])
-    
-  },
+  },// FIN - computed
+
   async mounted(){
     await this.$store.dispatch('moderation/getModeratedComments') //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
-    this.$store.dispatch('getProfile/getProfile') //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
-    
-    // this.role = localStorage.getItem('role')// déclare role au montage = localstorage on s'en sert ensuite dans v-if pour cacher aux role 1
-  },
-
+  },//FIN - mounted
 
   methods:{
     async deleteComments(commentId){
       await this.$store.dispatch('comments/deleteComments', { commentId: commentId})
       await this.$store.dispatch('moderation/getModeratedComments')
       await this.$store.dispatch('getPosts/getAllPostsAct') 
-      },
+    },//FIN DELETECOMMENTS
     async unModerateComment(commentId, uuid){
         await this.$store.dispatch('moderation/unModerateComment', {comment_id: commentId, uuid:uuid})
         await this.$store.dispatch('moderation/getModeratedComments') 
-      },
-  },
-
+    },//FIN UNMODERATECOMMENT
+  },//FIN - methods
 
 }
 </script>
 
 <style>
-/* .image{
-    height: 10em;
-    width: 10em;
-} */
-/* .v-timeline-item__divider{
-   justify-content: left
-} */
-
-
-
 
 </style>

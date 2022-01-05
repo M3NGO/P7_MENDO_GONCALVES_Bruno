@@ -22,43 +22,38 @@
             </v-card>
         </v-dialog>
         <v-card-title class="body-2">{{commentaire.email}}</v-card-title><!-- insert l'email user qui commente en tant que titre commentaire-->
-        <v-card-text class="caption text-justify">{{ commentaire.content }}</v-card-text>
-        <v-card-subtitle align="end" class="caption font-italic">Publié le : {{ commentaire.createdAt | moment('LL')}} </v-card-subtitle><!-- insert date à laquelle le user aura créé le commentaire -->
+        <v-card-text class="caption text-justify">{{ commentaire.content }}</v-card-text> <!-- insert le contenu du message du user -->
+        <v-card-subtitle align="end" class="caption font-italic">Publié le : {{ commentaire.createdAt | moment('LL')}} </v-card-subtitle><!-- insert date à laquelle le user aura créé le commentaire  et utilisation de moment pour affichage date -->
         
         <v-card-actions class="d-flex justify-end flex-wrap" ><!-- section boutons card messages -->
 
-            <!-- bouton Like avec badge rouge compte les nombre de likes -->
-
-            <v-tooltip bottom>
-                <template v-slot:activator="{ on, attrs }">
-                    <v-badge overlap offset-x="15" offset-y="10" color="error">
-                        <span slot="badge">{{commentaire.nbre_likes}}</span>
-                        <v-btn v-bind="attrs" v-on="on" plain text x-small disabled
-                        ><v-icon size="15">mdi-thumb-up</v-icon>
-                        </v-btn>
-                    </v-badge>
-                </template>
-                    <span>J'aime</span>
-            </v-tooltip>
-
+          <!-- bouton Like avec badge rouge compte les nombre de likes -->
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-badge overlap offset-x="15" offset-y="10" color="error">
+                <span slot="badge">{{commentaire.nbre_likes}}</span>
+                <v-btn v-bind="attrs" v-on="on" plain text x-small disabled>
+                  <v-icon size="15">mdi-thumb-up</v-icon>
+                </v-btn>
+              </v-badge>
+            </template>
+            <span>J'aime</span>
+          </v-tooltip>
+          <!-- FIN - bouton Like avec badge rouge compte les nombre de likes -->
             
-            <!-- FIN - bouton Like avec badge rouge compte les nombre de likes -->
-            
-            <!-- bouton dislike avec badge rouge compte les nombre de dislikes -->
-
-
-            <v-tooltip bottom>
-                <template v-slot:activator="{ on, attrs }">
-                    <v-badge overlap offset-x="15" offset-y="10" color="error">
-                        <span slot="badge">{{commentaire.nbre_dislikes}}</span>
-                        <v-btn v-bind="attrs" v-on="on" plain text x-small disabled
-                        ><v-icon size="15">mdi-thumb-down</v-icon>
-                        </v-btn>
-                    </v-badge>
-                </template>
-                    <span>J'aime pas</span>
-            </v-tooltip>
-            <!-- FIN - bouton disike avec badge rouge compte les nombre de dislikes -->
+          <!-- bouton dislike avec badge rouge compte les nombre de dislikes -->
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-badge overlap offset-x="15" offset-y="10" color="error">
+                <span slot="badge">{{commentaire.nbre_dislikes}}</span>
+                  <v-btn v-bind="attrs" v-on="on" plain text x-small disabled>
+                    <v-icon size="15">mdi-thumb-down</v-icon>
+                  </v-btn>
+              </v-badge>
+            </template>
+            <span>J'aime pas</span>
+          </v-tooltip>
+          <!-- FIN - bouton dislike avec badge rouge compte les nombre de dislikes -->
         </v-card-actions><!-- FIN - section boutons card messages -->
 
       </v-card><!-- FIN - carte commentaire accolée a la timeline -->
@@ -66,42 +61,21 @@
   </v-timeline><!-- FIN - timeline des commentaires -->
 </template>
  
-  
-
-
 <script>
 export default {
   name: 'Commentaires',
   data:() => ({
     dialog: false,
-  }),
+  }),//FIN data
   props: {
    commentaire: {
         type: Object,
         default: null
-   },
-   profile:{
-        type: Object,
-        default: null
-   }
-  },
-
-
-
-
-}
+   }, // FIN PROPS commentaire venant du composant parent Posts/MessagesModeration
+  },// FIN des props importées du parent Posts/MessagesModeration
+}// FIN EXPORT DEFAULT
 </script>
 
 <style>
-/* .image{
-    height: 10em;
-    width: 10em;
-} */
-/* .v-timeline-item__divider{
-   justify-content: left
-} */
-
-
-
 
 </style>

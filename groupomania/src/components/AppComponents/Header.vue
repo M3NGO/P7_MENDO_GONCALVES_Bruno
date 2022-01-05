@@ -13,9 +13,8 @@
 export default {
 name:'Header'
 
-}
+}//FIN EXPORT DEFAULT
 </script>
-
 
 <style>
 

@@ -77,26 +77,20 @@ export default {
 name: 'HeaderMobile',
 data: () => ({
   
-      drawer: null,
-    
-      top(){ // to top au click sur les boutons menu
-        window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
-        }
-}),
+  drawer: null,
+    top(){ // to top au click sur les boutons menu
+      window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
+    }
+}),//fin data
 methods:{
-      logout(){
-        this.$store.dispatch('Auth/logout') //(appel fonction logout dans le store auth pour clean :localstorage et getout)
-      }
-
-},
+  logout(){
+    this.$store.dispatch('Auth/logout') //(appel fonction logout dans le store auth pour clean :localstorage et getout)
+  }
+},//fin Methods
 computed: {
-    ...mapState('getProfile', ['profile']), //('nom du module dans index.js', ['nomstate dans fichier dossier module'])
-  },
-//  beforeMount(){
-//     this.role = localStorage.getItem('role')// déclare role au montage = localstorage on s'en sert ensuite dans v-if pour cacher aux role 1
-//     this.$store.dispatch('getProfile/getProfile') //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
-//   },
-}
+  ...mapState('getProfile', ['profile']), //('nom du module dans index.js', ['nomstate dans fichier dossier module'])
+},//fin computed
+}//fin EXPORT DEFAULT
 </script>
 
 
