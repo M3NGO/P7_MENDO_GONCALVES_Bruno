@@ -2,9 +2,9 @@
 
 <!-- HTML -->
 <template >
-    <v-main>
+    <div>
         <Profilupdate/>
-    </v-main>
+    </div>
 </template>
 <!-- HTML -->
 
@@ -24,9 +24,6 @@ export default {
 
 <!-- CSS -->
 <style>
-/* .card{
-    width:75%
-} */
 
 </style>
 <!-- CSS -->

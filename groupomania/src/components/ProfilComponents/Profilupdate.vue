@@ -1,18 +1,18 @@
 <template>
   <v-container fluid> <!-- Div Contenu Profil -->
     <v-card>
-      <v-img height="100%" min-height="200" max-height="400" src="@/assets/Logo_Groupomania.png"><!-- haut de la carte profil update-->
+      <!-- haut de la carte profil update contenu avatar + groupomania photo background + nom/prénom et poste-->
+      <v-img height="100%" min-height="200" max-height="400" src="@/assets/Logo_Groupomania.png">
         <v-row align="end" class="fill-height">
           <v-col align-self="start" class="pa-0" cols="12" >
-
-            <v-avatar class="profile" color="grey" size="20vh" max-height="15vh" rounded tile border v-if="profile.upload_url != null">
+            <!-- photo avatar uploadée par user-->
+            <v-avatar  color="grey" size="15vh" max-height="15vh" rounded tile v-if="profile.upload_url != null">
               <v-img small v-bind:src="'http://localhost:3000/' + profile.upload_url"></v-img>
             </v-avatar>
-
-            <v-avatar class="profile" color="white" size="25vh" rounded tile border v-if="profile.upload_url == null" >
-              <v-img small src="@/assets/Logo_Groupomania.png"></v-img>
+            <!-- si pas d'avatar uploadé par user alors icone -->
+            <v-avatar  color="grey" size="15vh" max-height="15vh" rounded tile v-if="profile.upload_url == null" >
+              <v-icon size="5vh" color="white" v-if="profile.upload_url == null">mdi-account-circle</v-icon>
             </v-avatar>
-
           </v-col>
           <v-col class="py-0 mt-5">
             <v-list-item color="grey">
@@ -23,7 +23,8 @@
             </v-list-item>
           </v-col>
         </v-row>
-      </v-img><!-- FIN - haut de la carte profil update-->
+      </v-img>
+      <!-- FIN - haut de la carte profil update contenu avatar + groupomania photo background + nom/prénom et poste-->
       
       <v-col class="d-flex flex-column mt-5 mb-5 me-5"><!-- colonne contenant les field update du profil + boutons -->  
 
@@ -51,61 +52,61 @@
 <script>
 import { mapState } from 'vuex'
 
-
 export default {
   name: 'ProfilUpdate',
   data: () => ({
-    poste:'',
-    firstname:'',
-    lastname:'',
-    password:'',
-    upload: [],
-  }),
+    poste:'',//Déclaration field poste vide
+    firstname:'',//Déclaration field Prénom vide
+    lastname:'',//Déclaration field Nom de famille vide
+    password:'',//Déclaration field mot de passe vide
+    upload: [],//Déclaration avatar vide
+  }),//FIN - data
 
   methods:{
-    updateUser(){
-      this.$store.dispatch('getProfile/updateUser', {poste: this.poste, firstname: this.firstname, lastname: this.lastname, password: this.password, upload: this.upload}) //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
-    },
-    updatePassword(){
-      this.$store.dispatch('getProfile/updatePassword', {password: this.password}) //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
-    },
-    deleteAvatar(avatar){
-      let confirmation = confirm("Êtes-vous sûr(e) de vouloir supprimer votre avatar ?")
+    async updateUser(){
+      await this.$store.dispatch('getProfile/updateUser', {poste: this.poste, firstname: this.firstname, lastname: this.lastname, password: this.password, upload: this.upload}) //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
+      //remise des valeurs a zéro du formulaire
+      this.poste='',this.firstname='',this.lastname='', this.password='',this.upload=[]
+    },//FIN- UPDATEUSER
 
-        if(!avatar && confirmation){
-          alert("Vous n'avez pas d'avatar a supprimer")
-        }else if(confirmation){
-            this.$store.dispatch('getProfile/deleteAvatar',{upload_url:avatar})
+    async updatePassword(){
+      await this.$store.dispatch('getProfile/updatePassword', {password: this.password}) //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
+    },//FIN - UPDATE PASSWORD
+
+    async deleteAvatar(avatar){
+        let confirmation = confirm("Êtes-vous sûr(e) de vouloir supprimer votre avatar ?")
+        document.location.reload
+          if(!avatar && confirmation){
+            alert("Vous n'avez pas d'avatar a supprimer")
+          }else if(confirmation){
+            await this.$store.dispatch('getProfile/deleteAvatar',{upload_url:avatar})
+            await this.$store.dispatch('getProfile/getProfile')
+          }else{
+            window.location.reload
+          }
+    },//FIN DELETEAVATAR
+
+    async toNotActiveUser(){
+        let confirmation = confirm("Êtes-vous sûr(e) de vouloir supprimer votre compte Groupomania?")
+        if(confirmation){
+          this.$store.dispatch('getProfile/toNotActiveUser')
         }else{
           window.location.reload
         }
-    },
-    toNotActiveUser(){
-      let confirmation = confirm("Êtes-vous sûr(e) de vouloir supprimer votre compte Groupomania?")
-      if(confirmation){
-        this.$store.dispatch('getProfile/toNotActiveUser')
-      }else{
-        window.location.reload
-      }
-      
-    }
+        
+    }//FIN - toneNotActiveUser
 
-  },
+    },//FIN methods
 
+    computed: {
+      ...mapState('getProfile', ['profile']), //('nom du module dans index.js', ['nomstate dans fichier dossier module'])
+    },//FIN - computed
+    
+    async mounted(){ //monte profil a la creation de page
+      await this.$store.dispatch('getProfile/getProfile') //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
+    },//FIN mounted
 
-  computed: {
-    ...mapState('getProfile', ['profile']), //('nom du module dans index.js', ['nomstate dans fichier dossier module'])
-  },
-  
-  mounted(){ //monte profil a la creation de page
-    this.$store.dispatch('getProfile/getProfile') //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
-
-  },
-  //   updated(){//update profil a la mise a jour par le user de page
-  //   this.$store.dispatch('getProfile/getProfile') //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
-  // },
-
-}
+}//FIN EXPORT DEFAULT
 </script>
 
 <style>

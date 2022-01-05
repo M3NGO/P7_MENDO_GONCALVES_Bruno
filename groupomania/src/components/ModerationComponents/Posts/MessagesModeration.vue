@@ -23,12 +23,12 @@
         <!-- Section message du user -->
         <v-row no-gutters>
             <v-col class="d-flex align-center justify-center" v-if="post.avatar != null">          
-                <v-avatar class="profile" color="grey"  rounded-pill border>
+                <v-avatar color="grey"  rounded-pill border>
                     <v-img small v-bind:src="'http://localhost:3000/' + post.avatar"></v-img>
                 </v-avatar>
             </v-col>
             <v-col class="d-flex align-center justify-center" v-if="post.avatar == null"> 
-                <v-avatar class="profile" color="grey"  rounded-pill border >
+                <v-avatar color="grey"  rounded-pill border >
                     <v-icon center dark >mdi-account-circle</v-icon>
                 </v-avatar>
             </v-col>

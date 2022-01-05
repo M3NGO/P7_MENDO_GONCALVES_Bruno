@@ -30,49 +30,32 @@ import {mapState} from 'vuex'
 
 export default {
   name: 'Newposts',
-
   data: () => ({
-    valid: false,
-    content:[],
-    upload:[],
-    rulesContent: [
+    valid: false,//déclaration valid a false pour disable bouton
+    content:[], //déclaration content du message a vide
+    upload:[],//déclaration upload a vide
+    //règle de comptage longueur contenu :
+    rulesContent: [ 
       v => ( v && v.length >=10)  || 'Votre post doit faire au maximum 200 caractères',
     ],
-}),//FIN - Data
-computed:{
-  ...mapState('getPosts', ['allPosts']),
-  ...mapState('getProfile', ['profile']), //('nom du module dans index.js', ['nomstate dans fichier dossier module'])
-},
-// mounted(){
-//   let input = this.$refs.nouveauPost.$el.querySelector('input')
-//   input.minLength = 2
-//   input.maxLength = 5
+  }),//FIN - Data
+  computed:{
+    ...mapState('getPosts', ['allPosts']),
+    ...mapState('getProfile', ['profile']), //('nom du module dans index.js', ['nomstate dans fichier dossier module'])
+  },//FIN - computed
 
-// },
-    methods: {
-      async contentValidation(){
-        await this.$refs.contentValidation.validate()
-      },
-      async publier(email){
-        await this.$store.dispatch('getPosts/createPosts', {content: this.content, email:email, upload: this.upload}) //('nom module dans index.js/nom action liée'), payload
-      
-        await this.$store.dispatch('getPosts/getAllPostsAct') // doit rester sans await car set timeout dans mutation sinon l'update photo a ecran ne se fait pas
-    
-        // await window.location.reload()
-        await this.$refs.monNewPost.reset(); // reset le formulaire un fois envoyé le post
-        
-      },
+  methods: {
+    async publier(email){
+      await this.$store.dispatch('getPosts/createPosts', {content: this.content, email:email, upload: this.upload}) //('nom module dans index.js/nom action liée'), payload
+      await this.$store.dispatch('getPosts/getAllPostsAct')
+      await this.$refs.monNewPost.reset(); // reset le formulaire un fois envoyé le post
+    },//FIN - publier
  
-    }, //FIN methods
-  //     computed: {
-  //   ...mapState('getAllPosts', ['allPosts']), //('nom du module dans index.js', ['nomstate dans fichier dossier module'])
-    
-  // },
+  }, //FIN methods
  
-}
+}//FIN - EXPORT DEFAULT
 </script>
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style>
 
+<style>
 
 </style>

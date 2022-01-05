@@ -50,24 +50,7 @@
                 <span>Mise à jour</span>
               </v-tooltip>
               <!-- FIN - Bouton mise a jour commentaire -->
-              <!-- transition fait apparaitre section update commentaire sous la section boutons card-->
-              <v-expand-transition v-model="isActiveUpdate" v-if="isClickedUpdate === index">
-                <v-form v-model="validUpdate">
-                  <v-card-title class="transition-fast-in-fast-out">
-                    <v-row class="d-flex align-center">
-                      <v-col cols="10" class="me-5"><!-- section création Post (message + upload multimedia) -->
-                        <v-text-field class=" body-2" label="Votre nouveau commentaire ici" :rules="rulesUpdate" v-model="contentUpdate" clearable hide-details></v-text-field> 
-                        <v-file-input class=" body-2" label="Upload Photo/Vidéo" v-model="uploadUpdate" type="file"></v-file-input>
-                      </v-col><!-- FIN - section création Post (message + upload multimedia) -->
-                    </v-row>
-                    <v-btn color="error" height="40" class="me-4" text x-small v-on:click="updaterComments(commentaire.post_id, commentaire.id)" :disabled="!validUpdate" >
-                      <v-icon>mdi-send</v-icon>
-                        Updater
-                    </v-btn>
-                  </v-card-title>
-                </v-form>
-              </v-expand-transition>
-              <!-- FIN - transition fait apparaitre section update commentaire sous la section boutons card-->
+  
               <!-- bouton Like avec badge rouge compte les nombre de likes -->
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
@@ -96,6 +79,25 @@
                 <!-- FIN - bouton disike avec badge rouge compte les nombre de dislikes -->
             </v-card-actions>
             <!-- FIN - section boutons de la card-->
+            <v-divider></v-divider>
+            <!-- transition fait apparaitre section update commentaire sous la section boutons card-->
+            <v-expand-transition v-model="isActiveUpdate" v-if="isClickedUpdate === index">
+              <v-form v-model="validUpdate">
+                <v-card-title class="transition-fast-in-fast-out">
+                  <v-row class="d-flex align-center">
+                    <v-col cols="10" class="me-5"><!-- section création Post (message + upload multimedia) -->
+                      <v-text-field class=" body-2" label="Votre nouveau commentaire ici" :rules="rulesUpdate" v-model="contentUpdate" clearable hide-details></v-text-field> 
+                      <v-file-input class=" body-2" label="Upload Photo/Vidéo" v-model="uploadUpdate" type="file"></v-file-input>
+                    </v-col><!-- FIN - section création Post (message + upload multimedia) -->
+                  </v-row>
+                  <v-btn color="error" height="40" class="me-4" text x-small v-on:click="updaterComments(commentaire.post_id, commentaire.id)" :disabled="!validUpdate" >
+                    <v-icon>mdi-send</v-icon>
+                      Updater
+                  </v-btn>
+                </v-card-title>
+              </v-form>
+            </v-expand-transition>
+            <!-- FIN - transition fait apparaitre section update commentaire sous la section boutons card-->
           </v-card><!-- FIN - carte commentaire accolée a la timeline -->
         </v-timeline-item><!-- FIN - créé l'item commentaire et place sur timeline -->
       </v-timeline><!-- FIN - timeline des commentaires -->
