@@ -79,16 +79,14 @@ import { mapState} from 'vuex'
 
 export default {
   name: 'NavigationDrawer',
-  data: () => ({
-    top(){ // to top au click sur les boutons menu
-      window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
-    },
-  }), // FIN Data
 
   methods:{
     logout(){
       this.$store.dispatch('Auth/logout') //(appel fonction logout dans le store auth pour clean :localstorage et getout)
-    }
+    },//FIN
+    top(){ // to top au click sur les boutons menu
+      window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
+    },
   },// FIN methods
   computed: {
     ...mapState('getProfile', ['profile']), //('nom du module dans index.js', ['nomstate dans fichier dossier module'])

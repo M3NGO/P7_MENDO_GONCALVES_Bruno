@@ -127,6 +127,7 @@ export default {
 
   computed: {
     ...mapState('moderation', ['allPostsModeration']), //('nom du module dans index.js', ['nomstate dans fichier dossier module'])
+    ...mapState('getProfile', ['profile']), //utilisé pour envoyer au back le uuid du moderateur qui click (s'assure que c'est profil 2)
   },// FIN COMPUTED
   
   async mounted(){

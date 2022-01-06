@@ -16,9 +16,8 @@ export default {
   name: 'Profil',
   components:{
       Profilupdate,
-  }
-}
-
+  }//FIN components
+}//FIN EXPORT DEFAULT
 </script>
 <!-- JAVASCRIPT -->
 

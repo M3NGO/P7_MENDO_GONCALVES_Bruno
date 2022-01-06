@@ -115,7 +115,7 @@ export default {
   data: () => ({
     contentUpdate:'',//déclaration update contenu a vide
     uploadUpdate:[], //déclaration update upload a vide array pour contenir les photos/videos
-    isClickedUpdate:'',//délcatation is clicked pour expand trasition et functions setactiveupdate
+    isClickedUpdate:'',//déclaration is clicked pour expand trasition et functions setactiveupdate
     isActiveUpdate: false, //déclaration que la section update est non active avant click
     dialog: {commentaire:[]}, // dialog avec index des commentaires pour les rendre uniques et afficher dans le dialog seulement l'image cliquée
     

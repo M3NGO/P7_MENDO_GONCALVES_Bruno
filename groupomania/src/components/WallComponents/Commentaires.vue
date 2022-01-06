@@ -145,9 +145,9 @@ export default {
     ...mapState('likesDislikes', ['commentLikesDislikes']), //('nom du module dans index.js', ['nomstate dans fichier dossier module'])
   },//FIN - computed
 
-  async mounted(){
-    await this.$store.dispatch('likesDislikes/getAllCommentLikesDislikes')
-  },//FIN - mounted
+  // async mounted(){
+  //   await this.$store.dispatch('likesDislikes/getAllCommentLikesDislikes')
+  // },//FIN - mounted
 
   methods:{
     async updaterComments(postId, commentId){

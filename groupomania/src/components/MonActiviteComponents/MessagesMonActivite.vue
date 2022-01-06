@@ -158,8 +158,8 @@ export default {
     data: () => ({
         contentCom:'',//Déclaration contenu du commentaire a vide
         uploadCom:[],//Déclaration upload du commentaire a vide array
-        postid: '',//Déclaration postid pour attribut fonctions methods
-        uuid:'',//Déclaration postid pour attribut fonctions methods
+        postid: '',//Déclaration postid pour argument fonctions methods
+        uuid:'',//Déclaration postid pour argument fonctions methods
         contentUpdate:'', //déclaration contentupdate vide pour updater le post
         uploadUpdate:[], //déclaration upload vide pour updater le post
 

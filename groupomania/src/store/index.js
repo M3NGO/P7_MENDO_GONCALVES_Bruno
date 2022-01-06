@@ -2,9 +2,8 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 
-//import store
+//import des modules store
 import getPosts from './modules/getAllPosts'
-import comments from './modules/comments'
 import getUsers from './modules/getAllUsers'
 import Auth from './modules/auth'
 import getProfile from './modules/getProfile'
@@ -19,7 +18,6 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   modules: {
     getPosts,
-    comments,
     getUsers,
     Auth,
     getProfile,

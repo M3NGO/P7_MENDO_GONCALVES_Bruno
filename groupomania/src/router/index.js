@@ -7,8 +7,6 @@ import MonActivite from '@/views/MonActivite.vue'
 import AllUsers from '@/views/AllUsers.vue'
 import Moderation from '@/views/Moderation.vue'
 import AllInactiveUsers from '@/views/AllInactiveUsers.vue'
-// import store from '@/store';
-// import { mapState } from 'vuex'
 
 Vue.use(VueRouter)
 
@@ -18,12 +16,6 @@ const routes = [
     name: 'Login',
     component: Login
   },
-  // {
-  //   path: '/inscription',
-  //   name: 'Signup',
-  //   component: Signup
-  // },
-
   {
     path: '/wall',
     name: 'Wall',
@@ -66,7 +58,6 @@ const router = new VueRouter({
 // protection des routes afin de ne laisser que les users authentifiés se connecter
 router.beforeEach((to, from, next) => {
 let token = localStorage.getItem('token')
-// let tokenStore = mapState('getProfile', ['profile'])
   if (to.fullPath === '/wall') {
     if (!token) {
       next('/');

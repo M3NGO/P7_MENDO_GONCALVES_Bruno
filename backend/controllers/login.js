@@ -1,5 +1,5 @@
-let jwt = require('jsonwebtoken')
-let bcrypt = require('bcrypt')
+let jwt = require('jsonwebtoken') // pour créer le token d'auth
+let bcrypt = require('bcrypt') // pour crypter le mot de passe dans la BDD
 let { User } = require('../models') // on invoque sequelizer et model User pour qu'ils aient besoin de ./models
 let fs = require('fs'); //Systeme Filesystem de node.JS
 
@@ -18,6 +18,7 @@ exports.signup = async (req,res) => {
                 email:req.body.email, 
                 password:hash,
                 }) //{email, password} objet json envoyé dans body request
+                //création de tous les dossiers du user dans le dossier des uploads du site
                 fs.mkdirSync('./uploads/'+user.uuid)
                 fs.mkdirSync('./uploads/'+user.uuid +'/avatar')
                 fs.mkdirSync('./uploads/'+user.uuid +'/images')
@@ -28,7 +29,7 @@ exports.signup = async (req,res) => {
                 fs.mkdirSync('./uploads/'+user.uuid + '/videos/comments')
             return res.json(user) // renvoit la réponse
         }catch(err) {
-            console.log(err)
+            // console.log(err)
             return res.status(500).json(err)
         }//fin catch
     }//fin else
@@ -58,9 +59,9 @@ exports.login = (req, res, next) => {
                         {expiresIn: '12h'}
                     ), // installer npm install --save  jsonwebtoken pour créer les TOKEN puis les vérifier
                 });       
-            })
+            })//FIN THEN valid
             .catch(error => res.status(500).json({ error }));
-    })
+    })//FIN THEN user
     .catch(error => res.status(500).json({ error }));
 };
 // FIN - LOGIN des users

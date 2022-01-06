@@ -5,8 +5,7 @@ const login = {
     state: {
         login: [],
         registration: [],
-        
-    },
+    },//FIN - state
       
     mutations: {
         POST_LOGIN(state, data) {
@@ -19,76 +18,66 @@ const login = {
             // console.log(data)
             state.registration = data
         },
+    },//FIN - mutations
 
-    },
     actions: {
-       async postLogin ({commit}, payload){
-        // var email = document.getElementById("email").value;
-        // var password = document.getElementById("password").value;
-        // alert(email + password)
-        console.log(payload)
-            await axios
-
-                .post('http://localhost:3000/api/v1/auth/login', 
-                //body axios
-
+        async postLogin ({commit}, payload){
+            // console.log(payload)
+            await axios.post('http://localhost:3000/api/v1/auth/login', 
+                    //body axios
                    {
                     "email": payload.email,
                     "password": payload.password
-                  },
-                   //header axios
-    {headers:{
-        // 'Authorization': 'Bearer'+' '+ localStorage.getItem('token'), 
-        'Content-Type': 'application/json'
-    }
+                    },//FIN body axios
 
-  },
-                
-                  )//fin post HTTP
-                
+                   //header axios
+                    {headers:{
+                        'Content-Type': 'application/json'
+                        }//FIN contenu Headers
+                    },// FIN header axios
+            )//fin post HTTP
                 .then(response => {
-  
                     // console.log(response.data.comment)
-                    commit('POST_LOGIN', response.data),
+                    commit('POST_LOGIN', response.data), // on commit la data de la réponse a la mutation POST_LOGIN
                     localStorage.setItem('uuid', response.data.uuid)
                     localStorage.setItem('token', response.data.token)
-                    // localStorage.setItem('role', response.data.role)
                     window.location.href ="/wall" // redirect vers wall si rep backend ok + localstorage uuid + token
-                    
-                })
-                .catch(error => {
-         alert('Email ou mot de passe non valide, Connexion refusée!!')
-                    console.log(error) })
-        },
+                })//FIN THEN
+                .catch(error => {console.clear(error)//console clear pour ne pas montrer en log l'adresse du backend
+                    alert('Email ou mot de passe non valide, Connexion refusée!!')
+                    window.location.reload()//si email ou mot de passe non valide on reload la page
+                })//FIN CATCH
+        },//FIN - ACTION - POSTLOGIN
 
         async logout () {
             localStorage.removeItem('uuid');
             localStorage.removeItem('token');
-            // localStorage.removeItem('role');
             window.location.href ="/"
-          },
+        },//FIN - ACTION - LOGOUT
 
         async register({commit},payload){
-            await axios
-            .post('http://localhost:3000/api/v1/auth/signup',
-            {
+            await axios.post('http://localhost:3000/api/v1/auth/signup',
+                {
                 "email": payload.email,
                 "password": payload.password
-              },)
-              .then(
-                response => {
-                    // console.log(response.data.comment)
+                },
+                //header axios
+                {headers:{
+                    'Content-Type': 'application/json'
+                    }//FIN contenu Headers
+                },// FIN header axios
+            )//FIN axios post
+              .then(response => {
                     commit('POST_REGISTRATION', response.data),
-                    localStorage.setItem('uuid', response.data.uuid)
                     alert('Vous êtes maintenant inscrit sur Groupomania, vous pouvez vous y connecter')// alert informant le user qu'il est inscrit et peut se logguer
-                })
+                })//FIN then
             .catch(error => {console.log(error)})
 
-        }
+        }//FIN - ACTION - REGISTER
 
 
-    },
+    },//FIN ACTIONS
 
-}
+}//FIN CONSTANTE LOGIN
 
 export default login

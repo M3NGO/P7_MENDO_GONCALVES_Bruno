@@ -59,6 +59,7 @@ export default {
 
     computed: {
         ...mapState('moderation', ['allUsersModeration']), //('nom du module dans index.js', ['nomstate dans fichier dossier module'])
+        ...mapState('getProfile', ['profile']), //utilisé pour envoyer au back le uuid du moderateur qui click (s'assure que c'est profil 2)
     },//FIN computed
     async mounted(){
         await this.$store.dispatch('moderation/getModeratedUsers') //('nom du module dans index.js/nom actions duans le fichier dans dossier module)
@@ -74,10 +75,11 @@ export default {
                 }
         },//FIN DELETEUSER
 
-        unblockUser(user, moderator, email){
+        async unblockUser(user, moderator, email){
             let confirmation = confirm("Êtes-vous sûr(e) de vouloir débloquer l'utilisateur : "+email)
                 if(confirmation){
-                    this.$store.dispatch('moderation/unblockUser', {uuid:user, moderator:moderator, email:email})
+                    await this.$store.dispatch('moderation/unblockUser', {uuid:user, moderator:moderator, email:email})
+                    await this.$store.dispatch('moderation/getModeratedUsers')
                 }else{
                     window.location.reload
                 }

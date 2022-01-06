@@ -16,46 +16,38 @@ const getAllUsers = {
             // console.log(data)
             state.allInactiveUsers = data
         },
-    },
+    },//FIN MUTATIONS
     actions: {
-       async getAllUsersAct ({commit}){
-        
-            await axios
-                .get('http://localhost:3000/api/v1/allusers',
+        async getAllUsersAct ({commit}){
+            await axios.get('http://localhost:3000/api/v1/allusers',
                 {headers:{Authorization: 'Bearer '+ localStorage.getItem('token'), 
                 'Content-Type': 'application/json'
-              //   'Content-Type': 'multipart/form-data'
                     }
-                }
-                )
-                
+                }//FIN HEADERS
+            )//FIN axios get
                 .then(response => {
                     // console.log(response.data.comment)
-                    commit('GET_USERS', response.data)
-                    
-                })
+                    commit('GET_USERS', response.data) 
+                })//FIN THEN
                 .catch(error => {console.log(error)})
-        },
-        async getAllInactiveUsersAct ({commit}){
-        
-            await axios
-                .get('http://localhost:3000/api/v1/moderation/get/users/deleted',
+        },//FIN - ACTIONS - GETALLUSERSACTifs
+
+        async getAllInactiveUsers ({commit}){
+            await axios.get('http://localhost:3000/api/v1/moderation/get/users/deleted',
+                //headers avec token pour l'auth
                 {headers:{Authorization: 'Bearer '+ localStorage.getItem('token'), 
                 'Content-Type': 'application/json'
-              //   'Content-Type': 'multipart/form-data'
                     }
-                })
-                
+                }//FIN HEADERS
+            )//FIN axios get
                 .then(response => {
-                    // if(response.data.email)
-                    console.log(response.data)
+                    // console.log(response.data)
                     commit('GET_INACTIVE_USERS', response.data)
-                    
-                })
+                })//FIN THEN
                 .catch(error => {console.log(error)})
-        },
-    },
+        },//FIN - ACTIONS - GETALLINACTIVEUSERS
+    },//FIN - ACTIONS
 
-}
+}//FIN CONSTANTE getAllUsers
 
 export default getAllUsers

@@ -7,7 +7,7 @@ const moderationFunction = {
         allPostsModeration: [],
         allCommentsModeration: [],
         allUsersModeration: [],
-    },
+    },//FIN state
     mutations: {
         DELETE_USER(state, data) {
             // console.log(data)
@@ -37,309 +37,211 @@ const moderationFunction = {
             }return delayPost
         },
         MODERATE_COMMENT(state, data){
-            function delayPost(){
+            function delayComment(){
                 const index = state.allCommentsModeration.map(comment => comment.id).indexOf(data.id)
                 window.setTimeout(state.allCommentsModeration.splice(index, 1, data), 10)
-            }return delayPost
+            }return delayComment
         },
         GET_MODERATE_COMMENT(state, data){
-            state.allCommentsModeration = data
-            
+            state.allCommentsModeration = data  
         },
         UNMODERATE_COMMENT(state, data){
-            function delayPost(){
+            function delayComment(){
                 const index = state.allCommentsModeration.map(comment => comment.id).indexOf(data.id)
                 window.setTimeout(state.allCommentsModeration.splice(index, 1, data), 10)
-            }return delayPost
+            }return delayComment
         },
+    },//FIN MUTATIONS
 
-    },
     actions: {
-       async deleteUser ({commit},payload){
-        let uuid= payload.user
+        async deleteUser ({commit},payload){
+            let uuid= payload.user
+            await axios.delete('http://localhost:3000/api/v1/moderation/edit/user/delete/'+uuid, 
+                //body axios vide car axios n'accepter pas de body pour delete
+                //header axios avec token auth
+                {headers:{Authorization: 'Bearer '+ localStorage.getItem('token'), 
+                'Content-Type': 'application/json'
+                    }
+                }//FIN - ACTIONS - deleteUser
             
-        await axios
-
-            .delete('http://localhost:3000/api/v1/moderation/edit/user/delete/'+uuid, 
-            //body axios
-
-               //header axios
-               {headers:{Authorization: 'Bearer '+ localStorage.getItem('token'), 
-               'Content-Type': 'application/json'
-             //   'Content-Type': 'multipart/form-data'
-                   }
-               }
-            
-              )//fin post HTTP
-              
-    
-              .then(response => {
-                  // console.log(response.data.comment)
-                  commit('DELETE_USER', response.data)
-                  alert("L'utilisateur "+uuid+" ainsi que tous ses posts/commentaires et contenu multimedia a été éffacé définitivement de Groupomania")
-                  
-              })
-    
-            .catch(error => {console.log(error)})
-            },
+            )//FIN axios delete
+                .then(response => {
+                    commit('DELETE_USER', response.data)
+                    alert("L'utilisateur "+uuid+" ainsi que tous ses posts/commentaires et contenu multimedia a été éffacé définitivement de Groupomania") 
+                })//FIN THEN
+                .catch(error => {console.log(error)})
+        },//FIN - ACTIONS - deleteUser
 
         async blockUser ({commit},payload){
-            await axios
-        
-                .put('http://localhost:3000/api/v1/moderation/edit/user',
+            //met le user en moderation donc il n'aura plus accès au site tant qu'il n'est pas unblocked
+            await axios.put('http://localhost:3000/api/v1/moderation/edit/user',
                 //body axios
                 {
-                    "moderator": payload.moderator,
-                    "uuid": payload.uuid,
-                    "active": "false"
-
-                },
+                "moderator": payload.moderator,
+                "uuid": payload.uuid,
+                "active": "false"
+                },//FIN body axios
                 //header axios
                 {headers:{Authorization: 'Bearer '+ localStorage.getItem('token'), 
-                'Content-Type': 'application/json'
-              //   'Content-Type': 'multipart/form-data'
+                    'Content-Type': 'application/json'
                     }
-                }
-                    
-                )//fin post HTTP
-
-                    .then(response => {
-                    // console.log(response.data.comment)
-                        commit('BLOCK_USER', response.data)
-                        alert("L'utilisateur "+payload.email+" est mantenant bloqué, vous pouvez le débloquer dans votre section Modération / UTILISATEURS")
-                          
-                    })
-            
+                }//FIN headers
+            )//FIN axios put
+                .then(response => {
+                    commit('BLOCK_USER', response.data)
+                    alert("L'utilisateur "+payload.email+" est mantenant bloqué, \n\nVous pouvez le débloquer dans votre section Modération / UTILISATEURS")  
+                })//FIN THEN
                 .catch(error => {console.log(error)})
-        },
+        },//FIN - ACTIONS - blockUser
 
         async unblockUser ({commit},payload){
-            await axios
-                
-                .put('http://localhost:3000/api/v1/moderation/edit/user',
+            //débloque user par un moderateur, le user peut après execution se reconnecter au site
+            await axios.put('http://localhost:3000/api/v1/moderation/edit/user',
                 //body axios
-                    {
-                        "moderator": payload.moderator,
-                        "uuid": payload.uuid,
-                        "active": "true"
-        
-                    },
-                    //header axios
-                    {headers:{Authorization: 'Bearer '+ localStorage.getItem('token'), 
+                {
+                "moderator": payload.moderator,
+                "uuid": payload.uuid,
+                "active": "true"
+                },//FIN body axios
+                //header axios
+                {headers:{Authorization: 'Bearer '+ localStorage.getItem('token'), 
                     'Content-Type': 'application/json'
-                  //   'Content-Type': 'multipart/form-data'
-                        }
                     }
-                    )//fin post HTTP
-                    
-                    .then(response => {
-                    // console.log(response.data.comment)
-                        commit('BLOCK_USER', response.data)
-                        alert("L'utilisateur "+payload.email+" n'est plus bloqué, il peut désormais accéder de nouveau a Groupomania")
-                                  
-                    })
-                    
-                    .catch(error => {console.log(error)})
-        },
+                }//FIN headers
+            )//FIN axios put
+                .then(response => {
+                    commit('BLOCK_USER', response.data)
+                    alert("L'utilisateur "+payload.email+" n'est plus bloqué, \n\nil peut désormais accéder de nouveau à Groupomania")            
+                })//FIN THEN
+                .catch(error => {console.log(error)})
+        },//FIN - ACTIONS - unblockUser
 
         async getModeratedUsers ({commit}){
-            await axios
-                        
-                .get('http://localhost:3000/api/v1/moderation/get/users',
-                //body axios
-
-                //header axios
+            await axios.get('http://localhost:3000/api/v1/moderation/get/users',
+                //header axios avec token
                 {headers:{Authorization: 'Bearer '+ localStorage.getItem('token'), 
-                'Content-Type': 'application/json'
-              //   'Content-Type': 'multipart/form-data'
+                    'Content-Type': 'application/json'
                     }
-                }
-                                    
-                )//fin post HTTP
-                                      
-                            
+                }//FIN headers                 
+            )//FIN axios get           
                 .then(response => {
-                // console.log(response.data.comment)
-                    commit('MODERATE_USERS', response.data)
-                                          
-                })
-                            
+                    commit('MODERATE_USERS', response.data)                      
+                })//FIN THEN           
                 .catch(error => {console.log(error)})
-        },
-
+        },//FIN - ACTIONS - getModeratedUsers
 
         async moderationPost ({commit},payload){
-            await axios
-                        
-                .put('http://localhost:3000/api/v1/moderation/edit/post',
+            await axios.put('http://localhost:3000/api/v1/moderation/edit/post',
                 //body axios
                 {
-                    "uuid": payload.uuid,
-                    "post_id":payload.post_id,
-                    "active": "false"
-                
-                },
+                "uuid": payload.uuid,
+                "post_id":payload.post_id,
+                "active": "false"
+                },//FIN body axios
                 //header axios
                 {headers:{Authorization: 'Bearer '+ localStorage.getItem('token'), 
-                'Content-Type': 'application/json'
-              //   'Content-Type': 'multipart/form-data'
+                    'Content-Type': 'application/json'
                     }
-                }
-                                    
-                )//fin post HTTP
-                                      
-                            
+                }//FIN headers                
+            )//FIN axios put
                 .then(response => {
-                // console.log(response.data.comment)
-                    commit('MODERATE_POST', response.data)
-                
-                                          
-                })
-                            
+                    commit('MODERATE_POST', response.data)                        
+                })//FIN THEN         
                 .catch(error => {console.log(error)})
-        },
+        },//FIN - ACTIONS - moderationPost
 
         async unModeratePost ({commit},payload){
-            await axios
-                        
-                .put('http://localhost:3000/api/v1/moderation/edit/post',
+            await axios.put('http://localhost:3000/api/v1/moderation/edit/post',
                 //body axios
                 {
-                    "uuid": payload.uuid,
-                    "post_id":payload.post_id,
-                    "active": true
-                
-                },
+                "uuid": payload.uuid,
+                "post_id":payload.post_id,
+                "active": true
+                },//FIN body axios
                 //header axios
                 {headers:{Authorization: 'Bearer '+ localStorage.getItem('token'), 
-                'Content-Type': 'application/json'
-              //   'Content-Type': 'multipart/form-data'
+                    'Content-Type': 'application/json'
                     }
-                }
-                                    
-                )//fin post HTTP
-                                      
-                            
+                }//FIN headers axios                 
+            )//FIN axios put
                 .then(response => {
-                // console.log(response.data.comment)
-                    commit('UNMODERATE_POST', response.data)
-                                          
-                })
-                            
+                    commit('UNMODERATE_POST', response.data)                        
+                })//FIN THEN       
                 .catch(error => {console.log(error)})
-        },
+        },//FIN - ACTIONS - unModeratePost
 
         async getModeratedPosts ({commit}){
-            await axios
-                        
-                .get('http://localhost:3000/api/v1/moderation/get/posts',
-                //body axios
-
+            await axios.get('http://localhost:3000/api/v1/moderation/get/posts',
                 //header axios
                 {headers:{Authorization: 'Bearer '+ localStorage.getItem('token'), 
                 'Content-Type': 'application/json'
-              //   'Content-Type': 'multipart/form-data'
                     }
-                }
+                }//FIN headers
                                     
-                )//fin post HTTP
-                                      
-                            
+            )//FIN axios get
                 .then(response => {
-                // console.log(response.data.comment)
-                    commit('GET_MODERATE_POST', response.data)
-                                          
-                })
-                            
+                    commit('GET_MODERATE_POST', response.data)                       
+                })//FIN THEN         
                 .catch(error => {console.log(error)})
-        },
+        },//FIN - ACTIONS - getModeratedPosts
 
         async moderationComment ({commit},payload){
-            await axios
-                .put('http://localhost:3000/api/v1/moderation/edit/comment',
+            await axios.put('http://localhost:3000/api/v1/moderation/edit/comment',
                 //body axios
                 {
-                    "uuid": payload.uuid,
-                    "comment_id":payload.comment_id,
-                    "active": false
-                
-                },
+                "uuid": payload.uuid,
+                "comment_id":payload.comment_id,
+                "active": false
+                },//FIN body axios
                 //header axios
                 {headers:{Authorization: 'Bearer '+ localStorage.getItem('token'), 
                 'Content-Type': 'application/json'
-              //   'Content-Type': 'multipart/form-data'
                     }
-                }
-                                    
-                )//fin post HTTP            
-                            
+                }//FIN headers               
+            )//FIN axios put         
                 .then(response => {
-                console.log(response.data)
-                // if(response.data == null) {
-                //     alert('Veuillez dabord valider le post')
-                // }
-                    commit('MODERATE_COMMENT', response.data)
-                                          
-                })
-                            
+                    commit('MODERATE_COMMENT', response.data)                      
+                })//FIN THEN       
                 .catch(error => {console.log(error)})
-        },
+        },//FIN - ACTIONS - moderationComment
 
         async unModerateComment ({commit},payload){
-            await axios
-                .put('http://localhost:3000/api/v1/moderation/edit/comment',
+            await axios.put('http://localhost:3000/api/v1/moderation/edit/comment',
                 //body axios
                 {
-                    "uuid": payload.uuid,
-                    "comment_id":payload.comment_id,
-                    "active": true
-                
-                },
+                "uuid": payload.uuid,
+                "comment_id":payload.comment_id,
+                "active": true
+                },//FIN body axios
                 //header axios
                 {headers:{Authorization: 'Bearer '+ localStorage.getItem('token'), 
-                'Content-Type': 'application/json'
-              //   'Content-Type': 'multipart/form-data'
+                    'Content-Type': 'application/json'
                     }
-                }
-                                    
-                )//fin post HTTP            
-                            
+                }//FIN headers                  
+            )//FIN axios put            
                 .then(response => {
-                // console.log(response.data.comment)
-                    commit('UNMODERATE_COMMENT', response.data)
-                                          
-                })
-                            
+                    commit('UNMODERATE_COMMENT', response.data)                        
+                })          
                 .catch(error => {console.log(error)})
-        },
+        },//FIN - ACTIONS - unModerateComment
 
         async getModeratedComments ({commit}){
-            await axios
-                        
-                .get('http://localhost:3000/api/v1/moderation/get/comments',
-                //body axios
-
+            await axios.get('http://localhost:3000/api/v1/moderation/get/comments',
                 //header axios
                 {headers:{Authorization: 'Bearer '+ localStorage.getItem('token'), 
-                'Content-Type': 'application/json'
-              //   'Content-Type': 'multipart/form-data'
+                    'Content-Type': 'application/json'
                     }
-                }
-                                    
-                )//fin post HTTP                  
-                            
+                }//FIN headers                    
+            )//FIN axios get                
                 .then(response => {
-                // console.log(response.data.comment)
-                    commit('GET_MODERATE_COMMENT', response.data)
-                                          
-                })
-                            
+                    commit('GET_MODERATE_COMMENT', response.data)                        
+                })      
                 .catch(error => {console.log(error)})
-        },
+        },//FIN - ACTIONS - getModeratedComments
 
 
-    }//FIN - actions
+    }//FIN - ACTIONS
 
-}
+}//FIN CONSTANTE moderationFunction
 
 export default moderationFunction

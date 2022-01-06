@@ -76,15 +76,14 @@ import { mapState } from 'vuex'
 export default {
 name: 'HeaderMobile',
 data: () => ({
-  
   drawer: null,
-    top(){ // to top au click sur les boutons menu
-      window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
-    }
 }),//fin data
 methods:{
   logout(){
     this.$store.dispatch('Auth/logout') //(appel fonction logout dans le store auth pour clean :localstorage et getout)
+  },
+  top(){ // to top au click sur les boutons menu
+    window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
   }
 },//fin Methods
 computed: {

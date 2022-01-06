@@ -23,10 +23,11 @@
 <script>
 export default {
     name: 'NavigationMobile',
-    data: () => ({
+
+    methods:{
         top(){ // to top au click sur les boutons menu du bas mobile
             window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
         }
-    })// FIN data
+    }//FIN - methods
 }// FIN EXPORT default
 </script>

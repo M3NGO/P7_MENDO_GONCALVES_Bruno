@@ -96,6 +96,7 @@ export default {
 
   computed: {
     ...mapState('moderation', ['allCommentsModeration']), //('nom du module dans index.js', ['nomstate dans fichier dossier module'])
+    ...mapState('getProfile', ['profile']), //utilisé pour envoyer au back le uuid du moderateur qui click (s'assure que c'est profil 2)
   },// FIN - computed
 
   async mounted(){
@@ -104,7 +105,7 @@ export default {
 
   methods:{
     async deleteComments(commentId){
-      await this.$store.dispatch('comments/deleteComments', { commentId: commentId})
+      await this.$store.dispatch('getPosts/deleteComments', { commentId: commentId})
       await this.$store.dispatch('moderation/getModeratedComments')
       await this.$store.dispatch('getPosts/getAllPostsAct') 
     },//FIN DELETECOMMENTS
