@@ -31,7 +31,7 @@
         <v-card-actions class="d-flex justify-end flex-wrap" >
           <v-tooltip bottom v-if="profile.role == 2"><!-- rendre visible que quand le role user est 2 (moderateur)-->
             <template v-slot:activator="{ on, attrs }">
-              <v-btn v-bind="attrs" v-on="on" plain text x-small v-on:click="moderationComment(commentaire.id, profile.uuid)">
+              <v-btn v-bind="attrs" v-on="on" plain text x-small v-on:click="moderationComment(commentaire.id, profile.uuid)" aria-label="Modération">
                 <v-icon size="15" color="error">mdi-alert-circle</v-icon>
               </v-btn>
             </template>
@@ -40,7 +40,7 @@
 
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
-              <v-btn v-show="profile.uuid === commentaire.uuid" v-bind="attrs" v-on="on" plain text x-small v-on:click="deleteComments(commentaire.id)">
+              <v-btn v-show="profile.uuid === commentaire.uuid" v-bind="attrs" v-on="on" plain text x-small v-on:click="deleteComments(commentaire.id)" aria-label="Effacer">
                 <v-icon size="15">mdi-close</v-icon>
               </v-btn>
             </template>
@@ -49,7 +49,7 @@
           
           <v-tooltip bottom><!-- rendre visible que quand le user est celui qui a créé le commentaire -->
             <template v-slot:activator="{ on, attrs }">
-              <v-btn v-show="profile.uuid === commentaire.uuid" v-bind="attrs" v-on="on" plain text x-small @click="updateComment=!updateComment">
+              <v-btn v-show="profile.uuid === commentaire.uuid" v-bind="attrs" v-on="on" plain text x-small @click="updateComment=!updateComment" aria-label="Mettre a jour">
                 <v-icon size="15">mdi-cog</v-icon>
               </v-btn>
             </template>
@@ -61,7 +61,7 @@
             <template v-slot:activator="{ on, attrs }">
               <v-badge overlap offset-x="15" offset-y="10" color="error">
                 <span slot="badge">{{commentaire.nbre_likes}}</span>
-                <v-btn v-bind="attrs" v-on="on" plain text x-small v-on:click="commentLike(commentaire.post_id, commentaire.id)">
+                <v-btn v-bind="attrs" v-on="on" plain text x-small v-on:click="commentLike(commentaire.post_id, commentaire.id)" aria-label="J'aime">
                   <v-icon size="15">mdi-thumb-up</v-icon>
                 </v-btn>
               </v-badge>
@@ -75,7 +75,7 @@
             <template v-slot:activator="{ on, attrs }">
               <v-badge overlap offset-x="15" offset-y="10" color="error">
                 <span slot="badge">{{commentaire.nbre_dislikes}}</span>
-                <v-btn v-bind="attrs" v-on="on" plain text x-small v-on:click="commentDislike(commentaire.post_id, commentaire.id)">
+                <v-btn v-bind="attrs" v-on="on" plain text x-small v-on:click="commentDislike(commentaire.post_id, commentaire.id)" aria-label="Je n'aime pas">
                   <v-icon size="15">mdi-thumb-down</v-icon>
                 </v-btn>
               </v-badge>
@@ -97,7 +97,7 @@
                   <v-file-input class=" body-2" label="Upload Photo/Vidéo" v-model="uploadUpdate"></v-file-input>
                 </v-col><!-- FIN - section création Post (message + upload multimedia) -->
               </v-row>
-              <v-btn color="error" height="40" class="me-4" text x-small @click="updateComment = false" v-on:click="updaterComments(commentaire.post_id, commentaire.id)" :disabled="!validUpdate">
+              <v-btn color="error" height="40" class="me-4" text x-small @click="updateComment = false" v-on:click="updaterComments(commentaire.post_id, commentaire.id)" :disabled="!validUpdate" aria-label="Mettre à jour commentaire">
                 <v-icon>mdi-send</v-icon>
                   Updater
               </v-btn>
@@ -144,10 +144,6 @@ export default {
   computed: {
     ...mapState('likesDislikes', ['commentLikesDislikes']), //('nom du module dans index.js', ['nomstate dans fichier dossier module'])
   },//FIN - computed
-
-  // async mounted(){
-  //   await this.$store.dispatch('likesDislikes/getAllCommentLikesDislikes')
-  // },//FIN - mounted
 
   methods:{
     async updaterComments(postId, commentId){

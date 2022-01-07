@@ -32,7 +32,7 @@
             <template v-slot:activator="{ on, attrs }">
               <v-badge overlap offset-x="15" offset-y="10" color="error">
                 <span slot="badge">{{commentaire.nbre_likes}}</span>
-                <v-btn v-bind="attrs" v-on="on" plain text x-small disabled>
+                <v-btn v-bind="attrs" v-on="on" plain text x-small disabled aria-label="J'aime">
                   <v-icon size="15">mdi-thumb-up</v-icon>
                 </v-btn>
               </v-badge>
@@ -46,7 +46,7 @@
             <template v-slot:activator="{ on, attrs }">
               <v-badge overlap offset-x="15" offset-y="10" color="error">
                 <span slot="badge">{{commentaire.nbre_dislikes}}</span>
-                  <v-btn v-bind="attrs" v-on="on" plain text x-small disabled>
+                  <v-btn v-bind="attrs" v-on="on" plain text x-small disabled aria-label="Je n'aime pas">
                     <v-icon size="15">mdi-thumb-down</v-icon>
                   </v-btn>
               </v-badge>

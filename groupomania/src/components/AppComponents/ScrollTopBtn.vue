@@ -1,6 +1,6 @@
 <template>
 
-  <v-btn class="mb-16 elevation-10" dense small fab right bottom color="error" fixed @click="toTop" v-show="appear > 200"
+  <v-btn class="mb-16 elevation-10" dense small fab right bottom color="error" fixed @click="toTop" v-show="appear > 200" aria-label="vers le haut"
   ><v-icon>mdi-chevron-up</v-icon></v-btn>
     
 </template>

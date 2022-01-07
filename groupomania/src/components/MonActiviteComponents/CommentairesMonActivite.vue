@@ -33,7 +33,7 @@
               <!-- Bouton effacer -->
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-btn v-bind="attrs" v-on="on" plain text x-small v-on:click="deleteComments(commentaire.id)">
+                  <v-btn v-bind="attrs" v-on="on" plain text x-small v-on:click="deleteComments(commentaire.id)" aria-label="Effacer">
                     <v-icon size="15">mdi-close</v-icon>
                   </v-btn>
                 </template>
@@ -43,7 +43,7 @@
               <!-- Bouton mise a jour commentaire -->
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-btn v-bind="attrs" v-on="on" plain text x-small @click="setActiveUpdate(index)">
+                  <v-btn v-bind="attrs" v-on="on" plain text x-small @click="setActiveUpdate(index)" aria-label="Mettre à jour">
                     <v-icon size="15">mdi-cog</v-icon>
                   </v-btn>
                 </template>
@@ -56,7 +56,7 @@
                 <template v-slot:activator="{ on, attrs }">
                   <v-badge overlap offset-x="15" offset-y="10" color="error">
                     <span slot="badge">{{commentaire.nbre_likes}}</span>
-                      <v-btn v-bind="attrs" v-on="on" plain text x-small v-on:click="commentLike(commentaire.post_id, commentaire.id)">
+                      <v-btn v-bind="attrs" v-on="on" plain text x-small v-on:click="commentLike(commentaire.post_id, commentaire.id)" aria-label="J'aime">
                         <v-icon size="15">mdi-thumb-up</v-icon>
                       </v-btn>
                   </v-badge>
@@ -69,7 +69,7 @@
                 <template v-slot:activator="{ on, attrs }">
                   <v-badge overlap offset-x="15" offset-y="10" color="error">
                     <span slot="badge">{{commentaire.nbre_dislikes}}</span>
-                      <v-btn v-bind="attrs" v-on="on" plain text x-small v-on:click="commentDislike(commentaire.post_id, commentaire.id)">
+                      <v-btn v-bind="attrs" v-on="on" plain text x-small v-on:click="commentDislike(commentaire.post_id, commentaire.id)" aria-label="Je n'aime pas">
                         <v-icon size="15">mdi-thumb-down</v-icon>
                       </v-btn>
                   </v-badge>
@@ -90,7 +90,7 @@
                       <v-file-input class=" body-2" label="Upload Photo/Vidéo" v-model="uploadUpdate" type="file"></v-file-input>
                     </v-col><!-- FIN - section création Post (message + upload multimedia) -->
                   </v-row>
-                  <v-btn color="error" height="40" class="me-4" text x-small v-on:click="updaterComments(commentaire.post_id, commentaire.id)" :disabled="!validUpdate" >
+                  <v-btn color="error" height="40" class="me-4" text x-small v-on:click="updaterComments(commentaire.post_id, commentaire.id)" :disabled="!validUpdate" aria-label="Mettre a jour">
                     <v-icon>mdi-send</v-icon>
                       Updater
                   </v-btn>
@@ -105,9 +105,6 @@
   </v-container>
 </template>
  
-  
-
-
 <script>
 import { mapState} from 'vuex'
 export default {

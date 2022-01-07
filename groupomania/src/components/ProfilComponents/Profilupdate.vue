@@ -37,12 +37,12 @@
         
         <v-file-input v-model="upload" dense outlined label="Update Avatar" clearable :append-outer-icon=" 'mdi-image-remove' " @click:append-outer="deleteAvatar(profile.upload_url)"></v-file-input>
 
-        <v-btn  text color="error" v-on:click="updateUser()">Mettre à jour</v-btn>
+        <v-btn  text color="error" v-on:click="updateUser()" aria-label="Mettre à jour">Mettre à jour</v-btn>
 
       </v-col><!-- FIN - colonne contenant les field update du profil + boutons -->  
 
       <v-row class="d-flex justify-end me-1 mb-1"><!--  BOUTON SUPPRIMER COMPTE -->
-        <v-btn  text color="primary" v-on:click="toNotActiveUser()">Supprimer compte</v-btn>
+        <v-btn  text color="primary" v-on:click="toNotActiveUser()" aria-label="Supprimer compte">Supprimer compte</v-btn>
       </v-row><!--  BOUTON SUPPRIMER COMPTE -->
       
     </v-card>

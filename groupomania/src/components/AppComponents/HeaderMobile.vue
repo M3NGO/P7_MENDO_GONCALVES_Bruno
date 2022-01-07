@@ -2,7 +2,7 @@
   <div><!-- header -->
     <v-app-bar fixed height="80" clipped-left v-if="this.$route.path !== '/'&& this.$route.path !== '/inscription'" app color="white" flat dense>
         <div class="mt-3">
-          <v-btn icon color="20" bordered @click.stop="drawer = !drawer">
+          <v-btn icon color="20" bordered @click.stop="drawer = !drawer" aria-label="avatar Menu">
             <v-avatar class="profile" color="grey"  rounded-pill border v-if="profile.upload_url != null">
               <v-img small v-bind:src="'http://localhost:3000/' + profile.upload_url"></v-img>
             </v-avatar>

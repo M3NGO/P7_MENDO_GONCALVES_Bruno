@@ -12,7 +12,7 @@
           <v-text-field v-model="password" name="password" :rules="passwordRules" :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'" :type="show ? 'text' : 'password'" @click:append="show = !show" hint="Au moins 8 caractères" label="Password" required outlined dense hide-details clearable class="mb-5"></v-text-field>
           
           <!-- bouton pas encore inscrit qui déclanche au clic le dialog inscription -->
-          <v-btn elevation="10" color="primary" dark class="mt-5 rounded-xl" @click.stop="dialog = true">
+          <v-btn elevation="10" color="primary" dark class="mt-5 rounded-xl" @click.stop="dialog = true" aria-label="Pas encore inscrit?">
             Pas encore inscrit(e)?
           </v-btn>
               
@@ -38,10 +38,10 @@
               <!-- Boutons inscription -->
               <v-card-actions>
                 <v-spacer></v-spacer>
-                  <v-btn color="blue darken-1" text class="rounded-xl" @click="dialog = false">
+                  <v-btn color="blue darken-1" text class="rounded-xl" @click="dialog = false" aria-label="Quitter">
                     Quitter
                   </v-btn>
-                  <v-btn :disabled="!validReg" color="error darken-1" text class="rounded-xl" @click="dialog = false" v-on:click="Register()">
+                  <v-btn :disabled="!validReg" color="error darken-1" text class="rounded-xl" @click="dialog = false" v-on:click="Register()" aria-label="Valider">
                     Valider
                   </v-btn>
                 </v-card-actions>
@@ -50,11 +50,11 @@
           </v-dialog><!-- FIN - Dialog inscription -->
 
           <!-- bouton validation entrer sur Groupomania -->
-          <v-btn :disabled="!valid" color="error" class="mt-5 ms-5 rounded-xl" width="100" v-on:click="LogIn(), isLoading=true" v-if="isLoading==false" elevation="10">
+          <v-btn :disabled="!valid" color="error" class="mt-5 ms-5 rounded-xl" width="100" v-on:click="LogIn(), isLoading=true" v-if="isLoading==false" elevation="10" aria-label="Entrer">
               Entrer
           </v-btn>
           <!-- loading spinner dans bouton entrer pour faire patienter user au login -->
-          <v-btn v-if="isLoading==true" color="error" class="mt-5 ms-5 rounded-xl" width="100">
+          <v-btn v-if="isLoading==true" color="error" class="mt-5 ms-5 rounded-xl" width="100" aria-label="Enter en progès">
               <v-progress-circular indeterminate color="white"></v-progress-circular>
           </v-btn>
           <!-- bouton validation entrer sur Groupomania -->

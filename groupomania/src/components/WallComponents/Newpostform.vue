@@ -13,7 +13,7 @@
       </v-col>
        </v-row>
       <div class="d-flex align-end justify-center mb-4" no-gutters>
-        <v-btn :disabled="!valid" :enabled="upload" color="error"  text x-small v-on:click="publier(profile.email)">
+        <v-btn :disabled="!valid" :enabled="upload" color="error"  text x-small v-on:click="publier(profile.email)" aria-label="Publier message">
           <v-icon>mdi-send</v-icon>
             Publier
         </v-btn>

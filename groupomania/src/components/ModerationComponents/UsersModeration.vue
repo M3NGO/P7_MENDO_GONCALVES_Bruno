@@ -4,7 +4,7 @@
             <v-card-title>
             
                 <v-list-item class="grow">
-                    <v-btn icon class="rounded-xl">
+                    <v-btn icon class="rounded-xl" aria-label="avatar">
                         <v-avatar color="grey" class="me-5" v-if="user.upload_url != null">
                             <v-img small v-bind:src="'http://localhost:3000/' + user.upload_url" ></v-img>
                         </v-avatar>
@@ -25,15 +25,15 @@
                 <v-list-item class="grow">
                     <v-row align="center" justify="end">
                         <!-- bouton delete user delete définitivement user et son contenu -->
-                        <v-btn icon class="rounded-xl" >
-                            <v-icon v-on:click="deleteUser(user.uuid, user.email)" color="error">mdi-close-circle</v-icon>
+                        <v-btn icon class="rounded-xl" aria-label="Effacer user">
+                            <v-icon v-on:click="deleteUser(user.uuid, user.email)" color="error" aria-label="Effacer user">mdi-close-circle</v-icon>
                         </v-btn>
                         <!--FIN - bouton delete user delete définitivement user et son contenu -->
                         <span class="mr-1" color="primary">·</span>
 
                         <!-- Bouton pour unlocker user qui est en modération -->
-                        <v-btn icon class="rounded-xl">
-                            <v-icon class="mr-1" v-on:click="unblockUser(user.uuid, profile.uuid, user.email)" color="green">mdi-lock-check</v-icon>
+                        <v-btn icon class="rounded-xl" aria-label="Débloquer user">
+                            <v-icon class="mr-1" v-on:click="unblockUser(user.uuid, profile.uuid, user.email)" color="green" aria-label="Débloquer user">mdi-lock-check</v-icon>
                         </v-btn>
                         <!-- FIN - Bouton pour unlocker user qui est en modération -->
                         <span class="mr-1" color="primary">·</span>

@@ -45,7 +45,7 @@
             <!-- bouton effacer message -->
             <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
-                    <v-btn v-bind="attrs" v-on="on" plain text x-small v-on:click="deletePosts(post.id)">
+                    <v-btn v-bind="attrs" v-on="on" plain text x-small v-on:click="deletePosts(post.id)" aria-label="Effacer">
                         <v-icon size="20">mdi-close</v-icon>
                     </v-btn>
                 </template>
@@ -56,8 +56,8 @@
             <!-- bouton Mise a jour commentaire -->
             <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
-                    <v-btn v-bind="attrs" v-on="on" plain text x-small @click="setActiveUpdate(index)"
-                    ><v-icon size="20">mdi-cog</v-icon>
+                    <v-btn v-bind="attrs" v-on="on" plain text x-small @click="setActiveUpdate(index)" aria-label="Mettre a jour">
+                        <v-icon size="20">mdi-cog</v-icon>
                     </v-btn>
                 </template>
                     <span>Mise à jour</span>
@@ -67,8 +67,8 @@
             <!-- bouton Commenter le message -->
             <v-tooltip bottom>
                 <template v-slot:activator="{ comment }">
-                    <v-btn v-bind="comment" plain text x-small @click="setActiveComment(index)"
-                    ><v-icon size="20">mdi-comment-text</v-icon>
+                    <v-btn v-bind="comment" plain text x-small @click="setActiveComment(index)" aria-label="Commenter le message">
+                        <v-icon size="20">mdi-comment-text</v-icon>
                     </v-btn>
                 </template>
                     <span>Commenter</span>
@@ -81,7 +81,7 @@
                 <template v-slot:activator="{ on, attrs }">
                     <v-badge overlap offset-x="15" offset-y="10" color="error">
                         <span slot="badge" >{{post.nbre_likes}}</span>
-                        <v-btn v-bind="attrs" v-on="on" plain text x-small v-on:click="postLike(post.id)">
+                        <v-btn v-bind="attrs" v-on="on" plain text x-small v-on:click="postLike(post.id)" aria-label="J'aime">
                             <v-icon size="20">mdi-thumb-up</v-icon>
                         </v-btn>
                     </v-badge>
@@ -96,7 +96,7 @@
                 <template v-slot:activator="{ on, attrs }">
                     <v-badge overlap offset-x="15" offset-y="10" color="error">
                         <span slot="badge">{{post.nbre_dislikes}}</span>
-                        <v-btn v-bind="attrs" v-on="on" plain text x-small v-on:click="postDislike(post.id)">
+                        <v-btn v-bind="attrs" v-on="on" plain text x-small v-on:click="postDislike(post.id)" aria-label="Je n'aima pas">
                             <v-icon size="20">mdi-thumb-down</v-icon>
                         </v-btn>
                     </v-badge>
@@ -118,7 +118,7 @@
                         <v-file-input class=" body-2" label="Upload Photo/Vidéo" v-model="uploadCom" type="file"></v-file-input>
                     </v-col><!-- FIN - section création Post (message + upload multimedia) -->
                 </v-row>
-                <v-btn color="error" height="40" class="me-4" text x-small v-on:click="publierCommentaire(post.id, profile.email)" :enabled="uploadCom" :disabled="!validCom">
+                <v-btn color="error" height="40" class="me-4" text x-small v-on:click="publierCommentaire(post.id, profile.email)" :enabled="uploadCom" :disabled="!validCom" aria-label="Publier">
                     <v-icon>mdi-send</v-icon>
                     Publier
                 </v-btn>
@@ -136,7 +136,7 @@
                         <v-file-input class=" body-2" label="Upload Photo/Vidéo" v-model="uploadUpdate" type="file"></v-file-input>
                     </v-col><!-- FIN - section création Post (message + upload multimedia) -->
                 </v-row>
-                <v-btn color="error" height="40" class="me-4" text x-small v-on:click="updaterPost(post.id)" :enabled="uploadCom" :disabled="!validUpdate">
+                <v-btn color="error" height="40" class="me-4" text x-small v-on:click="updaterPost(post.id)" :enabled="uploadCom" :disabled="!validUpdate" aria-label="Mettre à jour">
                     <v-icon>mdi-send</v-icon>
                     Updater
                 </v-btn>

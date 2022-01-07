@@ -5,7 +5,7 @@
     <v-card class="mx-auto mb-5" max-width="400" v-for="user in allInactiveUsers" :key="user.id">
         <v-card-title>
             <v-list-item class="grow">
-                <v-btn icon class="rounded-xl">
+                <v-btn icon class="rounded-xl" aria-label="Avatar">
                     <v-avatar color="grey" class="me-5" v-if="user.upload_url != null">
                         <v-img small v-bind:src="'http://localhost:3000/' + user.upload_url" ></v-img>
                     </v-avatar>
@@ -24,8 +24,8 @@
         <v-card-actions>
             <v-list-item class="grow">
                 <v-row align="center" justify="end">
-                    <v-btn icon class="rounded-xl" >
-                        <v-icon v-on:click="deleteUser(user.uuid, user.email)" color="error">mdi-close-circle</v-icon>
+                    <v-btn icon class="rounded-xl" aria-label="Effacer user">
+                        <v-icon v-on:click="deleteUser(user.uuid, user.email)" color="error" aria-label="Effacer user">mdi-close-circle</v-icon>
                     </v-btn>
 
                     <span class="mr-1" color="primary">·</span>

@@ -5,7 +5,7 @@
         <v-card class="mx-auto mb-5" max-width="400" v-for="user in allActiveUsers" :key="user.id">
             <v-card-title>
                 <v-list-item class="grow">
-                    <v-btn icon class="rounded-xl">
+                    <v-btn icon class="rounded-xl" aria-label="Avatar">
                         <v-avatar color="grey" class="me-5" v-if="user.upload_url != null">
                             <v-img small v-bind:src="'http://localhost:3000/' + user.upload_url" ></v-img>
                         </v-avatar>
@@ -25,8 +25,8 @@
                 <v-list-item class="grow">
                     <v-row align="center" justify="end">
                         <!-- bouton lock user (mise en moderation) -->
-                        <v-btn icon class="rounded-xl" v-if="profile.role == 2"><!-- Lock user doit apparaitre que dans Liste tous les utilisateurs et uniquement pour moderateurs -->
-                            <v-icon class="mr-1" v-on:click="blockUser(user.uuid, profile.uuid, user.email)" color="error">mdi-lock</v-icon><!-- bouton moderation user pour les moderateurs uniquement -->
+                        <v-btn icon class="rounded-xl" v-if="profile.role == 2" aria-label="Bloquer user"><!-- Lock user doit apparaitre que dans Liste tous les utilisateurs et uniquement pour moderateurs -->
+                            <v-icon class="mr-1" v-on:click="blockUser(user.uuid, profile.uuid, user.email)" color="error" aria-label="Bloquer user">mdi-lock</v-icon><!-- bouton moderation user pour les moderateurs uniquement -->
                         </v-btn>
                         <span class="mr-1" color="primary" v-if="profile.role == 2">·</span>
                         <!-- FIN - bouton lock user (mise en moderation) -->

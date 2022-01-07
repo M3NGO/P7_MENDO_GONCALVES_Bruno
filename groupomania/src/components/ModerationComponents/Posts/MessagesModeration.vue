@@ -44,7 +44,7 @@
         <v-card-actions class="d-flex justify-end"  ><!-- section boutons card messages -->
             <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
-                    <v-btn v-bind="attrs" v-on="on" plain text x-small v-on:click="unModeratePost(post.id, profile.uuid)">
+                    <v-btn v-bind="attrs" v-on="on" plain text x-small v-on:click="unModeratePost(post.id, profile.uuid)" aria-label="Modération">
                         <v-icon size="20" color="green">mdi-alert-circle</v-icon>
                     </v-btn>
                 </template>
@@ -55,7 +55,7 @@
 
             <v-tooltip bottom><!-- accessible en moderation pour les moderateurs puissent delete post -->
                 <template v-slot:activator="{ on, attrs }">
-                    <v-btn v-bind="attrs" v-on="on" plain text x-small v-on:click="deletePosts(post.id)">
+                    <v-btn v-bind="attrs" v-on="on" plain text x-small v-on:click="deletePosts(post.id)" aria-label="Effacer message">
                         <v-icon size="20">mdi-close</v-icon>
                     </v-btn>
                 </template>
@@ -70,7 +70,7 @@
                 <template v-slot:activator="{ on, attrs }">
                     <v-badge overlap offset-x="15" offset-y="10" color="error">
                         <span slot="badge">{{post.nbre_likes}}</span>
-                        <v-btn v-bind="attrs" v-on="on" plain text x-small disabled>
+                        <v-btn v-bind="attrs" v-on="on" plain text x-small disabled aria-label="J'aime">
                             <v-icon size="20">mdi-thumb-up</v-icon>
                         </v-btn>
                     </v-badge>
@@ -86,7 +86,7 @@
                 <template v-slot:activator="{ on, attrs }">
                     <v-badge overlap offset-x="15" offset-y="10" color="error">
                         <span slot="badge">{{post.nbre_dislikes}}</span>
-                        <v-btn v-bind="attrs" v-on="on" plain text x-small disabled>
+                        <v-btn v-bind="attrs" v-on="on" plain text x-small disabled aria-label="Je n'aime pas">
                             <v-icon size="20">mdi-thumb-down</v-icon>
                         </v-btn>
                     </v-badge>
