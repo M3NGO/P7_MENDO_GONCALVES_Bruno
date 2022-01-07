@@ -1,7 +1,6 @@
 let express = require('express');
 let router = express.Router();
-let auth = require('../middleware/auth')
-
+let auth = require('../middleware/auth')//pour securiser les routes
 let likesDislikesCtrl = require('../controllers/likes_dislikes');
 
 router.post ('/post/:id/like', auth,likesDislikesCtrl.postLikesDislikes);//ajouter auth, 

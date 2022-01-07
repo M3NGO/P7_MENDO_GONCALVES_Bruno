@@ -12,6 +12,7 @@ let MIME_TYPE = { // mimetype donne la définition des formats acceptés pour le
     'video/mp4': 'mp4',
     'video/avi': 'avi',
 }
+//filtre les fichiers reçus du front : taille et mimetype
 let imageFilter = async (req, file, callback) => {
     // console.log(req.body)
     let post_id = req.body.post_id;
@@ -29,7 +30,7 @@ let imageFilter = async (req, file, callback) => {
       callback("Veuillez uploader uniquement des images au format : jpg, png, gif inférieures à 1Mb ou des videos au format avi ou mpeg inférieures à 20Mb", false);
     }
     }).catch(error => res.status(400).json({error}));
-}
+}//FIN imagefilter
 
 let storage = multer.diskStorage({
     destination: (req, file, callback) => {
@@ -48,15 +49,13 @@ let storage = multer.diskStorage({
             }//fin else
 
         })//Fin then
-
-
-
-    },
+    },//FIN DESTINATION
+    //renome les fichiers avec comment en début de fichier et date pour le rendre unique
     filename : (req, file, callback) => {
         let name = file.originalname.split(' ').join('_') // dans le cas de fichiers només avec espace alors les espaces seront remplacés par des '_'
         let extension = MIME_TYPE[file.mimetype];
         callback(null, 'comment' + '_' + name + Date.now() + '.' + extension); //enregistre le fichier avec le nom + time stamp . extension
-    },
-});
+    },//FIN filemane
+});//FIN STORAGE
 
 module.exports = multer({storage, fileFilter:imageFilter}).single('upload');

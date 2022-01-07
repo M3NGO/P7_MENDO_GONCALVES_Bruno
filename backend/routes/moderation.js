@@ -1,7 +1,6 @@
 let express = require('express');
 let router = express.Router();
-let auth = require('../middleware/auth')
-
+let auth = require('../middleware/auth')//pour securiser les routes avec token auth
 let moderationCtrl = require('../controllers/moderation');
 
 router.get('/get/posts',auth, moderationCtrl.getModeratedPosts)

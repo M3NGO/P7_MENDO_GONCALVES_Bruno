@@ -38,8 +38,5 @@ app.use ('/api/v1/moderation/allusers', allUsersRoutes, )
 //FIN - les routes
 
 app.use('/uploads', express.static(path.join(__dirname,'uploads'))); // pour pouvoir servir le dossier uploads comme source des images
-// app.use('/uploads/images', express.static(path.join(__dirname,'images')));
-// app.use('/uploads/videos', express.static(path.join(__dirname,'videos')));
-
 
 module.exports = app;

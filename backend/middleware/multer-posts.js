@@ -11,10 +11,10 @@ let MIME_TYPE = { // mimetype donne la définition des formats acceptés pour le
     'video/mp4': 'mp4',
     'video/avi': 'avi',
 }
+//Filtre les fichiers reçus du front selon leur taille et le mimetype
 let imageFilter = async  (req, file, callback) => {
     // console.log(req.body)
     let uuid = req.body.uuid;
-    // let post_id = req.params.id;
     let fileSize = parseInt(req.headers['content-length']);
 
     await User.findOne({where:{ uuid}})
@@ -30,8 +30,8 @@ let imageFilter = async  (req, file, callback) => {
 
     }).catch(error => res.status(400).json({error}));
 
-}
-
+}//FIN imageFilter
+//definit le lieu de stockage des fichiers images / videos selon le mimetype du fichier
 let storage = multer.diskStorage({
     destination: (req, file, callback) => {
         let uuid = req.body.uuid;
@@ -45,16 +45,17 @@ let storage = multer.diskStorage({
                 }if(file.mimetype.startsWith("video")){
                     callback(null, './uploads/'+ user.uuid+ '/videos/posts')
                 }
-                console.log(user.email)
+                // console.log(user.email)
             }//fin else
 
         })//Fin then
-    },
+    },//FIN DESTINATION
+    //filename pour renomer les fichiers envoyés par le user en commençant par post et ajoutant la date d'upload
     filename : (req, file, callback) => {
         let name = file.originalname.split(' ').join('_') // dans le cas de fichiers només avec espace alors les espaces seront remplacés par des '_'
         let extension = MIME_TYPE[file.mimetype];
         callback(null, 'post' + '_' + name + Date.now() + '.' + extension); //enregistre le fichier avec le nom + time stamp . extension
     },
-});
+});//FIN STORAGE
 
 module.exports = multer({storage, fileFilter:imageFilter}).single('upload');
