@@ -156,7 +156,9 @@ exports.deleteUser = async (req, res)=>{
                     if (err) console.log(err); console.log('Fichier Post effacé du back')})
                     //on efface le user et tout son contenu lié de mysql
                     await User.destroy({where:{uuid, active: false}})
-                    return res.status(200).json({message:"L'utilsiateur ainsi que tout son contenu a été éffacé"})
+                    //on envoie la liste des users en moderation au front:
+                    let usersToBeModerated = await User.findAll({where: {active: false, user_deleted: false}},{include:['comment','post']})
+                    return res.status(200).json(usersToBeModerated)
                 }
             })//FIN THEN
             .catch(error => res.status(400).json({error}));
