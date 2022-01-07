@@ -70,6 +70,7 @@ export default {
             let confirmation = confirm("Êtes-vous sûr(e) de vouloir supprimer définitivement l'utilisateur : "+email+ " ? tout son contenu sera irrécupérable")
                 if(confirmation){
                     this.$store.dispatch('moderation/deleteUser',{user:user})
+                    this.$store.dispatch('moderation/getModeratedUsers')
                 }else{
                     window.location.reload
                 }

@@ -65,7 +65,7 @@ export default {
             let confirmation = confirm("Êtes-vous sûr(e) de vouloir supprimer définitivement l'utilisateur : "+email+ "?\n\nTout le contenu (posts / commentaires / images / vidéos) de cet utilisateur sera définitivement irrécupérable")
             if(confirmation){
                 await this.$store.dispatch('moderation/deleteUser',{user:user})
-                await this.$store.dispatch('getUsers/getAllInactiveUser')
+                await this.$store.dispatch('getUsers/getAllInactiveUsers')
             }else{
                 window.location.reload
             }
