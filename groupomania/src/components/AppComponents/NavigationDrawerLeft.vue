@@ -39,14 +39,14 @@
               <v-list-item-title>Mon profil</v-list-item-title>
           </v-list-item><!-- icone Rouage -->
 
-          <!-- menu spécial chargé de communication / modération-->
-          <v-list-item color="primary" link :to="{path:'/utilisateurs'}" @click="top"><!-- icone tous les utlisateurs -->
+          <v-list-item color="error" link :to="{path:'/utilisateurs'}" @click="top"><!-- icone tous les utlisateurs -->
             <v-list-item-icon>
               <v-icon>mdi-account-multiple</v-icon>
             </v-list-item-icon>
               <v-list-item-title>Tous les utilisateurs</v-list-item-title>
           </v-list-item><!-- icone tous les utlisateurs -->
 
+          <!-- menu spécial chargé de communication / modération-->
           <v-list-item color="primary" link :to="{path:'/utilisateurs-desinscrits'}" @click="top" v-if="profile.role == 2"><!-- icone tous les utlisateurs désinscrits -->
             <v-list-item-icon>
               <v-icon>mdi-account-multiple-remove</v-icon>
