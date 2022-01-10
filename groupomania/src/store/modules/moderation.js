@@ -11,7 +11,7 @@ const moderationFunction = {
     mutations: {
         DELETE_USER(state, data) {
             // console.log(data)
-            state.moderation = data
+            state.allUsersModeration = data
         },
         BLOCK_USER(state, data){
             // console.log(data)
