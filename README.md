@@ -23,6 +23,11 @@ into backend folder install:
     - sequelize-cli : npm install --save sequelize-cli
 
 BACKEND SQL TABLES AND ASSOCIATIONS CREATION:
+
+Connexion to database: 
+
+the username, password, and database name for mysql are in backend/config/config.json: development
+Line 2 to 8
     
 Into backend folder :
 
@@ -66,7 +71,6 @@ If needed to use seeders :
 
 
  For information:
-     Connexion to database: the username, password, and database name for mysql are in backend/config/config.json: development
 
 	Useful sequelize commands to keep in mind:
 
