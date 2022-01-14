@@ -1,4 +1,4 @@
 # pour ne pas importer dans github les images + node_modules
-node_modules
+backend/node_modules
 .DS_Store
 uploads
