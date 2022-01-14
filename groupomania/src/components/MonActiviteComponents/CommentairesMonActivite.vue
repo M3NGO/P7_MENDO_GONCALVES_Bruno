@@ -43,7 +43,7 @@
               <!-- Bouton mise a jour commentaire -->
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-btn v-bind="attrs" v-on="on" plain text x-small @click="setActiveUpdate(index)" aria-label="Mettre à jour">
+                  <v-btn v-bind="attrs" v-on="on" plain text x-small @click="setActiveUpdate(index, commentaire.content)" aria-label="Mettre à jour">
                     <v-icon size="15">mdi-cog</v-icon>
                   </v-btn>
                 </template>
@@ -134,10 +134,12 @@ export default {
   },//FIN - mounted
 
   methods:{
-    setActiveUpdate(index) { //permet de déclancher l'ouverture/fermeture unique de l'expand qu'on a cliqué (au lieux de tout expand sur toutes les cartes)
+    setActiveUpdate(index, content) { //permet de déclancher l'ouverture/fermeture unique de l'expand qu'on a cliqué (au lieux de tout expand sur toutes les cartes)
       this.isClickedUpdate = index // le clickupdate = index du v-for de la carte cliquée
+      this.contentUpdate = content
       if(this.isActiveUpdate==false){
         this.isClickedUpdate = index
+        this.contentUpdate = content
         this.isActiveUpdate = !this.isActiveUpdate
       }else{
         this.isClickedUpdate = ''
@@ -146,9 +148,16 @@ export default {
     },//FIN SETACTIVEUPDATE
 
     async deleteComments(commentId){
-      await this.$store.dispatch('getPosts/deleteComments', { commentId: commentId})
-      await this.$store.dispatch('getProfile/getProfile')
-      await this.$store.dispatch('getPosts/getAllPostsAct')
+      let confirmation = confirm("Êtes-vous sûr(e) de vouloir supprimer définitivement votre commentaire?")
+      if(confirmation){
+        await this.$store.dispatch('getPosts/deleteComments', { commentId: commentId})
+        await this.$store.dispatch('getProfile/getProfile')
+        await this.$store.dispatch('getPosts/getAllPostsAct')
+      }//FIN if
+      else{
+        window.location.reload
+      }//FIN ELSE
+
     }, //FIN DELETECOMMENTS
 
     async updaterComments(postId, commentId){

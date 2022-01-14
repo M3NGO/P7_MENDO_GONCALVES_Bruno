@@ -136,13 +136,27 @@ export default {
 
   methods:{
     async deletePosts(postId){
-        await this.$store.dispatch('getPosts/deletePosts', { postid: postId})
-        await this.$store.dispatch('moderation/getModeratedPosts') 
-        await this.$store.dispatch('getPosts/getAllPostsAct')
+        let confirmation = confirm("Êtes-vous sûr(e) de vouloir supprimer définitivement ce post?")
+        if(confirmation){
+            await this.$store.dispatch('getPosts/deletePosts', { postid: postId})
+            await this.$store.dispatch('moderation/getModeratedPosts') 
+            await this.$store.dispatch('getPosts/getAllPostsAct')
+        }//FIN if
+        else{
+            window.location.reload
+        }//FIN ELSE
     },//FIN DELETEPOSTS
+
     async unModeratePost(postId, uuid){
-        await this.$store.dispatch('moderation/unModeratePost', {post_id: postId, uuid:uuid})
-        await this.$store.dispatch('moderation/getModeratedPosts') 
+        let confirmation = confirm("Êtes-vous sûr(e) de vouloir remettre ce post dans le wall?")
+        if(confirmation){
+            await this.$store.dispatch('moderation/unModeratePost', {post_id: postId, uuid:uuid})
+            await this.$store.dispatch('moderation/getModeratedPosts') 
+        }//FIN IF
+        else{
+            window.location.reload
+        }//FIN else
+
     },//FIN UNMODERATEPOSTS
   },//FIN methods
 

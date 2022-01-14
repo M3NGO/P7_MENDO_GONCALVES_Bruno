@@ -56,7 +56,7 @@
             <!-- bouton Mise a jour commentaire -->
             <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
-                    <v-btn v-bind="attrs" v-on="on" plain text x-small @click="setActiveUpdate(index)" aria-label="Mettre a jour">
+                    <v-btn v-bind="attrs" v-on="on" plain text x-small @click="setActiveUpdate(index, post.content)" aria-label="Mettre a jour">
                         <v-icon size="20">mdi-cog</v-icon>
                     </v-btn>
                 </template>
@@ -216,11 +216,12 @@ export default {
         },//FIN SETACTIVE COMMENT
 
         //setactiveComment pour assigner valeur actif ou non sur la card cliquée pour lexpansion comment
-        setActiveUpdate(index) {
+        setActiveUpdate(index, content) {
             this.isClickedUpdate = index
-            
+            this.contentUpdate = content
             if(this.isActiveUpdate==false){
                 this.isClickedUpdate = index
+                this.contentUpdate = content
                 this.isActiveUpdate = !this.isActiveUpdate
             }else{
                 this.isClickedUpdate = ''
@@ -251,9 +252,16 @@ export default {
         },//FIN- updaterPost
         
         async deletePosts(postId){
-            await this.$store.dispatch('getPosts/deletePosts', { postid: postId})
-            await this.$store.dispatch('getProfile/getProfile')
-            this.$store.dispatch('getPosts/getAllPostsAct')
+            let confirmation = confirm("Êtes-vous sûr(e) de vouloir supprimer définitivement votre post?")
+            if(confirmation){
+                await this.$store.dispatch('getPosts/deletePosts', { postid: postId})
+                await this.$store.dispatch('getProfile/getProfile')
+                this.$store.dispatch('getPosts/getAllPostsAct')
+            }//FIN IF
+            else{
+                window.location.reload
+            }//FIN ELSE
+
         },//FIN deletePosts
 
 

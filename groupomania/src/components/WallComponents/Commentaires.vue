@@ -49,7 +49,7 @@
           
           <v-tooltip bottom><!-- rendre visible que quand le user est celui qui a créé le commentaire -->
             <template v-slot:activator="{ on, attrs }">
-              <v-btn v-show="profile.uuid === commentaire.uuid" v-bind="attrs" v-on="on" plain text x-small @click="updateComment=!updateComment" aria-label="Mettre a jour">
+              <v-btn v-show="profile.uuid === commentaire.uuid" v-bind="attrs" v-on="on" plain text x-small @click="setActiveUpdate(commentaire.id, commentaire.content)" aria-label="Mettre a jour">
                 <v-icon size="15">mdi-cog</v-icon>
               </v-btn>
             </template>
@@ -86,18 +86,18 @@
 
         </v-card-actions>
         <!-- FIN - section boutons card messages -->
-        <v-divider v-if="updateComment"></v-divider>
+        <v-divider ></v-divider>
         <!-- transition fait apparaitre section update commentaire sous la section boutons card-->
-        <v-expand-transition>
+        <v-expand-transition v-model="isActiveUpdate" v-if="isClickedUpdate === commentaire.id">
           <v-form v-model="validUpdate">
-            <v-card-title v-show="updateComment" class="transition-fast-in-fast-out">
+            <v-card-title  class="transition-fast-in-fast-out">
               <v-row class="d-flex align-center">
                 <v-col cols="10" class="me-5"><!-- section création Post (message + upload multimedia) -->
                   <v-text-field class=" body-2" label="Votre nouveau commentaire ici" :rules="rulesUpdate" v-model="contentUpdate" clearable hide-details></v-text-field> 
                   <v-file-input class=" body-2" label="Upload Photo/Vidéo" v-model="uploadUpdate"></v-file-input>
                 </v-col><!-- FIN - section création Post (message + upload multimedia) -->
               </v-row>
-              <v-btn color="error" height="40" class="me-4" text x-small @click="updateComment = false" v-on:click="updaterComments(commentaire.post_id, commentaire.id)" :disabled="!validUpdate" aria-label="Mettre à jour commentaire">
+              <v-btn color="error" height="40" class="me-4" text x-small v-on:click="updaterComments(commentaire.post_id, commentaire.id)" :disabled="!validUpdate" aria-label="Mettre à jour commentaire">
                 <v-icon>mdi-send</v-icon>
                   Updater
               </v-btn>
@@ -129,9 +129,10 @@ export default {
     contentUpdate:'',//déclaration content update a vide
     uploadUpdate:[],//déclaration uploadupdate a vide
 
+    isClickedUpdate:'', //definit si bouton update a été clické en lui assignant l'id du commentaire
+    isActiveUpdate: false,// définit si la zone d'update est visible ou non
+
     dialog: false, // déclare le dialog image false pour ne pas montrer image en plein écran d'office
-    
-    updateComment: false, //pour faire disparaitre section update commentaire au click sur bouton updater
 
     // controle le nombre de caractères inscrits dans partie Votre nouveau commentaire
     validUpdate: false,
@@ -146,17 +147,37 @@ export default {
   },//FIN - computed
 
   methods:{
+    setActiveUpdate(index, content) {
+      this.isClickedUpdate = index
+      this.contentUpdate = content
+      if(this.isActiveUpdate==false){
+        this.isClickedUpdate = index
+        this.contentUpdate = content
+        this.isActiveUpdate = !this.isActiveUpdate
+      }else{
+        this.isClickedUpdate = ''
+        this.isActiveUpdate = !this.isActiveUpdate
+      }
+    },//FIN - SetActiveUpdate
+
     async updaterComments(postId, commentId){
       await this.$store.dispatch('getPosts/updateComments', {contentUpdate: this.contentUpdate, postid: postId, commentId:commentId, uploadUpdate: this.uploadUpdate}) 
       await this.$store.dispatch('getPosts/getAllPostsAct')
       //remise à zéro commentaire
-      this.contentUpdate=''
-      this.uploadUpdate= []
+      this.isClickedUpdate = ''
+      this.isActiveUpdate = !this.isActiveUpdate
     },//FIN - updaterComments
 
     async deleteComments(commentId){
+      let confirmation = confirm("Êtes-vous sûr(e) de vouloir supprimer définitivement votre commentaire?")
+      if(confirmation){
         await this.$store.dispatch('getPosts/deleteComments', { commentId: commentId})
         await this.$store.dispatch('getPosts/getAllPostsAct')
+      }//FIN if
+      else{
+        window.location.reload
+      }//FIN else
+
     },//FIN - deleteComments
 
     async moderationComment(commentId, uuid){

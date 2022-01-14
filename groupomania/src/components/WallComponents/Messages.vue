@@ -69,7 +69,7 @@
 
             <v-tooltip bottom><!-- rend visible que quand le uuid profil == uuid du message -->
                 <template v-slot:activator="{ attrs }">
-                    <v-btn v-show="profile.uuid === post.uuid" v-bind="attrs"  plain text x-small @click="setActiveUpdate(index)" aria-label="Mettre a jour message">
+                    <v-btn v-show="profile.uuid === post.uuid" v-bind="attrs"  plain text x-small @click="setActiveUpdate(index, post.content)" aria-label="Mettre a jour message">
                         <v-icon size="20">mdi-cog</v-icon>
                     </v-btn>
                 </template>
@@ -245,10 +245,12 @@ export default {
         },//FIN - setActiveComment
 
         //setActiveUpdate definit si l'icone update a été cliqué ou non afin de ne pas ouvrir tous les expand panel d'un coup sur un click unique
-        setActiveUpdate(index) {
+        setActiveUpdate(index, content) {
         this.isClickedUpdate = index
+        this.contentUpdate = content
         if(this.isActiveUpdate==false){
                 this.isClickedUpdate = index
+                this.contentUpdate = content
                 this.isActiveUpdate = !this.isActiveUpdate
             }else{
                 this.isClickedUpdate = ''
@@ -277,8 +279,15 @@ export default {
         },//FIN updatePost
 
         async deletePosts(postId){
-            await this.$store.dispatch('getPosts/deletePosts', { postid: postId})
-        this.$store.dispatch('getPosts/getAllPostsAct')
+            let confirmation = confirm("Êtes-vous sûr(e) de vouloir supprimer définitivement votre commentaire?")
+            if(confirmation){
+                await this.$store.dispatch('getPosts/deletePosts', { postid: postId})
+                this.$store.dispatch('getPosts/getAllPostsAct')
+            }//FIN if
+            else{
+                window.location.reload
+            }//FIN else
+
         },//FIN - deletepost
 
         async moderationPost(postId, uuid){

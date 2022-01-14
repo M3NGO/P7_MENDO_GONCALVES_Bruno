@@ -105,13 +105,27 @@ export default {
 
   methods:{
     async deleteComments(commentId){
-      await this.$store.dispatch('getPosts/deleteComments', { commentId: commentId})
-      await this.$store.dispatch('moderation/getModeratedComments')
-      await this.$store.dispatch('getPosts/getAllPostsAct') 
+      let confirmation = confirm("Êtes-vous sûr(e) de vouloir supprimer définitivement ce commentaire?")
+      if(confirmation){
+        await this.$store.dispatch('getPosts/deleteComments', { commentId: commentId})
+        await this.$store.dispatch('moderation/getModeratedComments')
+        await this.$store.dispatch('getPosts/getAllPostsAct') 
+      }//FIN if
+      else{
+        window.location.reload
+      }//FIN ELSE
+
     },//FIN DELETECOMMENTS
     async unModerateComment(commentId, uuid){
+      let confirmation = confirm("Êtes-vous sûr(e) de vouloir remettre ce commentaire dans le wall?")
+      if(confirmation){
         await this.$store.dispatch('moderation/unModerateComment', {comment_id: commentId, uuid:uuid})
         await this.$store.dispatch('moderation/getModeratedComments') 
+      }//FIN if
+      else{
+        window.location.reload
+      }//FIN ELSE
+
     },//FIN UNMODERATECOMMENT
   },//FIN - methods
 
